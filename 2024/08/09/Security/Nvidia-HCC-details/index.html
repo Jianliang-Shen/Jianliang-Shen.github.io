@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Hopper 100 是NVIDIA推出的具备机密计算功能的GPGPU，支持单卡的CC模式和多卡基于NVLINK互联的CC模式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: HCC 细节">
+<meta property="og:url" content="http://yoursite.com/2024/08/09/Security/Nvidia-HCC-details/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Hopper 100 是NVIDIA推出的具备机密计算功能的GPGPU，支持单卡的CC模式和多卡基于NVLINK互联的CC模式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/HCC/hcc_index.png">
+<meta property="article:published_time" content="2024-08-09T13:28:08.000Z">
+<meta property="article:modified_time" content="2024-08-09T06:27:15.043Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/HCC/hcc_index.png">
+  
+  
+  
+  <title>机密计算: HCC 细节 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: HCC 细节"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-09 13:28" pubdate>
+          2024年8月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: HCC 细节</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Hopper 100 是NVIDIA推出的具备机密计算功能的GPGPU，支持单卡的CC模式和多卡基于NVLINK互联的CC模式。</p>
+<span id="more"></span>
+
+<p>HCC方案需要支持可信扩展的CPU。这些CPU可以满足对设备的访问控制检查、分页控制、地址转换和内存加密技术，从而加强对计算设备数据的保护</p>
+<p><img src="/img/HCC/hcc/1.png" srcset="/img/loading.gif" lazyload alt="HCC"></p>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p><img src="/img/HCC/hcc/2.png" srcset="/img/loading.gif" lazyload alt="概览"></p>
+<p>HCC TEE方案包括：</p>
+<ul>
+<li>物理连接的PCIe出入口均有256位AES-GCM加密，同时可以以此进行数字签名，确保数据来源的安全性</li>
+<li>96位滚动初始化向量（IV）保证同明文不会重复密文，可以缓解重放攻击</li>
+<li>禁用 JTAG 以及约束 BMC 的访问权限，缓解侧信道攻击</li>
+<li>在开发者模式之外，禁用性能分析，缓解侧信道攻击</li>
+<li>GPU提供ECC-384密钥对签名和设备标识符PDI实现认证， IK（设备唯一私有密钥）存放在反熔丝中</li>
+</ul>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>HCC对计算性能有部分影响：</p>
+<ul>
+<li>在HCC模式下，以下性能基本要素与非机密模式相当：</li>
+<li>GPU原始计算性能，计算引擎对驻留在GPU内存中的未加密数据执行未加密代码。</li>
+<li>GPU内存带宽，封装上的HBM被认为是安全的，可以抵御常见的物理攻击工具，例如中间层，并且没有加密。</li>
+</ul>
+<p>以下性能受到额外的加密和解密开销的影响：</p>
+<ul>
+<li>CPU-GPU互连带宽受CPU加密性能限制，约为4Gb&#x2F;秒。</li>
+<li>通过非安全互连进行的数据传输吞吐，会导致通过不受保护的内存中的加密缓冲区进行传输的延迟开销。</li>
+<li>多GPU用例中的GPU对端内存带宽，直接连接多GPU NVLINK拓扑在未受保护的GPU内存中使用加密缓冲区，从而降低吞吐量。</li>
+</ul>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>CPU Memory:</p>
+<ul>
+<li>CVM &#x3D; 机密虚拟机</li>
+<li>默认情况下，所有客户虚拟机内存均由存储在 CPU 寄存器中的 CVM 私钥加密</li>
+<li>NVIDIA 驱动程序在共享内存区域分配反弹缓冲区，并使用会话密钥加密这些缓冲区中的数据</li>
+</ul>
+<p>GPU Memory:</p>
+<ul>
+<li>大多数 GPU 内存配置为计算保护区 (CPR)，受硬件防火墙保护</li>
+<li>一小部分 GPU 内存位于 CPR 之外，用于<ul>
+<li>加密 CUDA 命令缓冲区</li>
+<li>NVLINK P2P 加密反弹缓冲区</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/HCC/hcc/3.png" srcset="/img/loading.gif" lazyload alt="系统内存划分"></p>
+<h2 id="CUDA-运行"><a href="#CUDA-运行" class="headerlink" title="CUDA 运行"></a>CUDA 运行</h2><ul>
+<li>CPU 和 GPU 内存之间的所有通信均经过加密，包括数据传输、命令和 CUDA 内核</li>
+<li>反弹缓冲区加密由虚拟机内的 NVIDIA 驱动程序执行，对应用程序透明</li>
+<li>对于 H2D 的数据传输<ul>
+<li>驱动程序对 CPU 进行加密以在共享内存中反弹缓冲区</li>
+<li>DMA 引擎从反弹缓冲区读取并解密到受保护的 GPU 内存</li>
+</ul>
+</li>
+<li>对于 D2H 的数据传输<ul>
+<li>DMA 引擎加密并通过 PCIe 写入反弹缓冲区</li>
+<li>驱动程序将 CPU 解密到机密的虚拟机内存</li>
+</ul>
+</li>
+<li>命令缓冲区和 CUDA 内核的安全工作启动路径</li>
+</ul>
+<p><img src="/img/HCC/hcc/4.png" srcset="/img/loading.gif" lazyload alt="Cuda 运行"></p>
+<h2 id="数据保护"><a href="#数据保护" class="headerlink" title="数据保护"></a>数据保护</h2><p>当 Hopper GPU 以机密模式启动时，它会阻止 GPU 内存的<strong>计算保护区 (CPR)</strong> 的进出</p>
+<ul>
+<li>PCIe 防火墙阻止 CPU 访问大多数寄存器和所有 GPU CPR 内存</li>
+<li>NVLINK 防火墙阻止 NVLINK 对等 GPU 访问 GPU CPR 内存</li>
+<li>DMA 引擎只能在启用加密的情况下在 CPR 之外读取或写入</li>
+<li>所有其他引擎（例如计算 SM）都被阻止在 CPR 之外读取或写入</li>
+</ul>
+<p><img src="/img/HCC/hcc/5.png" srcset="/img/loading.gif" lazyload alt="机密计算中的数据保护"></p>
+<p>通过这种方式，内存的计算保护区是安全的，以便 GPU 可以在其高带宽内存中全速处理数据。 当 CC&#x3D;On 时，所有 GPU 性能计数器都被禁用，以防止侧信道攻击</p>
+<h2 id="GPU-初始化"><a href="#GPU-初始化" class="headerlink" title="GPU 初始化"></a>GPU 初始化</h2><p><strong>启用CC模式</strong></p>
+<ol>
+<li>BMC 发出带外请求以选择 CC 模式并写入 EEPROM，或主机发出带内请求以选择 CC 模式并写入 EEPROM</li>
+<li>主机触发 GPU 重置以使模式生效</li>
+</ol>
+<p><strong>GPU Boot</strong></p>
+<ol start="3">
+<li>GPU 固件清理 GPU 状态和内存</li>
+<li>GPU 固件配置防火墙以防止未经授权的访问，然后启用 PCIE</li>
+</ol>
+<p><strong>租户初始化</strong></p>
+<ol start="5">
+<li>GPU 驱动程序使用 SPDM 进行会话建立和证明报告</li>
+<li>租户证明服务使用 NVML API 收集 GPU 证明报告和设备证书，验证在本地完成或传输到远程服务</li>
+<li>允许使用 GPU 的 CUDA 程序</li>
+</ol>
+<p><img src="/img/HCC/hcc/6.png" srcset="/img/loading.gif" lazyload alt="初始化"></p>
+<h2 id="卸载-GPU"><a href="#卸载-GPU" class="headerlink" title="卸载 GPU"></a>卸载 GPU</h2><p>VM 和 NVIDIA 驱动程序退出后，GPU 将被锁定，直到下次重置。在 CC 模式下，驱动程序以持久模式运行，因为每次 GPU 启动只允许加载一个驱动程序。GPU 的清理在下次启动时完成，并按照之前的步骤 2、3、4 进行操作</p>
+<ol start="2">
+<li>主机触发 GPU 重置以使模式生效</li>
+<li>GPU 固件清理 GPU 状态、内存和机密</li>
+<li>GPU 固件配置防火墙以防止未经授权的访问，然后启用 PCIE</li>
+</ol>
+<p>请注意，PCIE BAR 完全被阻止，直到 GPU 清理完成，与 CC 模式无关</p>
+<p><img src="/img/HCC/hcc/7.png" srcset="/img/loading.gif" lazyload alt="卸载GPU"></p>
+<h2 id="认证-GPU"><a href="#认证-GPU" class="headerlink" title="认证 GPU"></a>认证 GPU</h2><ul>
+<li><p>当 GPU 以机密模式启动且驱动程序正在加载时，会生成 GPU 证明报告。VM 内的用户可以随时请求 GPU 证明报告</p>
+<ul>
+<li>某些测量是静态的；其他是动态的，可以在启动后发生变化</li>
+</ul>
+</li>
+<li><p>用户可以通过多种方式请求 GPU 证明报告：</p>
+<ul>
+<li>NVIDIA 验证程序、NVIDIA-SMI、NVML API</li>
+</ul>
+</li>
+<li><p>NVIDIA 验证程序代表用户执行多项任务：</p>
+<ul>
+<li>从驱动程序获取 GPU 设备证书，该证书从 EEPROM 中的 IK Public 构建 </li>
+<li>通过 NVIDIA OCSP 服务验证 GPU 证书链</li>
+<li>从 GPU 请求证明报告并根据 GPU 证书链对其进行身份验证</li>
+<li>并将其与预期的“Golden RIM”结果进行比较，以生成正确 CC 配置的通过&#x2F;失败报告</li>
+</ul>
+</li>
+<li><p>GPU 证明遵守可信计算组 RIM 的黄金测量规范</p>
+<ul>
+<li>RIM &#x3D; 参考完整性清单</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>测量组</th>
+<th>细节</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>静态硬件配置</td>
+<td>在制造过程中配置的状态定义了设备的个性和身份</td>
+<td>负责安全设置的保险丝，例如调试启用、微代码撤销、CC 启用&#x2F;功能</td>
+</tr>
+<tr>
+<td>固件&#x2F;VBIOS</td>
+<td>软件组件闪存至 EEPROM</td>
+<td>● 从 VBIOS 加载的所有固件的签名及其执行环境<br/>● 设备初始化数据表</td>
+</tr>
+<tr>
+<td>驱动程序微码</td>
+<td>从驱动程序包加载的微代码</td>
+<td>安全区域等引擎的微代码签名和执行环境</td>
+</tr>
+<tr>
+<td>硬件初始化状态</td>
+<td>● 初始化由 VBIOS 和物理功能驱动程序在启动期间完成，主要由安全区域完成<br/>● 建立和维护 GPU TEE 所需的配置</td>
+<td>启动时初始化，如 PCI-E 防火墙、调试接口状态等</td>
+</tr>
+<tr>
+<td>运行时状态</td>
+<td>● 运行时由可信 GPU 软件配置的硬件状态<br/>● 根据 CC 配置编程的硬件和软件状态</td>
+<td>● CC policies（例如，生产与开发）<br/>● 硬件引擎的安全&#x2F;不安全模式<br/>● TEE 之间的资源隔离</td>
+</tr>
+<tr>
+<td>动态状态</td>
+<td>由驱动程序或其他软件编程的软件引擎状态</td>
+<td></td>
+</tr>
+<tr>
+<td>报告信息</td>
+<td>签名的纯文本元数据用于协助认证报告验证</td>
+<td>● CC VM 配置，如安全内存大小<br/>● 设备配置，如 SKU 类型、MIG 状态<br/>● SW 版本（驱动程序版本、VBIOS 版本）<br/>● 事件日志</td>
+</tr>
+</tbody></table>
+<h2 id="多卡机密计算"><a href="#多卡机密计算" class="headerlink" title="多卡机密计算"></a>多卡机密计算</h2><p>多 GPU 机密 GPU VM 实例中的所有 GPU 之间都需要 NVLINK</p>
+<ul>
+<li><strong>机密模式下不支持 PCIe P2P</strong></li>
+<li>CUDA API 和硬件防火墙不允许对等 GPU 内存进行直接指针取消引用</li>
+</ul>
+<p>GPU DMA 引擎配备了用于 NVLINK 对等传输的共享会话密钥 cudaMemcpyDeviceToDevice() 调用会导致通过反弹缓冲区进行加密传输</p>
+<ul>
+<li>源 GPU 中的 DMA 引擎加密数据，通过不受信任的 NVLINK 传输到目标 GPU 的不受保护的内存</li>
+<li>目标 GPU 中的 DMA 引擎将数据解密到受保护的 GPU 内存中</li>
+</ul>
+<p><img src="/img/HCC/hcc/8.png" srcset="/img/loading.gif" lazyload alt="P2P"></p>
+<h2 id="MIG"><a href="#MIG" class="headerlink" title="MIG"></a>MIG</h2><p>带有 vGPU 的 CC 可实现机密 MIG 分区：</p>
+<ul>
+<li>TEE &#x3D; 机密 GPU 实例 + 机密 VM</li>
+<li>每个 TEE 与虚拟机管理程序&#x2F;主机和其他租户隔离</li>
+<li>虚拟机管理程序创建 TEE 实例但无法访问状态</li>
+<li>CC&#x3D;On 时，MIG 分区之间有额外的硬件保护措施，可防止内存攻击</li>
+</ul>
+<p>MIG 上的机密计算基于：</p>
+<ul>
+<li>NVIDIA vGPU – 多个 VM 共享一个 NVIDIA GPU</li>
+<li>多实例 GPU (MIG) – 将 GPU 分区为实例</li>
+<li>SR-IOV – PCIE 设备公开 VF 以供 VM 直接控制</li>
+</ul>
+<p><img src="/img/HCC/hcc/9.png" srcset="/img/loading.gif" lazyload alt="MIG"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>片上信任根</li>
+<li>AES-GCM, 美国联邦密码模组安全标准 FIPS 140-3 2 级加密，DH 密钥交换</li>
+<li>NVIDIA RISCV 微控制器</li>
+<li>唯一身份密钥对</li>
+<li>设备证书</li>
+<li>硬件故障注入对策</li>
+<li>PKC 固件认证</li>
+<li>加密固件</li>
+<li>安全启动</li>
+<li>测量启动</li>
+<li>固件撤销</li>
+<li>用于安全 MIG 的 SR-IOV</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/07/AI/TTS/" title="ChatTTS">
+                        <span class="hidden-mobile">ChatTTS</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

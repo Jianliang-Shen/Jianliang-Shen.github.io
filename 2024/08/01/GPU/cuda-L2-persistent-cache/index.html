@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从 CUDA 11.0 开始，计算能力 8.0 及以上的设备能够影响 L2 缓存中数据的持久性。由于 L2 缓存位于片上，因此它有可能为全局内存提供更高的带宽和更低的延迟访问。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CUDA L2 持久缓存">
+<meta property="og:url" content="http://yoursite.com/2024/08/01/GPU/cuda-L2-persistent-cache/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="从 CUDA 11.0 开始，计算能力 8.0 及以上的设备能够影响 L2 缓存中数据的持久性。由于 L2 缓存位于片上，因此它有可能为全局内存提供更高的带宽和更低的延迟访问。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/gpu/L2-cache.png">
+<meta property="article:published_time" content="2024-08-01T20:11:58.000Z">
+<meta property="article:modified_time" content="2024-08-09T06:27:15.035Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Cache">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/gpu/L2-cache.png">
+  
+  
+  
+  <title>CUDA L2 持久缓存 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CUDA L2 持久缓存"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-01 20:11" pubdate>
+          2024年8月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CUDA L2 持久缓存</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>从 CUDA 11.0 开始，计算能力 8.0 及以上的设备能够影响 L2 缓存中数据的持久性。由于 L2 缓存位于片上，因此它有可能为全局内存提供更高的带宽和更低的延迟访问。</p>
+<span id="more"></span>
+
+<p>转载：<a href="https://leimao.github.io/blog/CUDA-L2-Persistent-Cache/">CUDA L2 Persistent Cache</a></p>
+<p>更多参考：</p>
+<ul>
+<li><a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#l2-persistence-example">L2 Persistence Example</a></li>
+<li><a href="https://forums.developer.nvidia.com/t/l2-persistence-clarifications/281031/2">L2 persistence clarifications</a></li>
+</ul>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在这篇博文中，我创建了一个 CUDA 示例来演示如何使用 L2 持久缓存来加速数据流量。</p>
+<h2 id="CUDA-L2-持久缓存"><a href="#CUDA-L2-持久缓存" class="headerlink" title="CUDA L2 持久缓存"></a>CUDA L2 持久缓存</h2><p>在此示例中，我将有一个具有某些值的小型常量缓冲区，用于重置大型流缓冲区。例如，如果常量缓冲区的大小为 4，值为[5, 2, 1, 4] ，并且要重置的大流缓冲区的大小为 100，则重置后，大流缓冲区的值为[5, 2, 1, 4, 5, 2, 1, 4, …] ，即重复常量缓冲区的值。</p>
+<p>由于流式缓冲区比常量缓冲区大得多，因此常量缓冲区中的每个元素比流式缓冲区的访问频率更高。从全局内存访问缓冲区非常昂贵。如果我们能够将频繁访问的常量缓冲区缓存在二级缓存中，则可以加速对经常访问的常量缓冲区的访问。</p>
+<h2 id="CUDA-数据重置"><a href="#CUDA-数据重置" class="headerlink" title="CUDA 数据重置"></a>CUDA 数据重置</h2><p>对于数据重置 CUDA 内核，我创建了一个在不使用持久 L2 缓存的情况下启动内核的基线，一个使用 3 MB 持久 L2 缓存启动内核但在恒定缓冲区大小超过 3 MB 时出现数据抖动的变体，以及一个优化变体它使用 3 MB 持久 L2 缓存启动内核，但消除了数据抖动。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-65ad56e5" role="button" aria-expanded="false" aria-controls="collapse-65ad56e5">
+        <div class="fold-arrow">▶</div>l2-persistent.cu
+      </div>
+      <div class="fold-collapse collapse" id="collapse-65ad56e5">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cassert&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdlib&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;functional&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iomanip&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cuda_runtime.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CHECK_CUDA_ERROR(val) check((val), #val, __FILE__, __LINE__)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">check</span><span class="hljs-params">(cudaError_t err, <span class="hljs-type">char</span> <span class="hljs-type">const</span>* <span class="hljs-type">const</span> func, <span class="hljs-type">char</span> <span class="hljs-type">const</span>* <span class="hljs-type">const</span> file,</span><br><span class="hljs-params">           <span class="hljs-type">int</span> <span class="hljs-type">const</span> line)</span><br>&#123;<br>    <span class="hljs-keyword">if</span> (err != cudaSuccess)<br>    &#123;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cerr</span> &lt;&lt; <span class="hljs-string">&quot;CUDA Runtime Error at: &quot;</span> &lt;&lt; file &lt;&lt; <span class="hljs-string">&quot;:&quot;</span> &lt;&lt; line<br>                  &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cerr</span> &lt;&lt; cudaGetErrorString(err) &lt;&lt; <span class="hljs-string">&quot; &quot;</span> &lt;&lt; func &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">exit</span>(EXIT_FAILURE);<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CHECK_LAST_CUDA_ERROR() checkLast(__FILE__, __LINE__)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">checkLast</span><span class="hljs-params">(<span class="hljs-type">char</span> <span class="hljs-type">const</span>* <span class="hljs-type">const</span> file, <span class="hljs-type">int</span> <span class="hljs-type">const</span> line)</span><br>&#123;<br>    cudaError_t <span class="hljs-type">const</span> err&#123;cudaGetLastError()&#125;;<br>    <span class="hljs-keyword">if</span> (err != cudaSuccess)<br>    &#123;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cerr</span> &lt;&lt; <span class="hljs-string">&quot;CUDA Runtime Error at: &quot;</span> &lt;&lt; file &lt;&lt; <span class="hljs-string">&quot;:&quot;</span> &lt;&lt; line<br>                  &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cerr</span> &lt;&lt; cudaGetErrorString(err) &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">exit</span>(EXIT_FAILURE);<br>    &#125;<br>&#125;<br><br>template &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">T</span>&gt;</span><br><span class="hljs-type">float</span> <span class="hljs-title function_">measure_performance</span><span class="hljs-params">(<span class="hljs-built_in">std</span>::function&lt;T(cudaStream_t)&gt; bound_function,</span><br><span class="hljs-params">                          cudaStream_t stream, <span class="hljs-type">int</span> num_repeats = <span class="hljs-number">100</span>,</span><br><span class="hljs-params">                          <span class="hljs-type">int</span> num_warmups = <span class="hljs-number">100</span>)</span><br>&#123;<br>    cudaEvent_t start, stop;<br>    <span class="hljs-type">float</span> time;<br><br>    CHECK_CUDA_ERROR(cudaEventCreate(&amp;start));<br>    CHECK_CUDA_ERROR(cudaEventCreate(&amp;stop));<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i&#123;<span class="hljs-number">0</span>&#125;; i &lt; num_warmups; ++i)<br>    &#123;<br>        bound_function(stream);<br>    &#125;<br><br>    CHECK_CUDA_ERROR(cudaStreamSynchronize(stream));<br><br>    CHECK_CUDA_ERROR(cudaEventRecord(start, stream));<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i&#123;<span class="hljs-number">0</span>&#125;; i &lt; num_repeats; ++i)<br>    &#123;<br>        bound_function(stream);<br>    &#125;<br>    CHECK_CUDA_ERROR(cudaEventRecord(stop, stream));<br>    CHECK_CUDA_ERROR(cudaEventSynchronize(stop));<br>    CHECK_LAST_CUDA_ERROR();<br>    CHECK_CUDA_ERROR(cudaEventElapsedTime(&amp;time, start, stop));<br>    CHECK_CUDA_ERROR(cudaEventDestroy(start));<br>    CHECK_CUDA_ERROR(cudaEventDestroy(stop));<br><br>    <span class="hljs-type">float</span> <span class="hljs-type">const</span> latency&#123;time / num_repeats&#125;;<br><br>    <span class="hljs-keyword">return</span> latency;<br>&#125;<br><br>__global__ <span class="hljs-type">void</span> <span class="hljs-title function_">reset_data</span><span class="hljs-params">(<span class="hljs-type">int</span>* data_streaming, <span class="hljs-type">int</span> <span class="hljs-type">const</span>* lut_persistent,</span><br><span class="hljs-params">                           <span class="hljs-type">size_t</span> data_streaming_size,</span><br><span class="hljs-params">                           <span class="hljs-type">size_t</span> lut_persistent_size)</span><br>&#123;<br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> idx&#123;blockDim.x * blockIdx.x + threadIdx.x&#125;;<br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> stride&#123;blockDim.x * gridDim.x&#125;;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i&#123;idx&#125;; i &lt; data_streaming_size; i += stride)<br>    &#123;<br>        data_streaming[i] = lut_persistent[i % lut_persistent_size];<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @brief Reset the data_streaming using lut_persistent so that the</span><br><span class="hljs-comment"> * data_streaming is lut_persistent repeatedly.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * @param data_streaming The data for reseting.</span><br><span class="hljs-comment"> * @param lut_persistent The values for resetting data_streaming.</span><br><span class="hljs-comment"> * @param data_streaming_size The size for data_streaming.</span><br><span class="hljs-comment"> * @param lut_persistent_size The size for lut_persistent.</span><br><span class="hljs-comment"> * @param stream The CUDA stream.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">launch_reset_data</span><span class="hljs-params">(<span class="hljs-type">int</span>* data_streaming, <span class="hljs-type">int</span> <span class="hljs-type">const</span>* lut_persistent,</span><br><span class="hljs-params">                       <span class="hljs-type">size_t</span> data_streaming_size, <span class="hljs-type">size_t</span> lut_persistent_size,</span><br><span class="hljs-params">                       cudaStream_t stream)</span><br>&#123;<br>    dim3 <span class="hljs-type">const</span> threads_per_block&#123;<span class="hljs-number">1024</span>&#125;;<br>    dim3 <span class="hljs-type">const</span> blocks_per_grid&#123;<span class="hljs-number">32</span>&#125;;<br>    reset_data&lt;&lt;&lt;blocks_per_grid, threads_per_block, <span class="hljs-number">0</span>, stream&gt;&gt;&gt;(<br>        data_streaming, lut_persistent, data_streaming_size,<br>        lut_persistent_size);<br>    CHECK_LAST_CUDA_ERROR();<br>&#125;<br><br><span class="hljs-type">bool</span> <span class="hljs-title function_">verify_data</span><span class="hljs-params">(<span class="hljs-type">int</span>* data, <span class="hljs-type">int</span> n, <span class="hljs-type">size_t</span> size)</span><br>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i&#123;<span class="hljs-number">0</span>&#125;; i &lt; size; ++i)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (data[i] != i % n)<br>        &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>* argv[])</span><br>&#123;<br>    <span class="hljs-type">size_t</span> num_megabytes_persistent_data&#123;<span class="hljs-number">3</span>&#125;;<br>    <span class="hljs-keyword">if</span> (argc == <span class="hljs-number">2</span>)<br>    &#123;<br>        num_megabytes_persistent_data = <span class="hljs-built_in">std</span>::atoi(argv[<span class="hljs-number">1</span>]);<br>    &#125;<br><br>    <span class="hljs-type">constexpr</span> <span class="hljs-type">int</span> <span class="hljs-type">const</span> num_repeats&#123;<span class="hljs-number">100</span>&#125;;<br>    <span class="hljs-type">constexpr</span> <span class="hljs-type">int</span> <span class="hljs-type">const</span> num_warmups&#123;<span class="hljs-number">10</span>&#125;;<br><br>    cudaDeviceProp device_prop&#123;&#125;;<br>    <span class="hljs-type">int</span> current_device&#123;<span class="hljs-number">0</span>&#125;;<br>    CHECK_CUDA_ERROR(cudaGetDevice(&amp;current_device));<br>    CHECK_CUDA_ERROR(cudaGetDeviceProperties(&amp;device_prop, current_device));<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;GPU: &quot;</span> &lt;&lt; device_prop.name &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;L2 Cache Size: &quot;</span> &lt;&lt; device_prop.l2CacheSize / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span><br>              &lt;&lt; <span class="hljs-string">&quot; MB&quot;</span> &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Max Persistent L2 Cache Size: &quot;</span><br>              &lt;&lt; device_prop.persistingL2CacheMaxSize / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span> &lt;&lt; <span class="hljs-string">&quot; MB&quot;</span><br>              &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br><br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> num_megabytes_streaming_data&#123;<span class="hljs-number">1024</span>&#125;;<br>    <span class="hljs-keyword">if</span> (num_megabytes_persistent_data &gt; num_megabytes_streaming_data)<br>    &#123;<br>        <span class="hljs-built_in">std</span>::runtime_error(<br>            <span class="hljs-string">&quot;Try setting persistent data size smaller than 1024 MB.&quot;</span>);<br>    &#125;<br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> <span class="hljs-title function_">size_persistent</span><span class="hljs-params">(num_megabytes_persistent_data * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> /</span><br><span class="hljs-params">                                 <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>))</span>;<br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> <span class="hljs-title function_">size_streaming</span><span class="hljs-params">(num_megabytes_streaming_data * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> /</span><br><span class="hljs-params">                                <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>))</span>;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Persistent Data Size: &quot;</span> &lt;&lt; num_megabytes_persistent_data<br>              &lt;&lt; <span class="hljs-string">&quot; MB&quot;</span> &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Steaming Data Size: &quot;</span> &lt;&lt; num_megabytes_streaming_data &lt;&lt; <span class="hljs-string">&quot; MB&quot;</span><br>              &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br>    cudaStream_t stream;<br><br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title function_">lut_persistent_vec</span><span class="hljs-params">(size_persistent, <span class="hljs-number">0</span>)</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i&#123;<span class="hljs-number">0</span>&#125;; i &lt; lut_persistent_vec.size(); ++i)<br>    &#123;<br>        lut_persistent_vec[i] = i;<br>    &#125;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title function_">data_streaming_vec</span><span class="hljs-params">(size_streaming, <span class="hljs-number">0</span>)</span>;<br><br>    <span class="hljs-type">int</span>* d_lut_persistent;<br>    <span class="hljs-type">int</span>* d_data_streaming;<br>    <span class="hljs-type">int</span>* h_lut_persistent = lut_persistent_vec.data();<br>    <span class="hljs-type">int</span>* h_data_streaming = data_streaming_vec.data();<br><br>    CHECK_CUDA_ERROR(<br>        cudaMalloc(&amp;d_lut_persistent, size_persistent * <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>)));<br>    CHECK_CUDA_ERROR(<br>        cudaMalloc(&amp;d_data_streaming, size_streaming * <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>)));<br>    CHECK_CUDA_ERROR(cudaStreamCreate(&amp;stream));<br>    CHECK_CUDA_ERROR(cudaMemcpy(d_lut_persistent, h_lut_persistent,<br>                                size_persistent * <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>),<br>                                cudaMemcpyHostToDevice));<br><br>    launch_reset_data(d_data_streaming, d_lut_persistent, size_streaming,<br>                      size_persistent, stream);<br>    CHECK_CUDA_ERROR(cudaStreamSynchronize(stream));<br>    CHECK_CUDA_ERROR(cudaMemcpy(h_data_streaming, d_data_streaming,<br>                                size_streaming * <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>),<br>                                cudaMemcpyDeviceToHost));<br>    assert(verify_data(h_data_streaming, size_persistent, size_streaming));<br><br>    <span class="hljs-built_in">std</span>::function&lt;<span class="hljs-type">void</span>(cudaStream_t)&gt; <span class="hljs-type">const</span> function&#123;<br>        <span class="hljs-built_in">std</span>::bind(launch_reset_data, d_data_streaming, d_lut_persistent,<br>                  size_streaming, size_persistent, <span class="hljs-built_in">std</span>::placeholders::_1)&#125;;<br>    <span class="hljs-type">float</span> <span class="hljs-type">const</span> latency&#123;<br>        measure_performance(function, stream, num_repeats, num_warmups)&#125;;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">std</span>::fixed &lt;&lt; <span class="hljs-built_in">std</span>::setprecision(<span class="hljs-number">3</span>)<br>              &lt;&lt; <span class="hljs-string">&quot;Latency Without Using Persistent L2 Cache: &quot;</span> &lt;&lt; latency<br>              &lt;&lt; <span class="hljs-string">&quot; ms&quot;</span> &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br><br>    <span class="hljs-comment">// Start to use persistent cache.</span><br>    cudaStream_t stream_persistent_cache;<br>    <span class="hljs-type">size_t</span> <span class="hljs-type">const</span> num_megabytes_persistent_cache&#123;<span class="hljs-number">3</span>&#125;;<br>    CHECK_CUDA_ERROR(cudaStreamCreate(&amp;stream_persistent_cache));<br><br>    CHECK_CUDA_ERROR(<br>        cudaDeviceSetLimit(cudaLimitPersistingL2CacheSize,<br>                           num_megabytes_persistent_cache * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>));<br><br>    cudaStreamAttrValue stream_attribute_thrashing;<br>    stream_attribute_thrashing.accessPolicyWindow.base_ptr =<br>        reinterpret_cast&lt;<span class="hljs-type">void</span>*&gt;(d_lut_persistent);<br>    stream_attribute_thrashing.accessPolicyWindow.num_bytes =<br>        num_megabytes_persistent_data * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>;<br>    stream_attribute_thrashing.accessPolicyWindow.hitRatio = <span class="hljs-number">1.0</span>;<br>    stream_attribute_thrashing.accessPolicyWindow.hitProp =<br>        cudaAccessPropertyPersisting;<br>    stream_attribute_thrashing.accessPolicyWindow.missProp =<br>        cudaAccessPropertyStreaming;<br><br>    CHECK_CUDA_ERROR(cudaStreamSetAttribute(<br>        stream_persistent_cache, cudaStreamAttributeAccessPolicyWindow,<br>        &amp;stream_attribute_thrashing));<br><br>    <span class="hljs-type">float</span> <span class="hljs-type">const</span> latency_persistent_cache_thrashing&#123;measure_performance(<br>        function, stream_persistent_cache, num_repeats, num_warmups)&#125;;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">std</span>::fixed &lt;&lt; <span class="hljs-built_in">std</span>::setprecision(<span class="hljs-number">3</span>) &lt;&lt; <span class="hljs-string">&quot;Latency With Using &quot;</span><br>              &lt;&lt; num_megabytes_persistent_cache<br>              &lt;&lt; <span class="hljs-string">&quot; MB Persistent L2 Cache (Potentially Thrashing): &quot;</span><br>              &lt;&lt; latency_persistent_cache_thrashing &lt;&lt; <span class="hljs-string">&quot; ms&quot;</span> &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br><br>    cudaStreamAttrValue stream_attribute_non_thrashing&#123;<br>        stream_attribute_thrashing&#125;;<br>    stream_attribute_non_thrashing.accessPolicyWindow.hitRatio =<br>        <span class="hljs-built_in">std</span>::min(static_cast&lt;<span class="hljs-type">double</span>&gt;(num_megabytes_persistent_cache) /<br>                     num_megabytes_persistent_data,<br>                 <span class="hljs-number">1.0</span>);<br>    CHECK_CUDA_ERROR(cudaStreamSetAttribute(<br>        stream_persistent_cache, cudaStreamAttributeAccessPolicyWindow,<br>        &amp;stream_attribute_non_thrashing));<br><br>    <span class="hljs-type">float</span> <span class="hljs-type">const</span> latency_persistent_cache_non_thrashing&#123;measure_performance(<br>        function, stream_persistent_cache, num_repeats, num_warmups)&#125;;<br>    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-built_in">std</span>::fixed &lt;&lt; <span class="hljs-built_in">std</span>::setprecision(<span class="hljs-number">3</span>) &lt;&lt; <span class="hljs-string">&quot;Latency With Using &quot;</span><br>              &lt;&lt; num_megabytes_persistent_cache<br>              &lt;&lt; <span class="hljs-string">&quot; MB Persistent L2 Cache (Non-Thrashing): &quot;</span><br>              &lt;&lt; latency_persistent_cache_non_thrashing &lt;&lt; <span class="hljs-string">&quot; ms&quot;</span> &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;<br><br>    CHECK_CUDA_ERROR(cudaFree(d_lut_persistent));<br>    CHECK_CUDA_ERROR(cudaFree(d_data_streaming));<br>    CHECK_CUDA_ERROR(cudaStreamDestroy(stream));<br>    CHECK_CUDA_ERROR(cudaStreamDestroy(stream_persistent_cache));<br>&#125;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p>为了避免数据抖动， <code>accessPolicyWindow.hitRatio</code>和<code>accessPolicyWindow.num_bytes</code>的乘积应小于或等于<code>cudaLimitPersistingL2CacheSize</code>。<code>accessPolicyWindow.hitRatio</code>参数可用于指定接收<code>accessPolicyWindow.hitProp</code>属性的访问的比例，该属性通常是<code>cudaAccessPropertyPersisting</code>。<code>accessPolicyWindow.num_bytes</code>参数可用于指定访问策略窗口覆盖的字节数，通常是持久数据的大小。</p>
+<p>实际上，我们可以将<code>accessPolicyWindow.hitRatio</code>设置为持久二级缓存大小与持久数据大小的比率。例如，如果持久二级缓存大小为 3 MB，持久数据大小为 4 MB，我们可以将<code>accessPolicyWindow.hitRatio</code>设置为 3 &#x2F; 4 &#x3D; 0.75。</p>
+<h2 id="运行-CUDA-数据重置"><a href="#运行-CUDA-数据重置" class="headerlink" title="运行 CUDA 数据重置"></a>运行 CUDA 数据重置</h2><p>我们可以在 NVIDIA Ampere GPU 上构建并运行该示例。就我而言，我使用了 NVIDIA RTX 3090 GPU。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ nvcc l2-persistent.cu -o l2-persistent -std=c++14 --gpu-architecture=compute_80<br>$ ./l2-persistent<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 3 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 3.071 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 2.436 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 2.443 ms<br></code></pre></td></tr></table></figure>
+
+<p>我们可以看到，当持久数据大小为 3 MB、持久二级缓存为 3 MB 时，应用程序的性能提高了大约 20%。</p>
+<h2 id="Benchmarking"><a href="#Benchmarking" class="headerlink" title="Benchmarking"></a>Benchmarking</h2><p>我们还可以通过改变持久数据大小来运行一些小型基准测试。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-e064c6af" role="button" aria-expanded="false" aria-controls="collapse-e064c6af">
+        <div class="fold-arrow">▶</div>test log
+      </div>
+      <div class="fold-collapse collapse" id="collapse-e064c6af">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ./l2-persistent 1<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 1 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 1.754 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 1.685 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 1.674 ms<br><br>$ ./l2-persistent 2<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 2 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 2.158 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 1.997 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 2.002 ms<br><br>$ ./l2-persistent 3<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 3 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 3.095 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 2.510 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 2.533 ms<br><br>$ ./l2-persistent 4<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 4 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 3.906 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 3.632 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 3.706 ms<br><br>$ ./l2-persistent 5<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 5 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 4.120 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 4.554 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 3.920 ms<br><br>$ ./l2-persistent 6<br>GPU: NVIDIA GeForce RTX 3090<br>L2 Cache Size: 6 MB<br>Max Persistent L2 Cache Size: 4 MB<br>Persistent Data Size: 6 MB<br>Steaming Data Size: 1024 MB<br>Latency Without Using Persistent L2 Cache: 4.194 ms<br>Latency With Using 3 MB Persistent L2 Cache (Potentially Thrashing): 4.583 ms<br>Latency With Using 3 MB Persistent L2 Cache (Non-Thrashing): 4.255 ms<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p>我们可以看到，即使持久数据大小大于持久二级缓存，使用无抖动的持久二级缓存的延迟通常也不会比基线更差。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p>Q: 持久缓存 VS 共享内存？</p>
+<p>持久缓存与共享内存不同。持久缓存对GPU中的所有线程都可见，而共享内存仅对同一块中的线程可见。对于经常访问的小数据，我们还可以使用共享内存来加速数据访问。但是，每个线程块的共享内存限制为 48 到 96 KB，具体取决于 GPU，而持久缓存则限制为每个 GPU 几 MB。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.nvidia.com/cuda/archive/11.7.0/cuda-c-best-practices-guide/index.html#L2-cache-window">L2 Cache Window</a><br><a href="https://docs.nvidia.com/cuda/archive/11.7.0/cuda-c-best-practices-guide/index.html#L2-cache-window">Function Binding and Performance Measurement</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/CUDA/" class="print-no-link">#CUDA</a>
+      
+        <a href="/tags/Cache/" class="print-no-link">#Cache</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/01/Security/AMD-CC/" title="机密计算: AMD 解决方案">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机密计算: AMD 解决方案</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/31/news/" title="科技杂谈">
+                        <span class="hidden-mobile">科技杂谈</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

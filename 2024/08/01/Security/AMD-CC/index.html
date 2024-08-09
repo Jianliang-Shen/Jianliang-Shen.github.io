@@ -1,0 +1,903 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="转载：AMD机密计算解决方案分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: AMD 解决方案">
+<meta property="og:url" content="http://yoursite.com/2024/08/01/Security/AMD-CC/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="转载：AMD机密计算解决方案分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/cc/amd/amd-cc-index.jpeg">
+<meta property="article:published_time" content="2024-08-01T20:29:31.000Z">
+<meta property="article:modified_time" content="2024-08-09T06:27:15.043Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/cc/amd/amd-cc-index.jpeg">
+  
+  
+  
+  <title>机密计算: AMD 解决方案 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: AMD 解决方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-01 20:29" pubdate>
+          2024年8月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: AMD 解决方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>转载：<a href="https://blog.csdn.net/huang987246510/article/details/135707747">AMD机密计算解决方案分析</a></p>
+<span id="more"></span>
+
+<p>更多：</p>
+<ul>
+<li><a href="https://openanolis.cn/sig/Hygon-Arch">龙蜥社区 Hygon Arch（需要QQ浏览器或者手机百度浏览器打开）</a></li>
+<li><a href="https://github.com/virtee/sevctl"><strong>Administrative utility for AMD SEV – VirTee&#x2F;SevCtl Github</strong></a></li>
+<li><a href="https://gitee.com/anolis/hygon-devkit">Hygon hag</a></li>
+<li><a href="https://blog.csdn.net/huang987246510/article/details/135487665">AMD SEV基本原理</a></li>
+<li><a href="https://blog.csdn.net/qq_43543209/article/details/135652011">【TEE】【AMD SEV内存加密】 白皮书</a></li>
+<li><a href="https://blog.csdn.net/qq_43543209/article/details/135675421">【TEE】AMD SEV- SNP和Intel TDX的概述</a></li>
+<li><a href="https://www.mindonmap.com/zh/watermark-remover-online/#">水印去除</a></li>
+</ul>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><p>AMD SEV机密计算场景下，Hypervisor的职能稍有改变，可以概括为以下三点：</p>
+<ul>
+<li>管理主机计算资源管理</li>
+<li>代理可信组件间通信</li>
+<li>准备机密计算环境</li>
+</ul>
+<p>对于第一点，QEMU&#x2F;KVM复用已有的逻辑，无需修改，对于二、三点，QEMU&#x2F;KVM主要基于SEV API实现。具体实现时，KVM需要封装SEV API并对QEMU暴露IOCTL命令字，QEMU按照SEV API定义的流程实现对机密虚机的生命周期管理逻辑。</p>
+<h2 id="KVM"><a href="#KVM" class="headerlink" title="KVM"></a>KVM</h2><p>分析KVM对QEMU提供的IOCTL命令字涉及的数据结构</p>
+<p><img src="/img/cc/amd/amd-cc-1.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="虚机管理命令"><a href="#虚机管理命令" class="headerlink" title="虚机管理命令"></a>虚机管理命令</h3><p>虚机管理命令字提供与虚机相关操作，因此它打开的是<code>/dev/kvm</code>字符设备，通过<code>KVM_CREATE_DEVICE</code>创建虚机关联的fd，再通过<code>KVM_MEMORY_ENCRYPT_OP</code>命令字下发命令，所有的虚机管理命令作为<code>KVM_MEMORY_ENCRYPT_OP</code>命令字的参数，通过<code>id</code>字段的不同来区分，其命令格式如下：</p>
+<h4 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h4><p>linux&#x2F;arch&#x2F;x86&#x2F;include&#x2F;uapi&#x2F;asm&#x2F;kvm.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kvm_sev_cmd</span> &#123;</span><br>    __u32 id;   <span class="hljs-comment">/* sev cmd ID，取值为sev_cmd_id */</span><br>    __u64 data;   <span class="hljs-comment">/* 每个sev cmd对应的参数 */</span><br>    __u32 error;<br>    __u32 sev_fd; <span class="hljs-comment">/* 字符设备/dev/sev对应的fd */</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><code>kvm_sev_cmd</code>结构体中<code>id</code>字段可选的命令集合。</p>
+<h4 id="命令集合"><a href="#命令集合" class="headerlink" title="命令集合"></a>命令集合</h4><p>linux&#x2F;arch&#x2F;x86&#x2F;include&#x2F;uapi&#x2F;asm&#x2F;kvm.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* Secure Encrypted Virtualization command */</span><br><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">sev_cmd_id</span> &#123;</span><br>    <span class="hljs-comment">/* Guest initialization commands */</span><br>    KVM_SEV_INIT = <span class="hljs-number">0</span>,<br>    KVM_SEV_ES_INIT,<br>    <span class="hljs-comment">/* Guest launch commands */</span><br>    KVM_SEV_LAUNCH_START, <span class="hljs-comment">/* 启动虚机命令，通知PSP，Guest owner与PSP建立会话 */</span><br>    KVM_SEV_LAUNCH_UPDATE_DATA, <span class="hljs-comment">/* 更新启动初始化时的虚机内存数据，通知PSP */</span><br>    KVM_SEV_LAUNCH_UPDATE_VMSA,<br>    KVM_SEV_LAUNCH_SECRET, <span class="hljs-comment">/* 加载虚机密钥密文到虚机内存，通知PSP进行密钥注入 */</span><br>    KVM_SEV_LAUNCH_MEASURE, <span class="hljs-comment">/* 请求PSP计算度量值 */</span><br>    KVM_SEV_LAUNCH_FINISH,<br>    <span class="hljs-comment">/* Guest migration commands (outgoing) */</span><br>    KVM_SEV_SEND_START,<br>    KVM_SEV_SEND_UPDATE_DATA,<br>    KVM_SEV_SEND_UPDATE_VMSA,<br>    KVM_SEV_SEND_FINISH,<br>    <span class="hljs-comment">/* Guest migration commands (incoming) */</span><br>    KVM_SEV_RECEIVE_START,<br>    KVM_SEV_RECEIVE_UPDATE_DATA,<br>    KVM_SEV_RECEIVE_UPDATE_VMSA,<br>    KVM_SEV_RECEIVE_FINISH,<br>    <span class="hljs-comment">/* Guest status and debug commands */</span><br>    KVM_SEV_GUEST_STATUS,<br>    KVM_SEV_DBG_DECRYPT,<br>    KVM_SEV_DBG_ENCRYPT,<br>    <span class="hljs-comment">/* Guest certificates commands */</span><br>    KVM_SEV_CERT_EXPORT,<br>    <span class="hljs-comment">/* Attestation report */</span><br>    KVM_SEV_GET_ATTESTATION_REPORT,<br>    <span class="hljs-comment">/* Guest Migration Extension */</span><br>    KVM_SEV_SEND_CANCEL,<br><br>    KVM_SEV_NR_MAX,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h4 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数"></a>命令参数</h4><p>虚机管理命令目的不同，因此每条命令有其对应的参数，以<code>KVM_SEV_LAUNCH_START</code>为例，其参数格式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kvm_sev_launch_start</span> &#123;</span><br>    __u32 handle;<br>    __u32 policy;  <span class="hljs-comment">/* 启动机密虚机时的策略 */</span><br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * 机密环境准备过程中，涉及到Guest owner与PSP间的数据传输，因此需要加密</span><br><span class="hljs-comment">     * 加密密钥通过PDH密钥协商协议得到，该协议需要通信双方提供各自的PDH证书</span><br><span class="hljs-comment">     * 让对方计算共享密钥，这里的dh就是Guest owner提供的PDH证书，目的是让</span><br><span class="hljs-comment">     * PSP计算得到通信共享密钥</span><br><span class="hljs-comment">     */</span><br>    __u64 dh_uaddr;<br>    __u32 dh_len;<br>    __u64 session_uaddr;<br>    __u32 session_len;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="平台管理命令字"><a href="#平台管理命令字" class="headerlink" title="平台管理命令字"></a>平台管理命令字</h3><h4 id="命令格式-1"><a href="#命令格式-1" class="headerlink" title="命令格式"></a>命令格式</h4><p>平台管理命令主要是向PSP发送平台管理相关命令，与虚机并无关系，它打开的是<code>/dev/sev</code>字符设备并直接下发平台管理命令字，其格式如下：</p>
+<p>linux&#x2F;include&#x2F;uapi&#x2F;linux&#x2F;psp-sev.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * struct sev_issue_cmd - SEV ioctl parameters</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * @cmd: SEV commands to execute</span><br><span class="hljs-comment"> * @opaque: pointer to the command structure</span><br><span class="hljs-comment"> * @error: SEV FW return code on failure</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sev_issue_cmd</span> &#123;</span><br>    __u32 cmd;              <span class="hljs-comment">/* In */</span><br>    __u64 data;             <span class="hljs-comment">/* In */</span><br>    __u32 error;            <span class="hljs-comment">/* Out */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="命令集合-1"><a href="#命令集合-1" class="headerlink" title="命令集合"></a>命令集合</h4><p><code>sev_issue_cmd</code>结构体中cmd字段可选的命令集合</p>
+<p>linux&#x2F;include&#x2F;uapi&#x2F;linux&#x2F;psp-sev.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * SEV platform commands</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">enum</span> &#123;</span><br>    SEV_FACTORY_RESET = <span class="hljs-number">0</span>,<br>    SEV_PLATFORM_STATUS, <span class="hljs-comment">/* 查询PSP状态 */</span><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * 请求PSP重新生成PEK签发的所有证书，包括PEK公私钥对，PEK证书，PDH公私钥对，* PDH证书，OCA公私钥对，OCA证书</span><br><span class="hljs-comment">     */</span><br>    SEV_PEK_GEN, <br>     <span class="hljs-comment">/* 请求PSP生成PEK公钥及其它用户制作PEK证书的信息 */</span><br>    SEV_PEK_CSR,<br>    <span class="hljs-comment">/* 请求PSP重新生成PDH，该PDH的公钥信息被PEK私钥签名，由PEK签发 */</span><br>    SEV_PDH_GEN,<br>    <span class="hljs-comment">/* 导出PDH公钥及PEK对公钥的签名，用于Gueste owner对PDH的可信验证 */</span><br>    SEV_PDH_CERT_EXPORT,<br>    <span class="hljs-comment">/* 往PSP导入PEK证书，声明PSP的Platform owner */</span><br>    SEV_PEK_CERT_IMPORT,<br>    <span class="hljs-comment">/* 查询CPU ID，在AMD CA是，此ID将作为CEK下载的输入 */</span><br>    SEV_GET_ID, <span class="hljs-comment">/* This command is deprecated, use SEV_GET_ID2 */</span><br>    SEV_GET_ID2,<br><br>    SEV_MAX,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h4 id="命令参数-1"><a href="#命令参数-1" class="headerlink" title="命令参数"></a>命令参数</h4><p>每个平台命令都有其对应的参数，以<code>PLATFORM_STATUS</code>为例，在下发<code>PLATFORM_STATUS</code>时会传入结构体<code>sev_user_data_status</code>，用于接收PSP的输出</p>
+<p>linux&#x2F;include&#x2F;uapi&#x2F;linux&#x2F;psp-sev.h:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * struct sev_user_data_status - PLATFORM_STATUS command parameters</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * @major: major API version</span><br><span class="hljs-comment"> * @minor: minor API version</span><br><span class="hljs-comment"> * @state: platform state</span><br><span class="hljs-comment"> * @flags: platform config flags</span><br><span class="hljs-comment"> * @build: firmware build id for API version</span><br><span class="hljs-comment"> * @guest_count: number of active guests</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sev_user_data_status</span> &#123;</span><br>    <span class="hljs-comment">/* PSP固件版本号 */</span><br>    __u8 api_major;         <span class="hljs-comment">/* Out */</span><br>    __u8 api_minor;         <span class="hljs-comment">/* Out */</span><br>    <span class="hljs-comment">/* PSP状态 */</span><br>    __u8 state;             <span class="hljs-comment">/* Out */</span><br>    __u32 flags;            <span class="hljs-comment">/* Out */</span><br>    __u8 build;             <span class="hljs-comment">/* Out */</span><br>    __u32 guest_count;      <span class="hljs-comment">/* Out */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="QEMU"><a href="#QEMU" class="headerlink" title="QEMU"></a>QEMU</h2><h3 id="SevState"><a href="#SevState" class="headerlink" title="SevState"></a>SevState</h3><p><code>SevState</code> 描述机密虚机在启动或者迁移过程中的整个状态，当虚机状态变为running时，Hypervisor可以切换CPU模式进入Guest态。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c">##<br># @SevState:<br>#<br># An enumeration of SEV state information used during @query-sev.<br># SEV机密虚机默认状态<br># @uninit: The guest is uninitialized.<br># QEMU完成初始化工作，API LAUNCH UPDATE调用完成后更新为launch-update状态<br># @launch-update: The guest is currently being launched; plaintext data and<br><span class="hljs-meta">#                 register state is being imported.</span><br># QEMU获取度量值完成后，等待密钥注入的状态<br># @launch-secret: The guest is currently being launched; ciphertext data<br><span class="hljs-meta">#                 is being imported.</span><br># QEMU密钥注入完成，API LAUNCH FINISH调用完成后更新为running状态<br># @running: The guest is fully launched or migrated in.<br>#<br># @send-update: The guest is currently being migrated out to another machine.<br>#<br># @receive-update: The guest is currently being migrated from another machine.<br>#<br># Since: <span class="hljs-number">2.12</span><br>##<br>&#123; <span class="hljs-string">&#x27;enum&#x27;</span>: <span class="hljs-string">&#x27;SevState&#x27;</span>,<br>  <span class="hljs-string">&#x27;data&#x27;</span>: [<span class="hljs-string">&#x27;uninit&#x27;</span>, <span class="hljs-string">&#x27;launch-update&#x27;</span>, <span class="hljs-string">&#x27;launch-secret&#x27;</span>, <span class="hljs-string">&#x27;running&#x27;</span>,<br>           <span class="hljs-string">&#x27;send-update&#x27;</span>, <span class="hljs-string">&#x27;receive-update&#x27;</span> ],<br>  <span class="hljs-string">&#x27;if&#x27;</span>: <span class="hljs-string">&#x27;TARGET_I386&#x27;</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="SevGuestState"><a href="#SevGuestState" class="headerlink" title="SevGuestState"></a>SevGuestState</h3><p>SevGuestState主要描述SEV机密虚机的配置参数和运行时状态。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * SevGuestState:</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * The SevGuestState object is used for creating and managing a SEV</span><br><span class="hljs-comment"> * guest.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * # $QEMU \</span><br><span class="hljs-comment"> *         -object sev-guest,id=sev0 \</span><br><span class="hljs-comment"> *         -machine ...,memory-encryption=sev0</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">SevGuestState</span> &#123;</span><br>    ConfidentialGuestSupport parent_obj;<br><br>    <span class="hljs-comment">/* configuration parameters */</span><br>    <span class="hljs-type">char</span> *sev_device;<br>    <span class="hljs-type">uint32_t</span> policy;  <span class="hljs-comment">/* SEV API 中定义的虚机启动策略 */</span><br>    <span class="hljs-comment">/* 用于协商Guest owner与PSP通信密钥的pdh证书，Guest owner提供 */</span><br>    <span class="hljs-type">char</span> *dh_cert_file;<br>    <span class="hljs-comment">/* 通信会话文件，Guest owner提供 */</span><br>    <span class="hljs-type">char</span> *session_file;<br>    <span class="hljs-comment">/* 使能内存加密的C-bit页表项位置，Guest owner通过CPUID获取后配置 */</span><br>    <span class="hljs-type">uint32_t</span> cbitpos;<br>    <span class="hljs-comment">/* 使能内存加密后减少的物理地址位宽，Guest owner通过CPUID获取后配置 */</span><br>    <span class="hljs-type">uint32_t</span> reduced_phys_bits;<br>    <span class="hljs-comment">/* 指示QEMU是否需要将kernel的hash值填入OVMF 的GUIDed table */</span><br>    <span class="hljs-type">bool</span> kernel_hashes;<br><br>    <span class="hljs-comment">/* runtime state */</span><br>    <span class="hljs-type">uint32_t</span> handle;<br>    <span class="hljs-comment">/* SEV API固件的版本号信息 */</span><br>    <span class="hljs-type">uint8_t</span> api_major;<br>    <span class="hljs-type">uint8_t</span> api_minor;<br>    <span class="hljs-comment">/* TBD */</span><br>    <span class="hljs-type">uint8_t</span> build_id;<br>    <span class="hljs-comment">/* 打开/dev/sev字符设备获得的fd */</span><br>    <span class="hljs-type">int</span> sev_fd;<br>    SevState state;<br>    gchar *measurement;<br>    <br>    <span class="hljs-type">uint32_t</span> reset_cs;<br>    <span class="hljs-type">uint32_t</span> reset_ip;<br>    <span class="hljs-type">bool</span> reset_data_valid;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h1 id="虚机启动流程"><a href="#虚机启动流程" class="headerlink" title="虚机启动流程"></a>虚机启动流程</h1><h2 id="可信认证"><a href="#可信认证" class="headerlink" title="可信认证"></a>可信认证</h2><p><img src="/img/cc/amd/amd-cc-2.png" srcset="/img/loading.gif" lazyload alt="AMD 证书链"></p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p><strong>机密虚机与普通虚机最大的不同是机密虚机所有者即Guest owner假定Hypervisor不可信，因此机密虚机的整个生命周期都不能被Hypervisor监听或篡改，保证机密虚机一定是Guest owner期望的虚机。</strong></p>
+<p>在启动流程中，Guest owner首先要做的就是对安全处理器PSP做可信认证，确认安全处理器一定是可信的。Guest owner对PSP的校验就是请求（通过<code>PDH_CERT_EXPORT</code>）其导出可以证明自己身份的证书，这些证书包括<strong>CEK证书、PEK证书、OCA证书</strong>以及计算共享密钥用的PDH。Guest owner拿到证书后，做以下处理：</p>
+<ul>
+<li>对于<strong>CEK证书</strong>，首先获取签发CEK证书的<strong>CA即ASK</strong>，使用ASK的公钥解密CEK证书得到CEK公钥的明文，重新计算明文摘要并对比CEK证书的摘要，如果两者相等，说明<strong>CEK证书</strong>确实是ASK签发的。因为<strong>ASK签发CEK</strong>的实际动作就是使用ASK的私钥对CEK的公钥进行加密存放到证书中，而ASK的私钥只有ASK可以访问，如果CEK公钥由非ASK的私钥进行加密，那么使用ASK的公钥对CEK公钥解密后，得到的明文摘要一定与证书中的摘要不同。</li>
+<li>对于<strong>PEK证书</strong>，获取<strong>PEK证书的CA即OCA</strong>，使用OCA的公钥解密PEK证书得到PEK公钥明文，重新计算名为摘要并对于PEK证书上的摘要，相等说明PEK证书是OCA签发的。检查OCA是否是自签的证书，如果OCA是自签证书，不做进一步处理，如果OCA是它签证书，找到签发OCA的CA，下载其公钥再对OCA进行验签，整个流程与其它证书验签类似。</li>
+<li>对于<strong>PDH证书</strong>，获取签发PDH证书的CA即PEK，使用上述类似流程对其进行验签。</li>
+</ul>
+<p>上述所有验签通过后，Guest owner认为PSP就是可信的，继而可以让Hypervisor开始启动虚机，整个流程示意图如下：</p>
+<p><img src="/img/cc/amd/amd-cc-3.png" srcset="/img/loading.gif" lazyload alt="证书认证"></p>
+<h3 id="具体流程"><a href="#具体流程" class="headerlink" title="具体流程"></a>具体流程</h3><p>由于可信认证涉及的角色是Guest owner和PSP，Hypervisor因此不需要介入。PSP的可信认证工具通常由CPU厂商提供，也就是AMD和Hygon（基于AMD架构的国产CPU），我们简单介绍两者的工具：</p>
+<h4 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h4><h5 id="AMD-SevCTL"><a href="#AMD-SevCTL" class="headerlink" title="AMD SevCTL"></a>AMD SevCTL</h5><ol>
+<li><p>服务器出厂后，第一次启动时还没有OCA，通过以下命令可以创建一个自签名的OCA：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sevctl generate oca.cert oca.key<br>sevctl provision oca.cert oca.key<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>OCA创建完成后，通过以下命令验证当前服务器中的PSP是否可信，该工具会根据CPU ID从AMD官网查询对应的CEK证书并导入到PSP，最后做验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sevctl verify<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>创建完自签OCA证书并完成CEK证书导入后，可以通过export命令导出PSP的整个证书链供Guest owner验签</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sevctl <span class="hljs-built_in">export</span> --full /opt/sev/cert_chain.cert<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="Hygon-hag"><a href="#Hygon-hag" class="headerlink" title="Hygon hag"></a>Hygon hag</h5><ol>
+<li><p>服务器出厂后第一次上电，需要导入通用的安全证书，首先下载hygon机密计算工具包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /opt/<br>git <span class="hljs-built_in">clone</span> https://gitee.com/anolis/hygon-devkit.git<br><span class="hljs-built_in">mv</span> hygon-devkit hygon<br><span class="hljs-built_in">cp</span> /opt/hygon/bin/hag /usr/bin<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>在线导入通用的安全证书</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag general hgsc_import<br></code></pre></td></tr></table></figure>
+
+<p>也可以离线导入通用的安全证书</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag general get_id           /* 获取PSP芯片ID */<br>hag general hgsc_version     /* 查询证书版本号 */<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>访问<a href="https://cert.hygon.cn/hgsc">Hygon证书下载官网</a>，输入芯片ID和证书版本号下载证书，名称类似为hygon-hgsc-certchain-v1.0-H905P0005040204.bin，通过以下命令导入到Hygon服务器:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag general hgsc_import -offline -<span class="hljs-keyword">in</span> /path/to/hygon-hgsc-certchain-v1.0-H905P0005040204.bin<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>最后查询证书导入状态，is HGSC imported为YES</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag csv platform_status<br></code></pre></td></tr></table></figure></li>
+</ol>
+<p>完成以上步骤后，导出证书链包含的所有文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag csv pdh_cert_export<br></code></pre></td></tr></table></figure>
+
+<p>证书链文件包括：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">cert_chain.bin<br>cert_chain.cert<br>cert_chain_readable.txt <br>pdh.bin  <br>pdh.cert  <br>pdh_readable.txt<br></code></pre></td></tr></table></figure>
+
+<p>其中证书链被Guest owner用于校验PSP是否可信，证书链包含三个证书，分别是CEK、OCA 和PEK：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> cert_chain_readable.txt | grep Userid<br>Userid:        HYGON-SSD-PEK<br>Userid:        HYGON-SSD-OCA<br>Userid:        HYGON-SSD-CEK<br></code></pre></td></tr></table></figure>
+
+<p>PDH被Guest owner用于计算与PSP之间通信的会话密钥：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> pdh_readable.txt |grep Userid<br>Userid:        HYGON-SSD-PDH<br></code></pre></td></tr></table></figure>
+
+<h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><p>的确，证书的导出确实与Hypervisor不相关，但QEMU实际上也提供了虚机运行时导出其证书的接口，以便支持Libvirt等虚机管理工具对机密虚机的能力查询：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 1. qapi中对sev能力的定义</span><br><br><span class="hljs-comment">// @SevCapability:</span><br><br><span class="hljs-comment">// The struct describes capability for a Secure Encrypted</span><br><span class="hljs-comment">// Virtualization feature.</span><br><br><span class="hljs-comment">// @pdh: Platform Diffie-Hellman key (base64 encoded)</span><br><br><span class="hljs-comment">// @cert-chain: PDH certificate chain (base64 encoded)</span><br><br><span class="hljs-comment">// @cpu0-id: Unique ID of CPU0 (base64 encoded) (since 7.1)</span><br><br><span class="hljs-comment">// @cbitpos: C-bit location in page table entry</span><br><br><span class="hljs-comment">// @reduced-phys-bits: Number of physical Address bit reduction when</span><br><span class="hljs-comment">//     SEV is enabled</span><br><br><span class="hljs-comment">// Since: 2.12</span><br>&#123; <span class="hljs-string">&#x27;struct&#x27;</span>: <span class="hljs-string">&#x27;SevCapability&#x27;</span>,<br>  <span class="hljs-string">&#x27;data&#x27;</span>: &#123; <span class="hljs-string">&#x27;pdh&#x27;</span>: <span class="hljs-string">&#x27;str&#x27;</span>,<br>            <span class="hljs-string">&#x27;cert-chain&#x27;</span>: <span class="hljs-string">&#x27;str&#x27;</span>,<br>            <span class="hljs-string">&#x27;cpu0-id&#x27;</span>: <span class="hljs-string">&#x27;str&#x27;</span>,<br>            <span class="hljs-string">&#x27;cbitpos&#x27;</span>: <span class="hljs-string">&#x27;int&#x27;</span>,<br>            <span class="hljs-string">&#x27;reduced-phys-bits&#x27;</span>: <span class="hljs-string">&#x27;int&#x27;</span>&#125;,<br>  <span class="hljs-string">&#x27;if&#x27;</span>: <span class="hljs-string">&#x27;TARGET_I386&#x27;</span> &#125;<br><span class="hljs-comment">// 2. 对应的C结构体  </span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">SevCapability</span> &#123;</span><br>    <span class="hljs-type">char</span> *pdh;   <span class="hljs-comment">/* 用于计算会话密钥PDH证书 */</span><br>    <span class="hljs-type">char</span> *cert_chain; <span class="hljs-comment">/* 证书链 */</span><br>    <span class="hljs-type">char</span> *cpu0_id;<br>    <span class="hljs-type">int64_t</span> cbitpos;<br>    <span class="hljs-type">int64_t</span> reduced_phys_bits;<br>&#125;;<br><span class="hljs-comment">// 3. 具体的查询流程</span><br>qmp_query_sev_capabilities<br>    sev_get_capabilities<br>        <span class="hljs-title function_">kvm_vm_ioctl</span><span class="hljs-params">(kvm_state, KVM_MEMORY_ENCRYPT_OP, <span class="hljs-literal">NULL</span>)</span><br>        fd = open(DEFAULT_SEV_DEVICE, O_RDWR) <span class="hljs-comment">/* 打开/dev/sev字符设备 */</span><br>        sev_get_pdh_info(fd, &amp;pdh_data, &amp;pdh_len, &amp;cert_chain_data, &amp;cert_chain_len, errp)) <span class="hljs-comment">/* 下发命令字导出证书 */</span><br>            sev_platform_ioctl(fd, SEV_PDH_CERT_EXPORT, &amp;export, &amp;err)<br>        cap = g_new0(SevCapability, <span class="hljs-number">1</span>);<br>        cap-&gt;pdh = g_base64_encode(pdh_data, pdh_len);<br>        cap-&gt;cert_chain = g_base64_encode(cert_chain_data, cert_chain_len);<br></code></pre></td></tr></table></figure>
+
+<h2 id="静态度量"><a href="#静态度量" class="headerlink" title="静态度量"></a>静态度量</h2><h3 id="基本原理-1"><a href="#基本原理-1" class="headerlink" title="基本原理"></a>基本原理</h3><p>Guest owner完成对PSP的可信认证后，就可以通知Hypervisor启动虚机了，对于要启动的虚机，Guest owner需要确认Hypervisor启动虚机使用的所有引导文件与自己期望的相同。为达此目的，Guest owner需要将启动虚机涉及的所有引导文件和命令行参数作为输入，计算一个度量值，然后在虚机启动后，让PSP将相同的文件和命令行参数也作为输入，重新计算一个度量值，两者对比之后，如果相同，则可以确认Hypervisor在虚机启动过程中并没有对引导文件做手脚，启动的虚机确实是Guest owner期望的虚机。</p>
+<p>Guest owner对引导文件和命令行参数进行的度量计算，与PSP可信认证相互独立，因此也可以在最开始启动虚机的时候做，如下面流程图的第一步所示：</p>
+<p><img src="/img/cc/amd/amd-cc-4.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="AMD-SevCTL-1"><a href="#AMD-SevCTL-1" class="headerlink" title="AMD SevCTL"></a>AMD SevCTL</h4><p>sevctl工具提供了measurement命令计算度量值，使用方式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ sevctl measurement build \<br>    --api-major 01 --api-minor 40 --build-id 40 \<br>    --policy 0x05 \<br>    --tik /path/to/VM_tik.bin \<br>    --firmware /usr/share/edk2/ovmf/OVMF.amdsev.fd \<br>    --kernel /path/to/kernel \<br>    --initrd /path/to/initrd \<br>    --cmdline <span class="hljs-string">&quot;my kernel cmdline&quot;</span> \<br>    --vmsa-cpu0 /path/to/vmsa0.bin \<br>    --vmsa-cpu1 /path/to/vmsa1.bin \<br>    --num-cpus 4<br>    --launch-measure-blob /o0nzDKE5XgtVnUZWPhUea/WZYrTKLExR7KCwuMdbActvpWfXTFk21KMZIAAhQny<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>launch-measure-blob指定输出文件的位置</p>
+</blockquote>
+<h4 id="Hygon-hag-1"><a href="#Hygon-hag-1" class="headerlink" title="Hygon hag"></a>Hygon hag</h4><p>Hygon的hag工具提供了generate_launch_blob命令计算度量值：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag csv generate_launch_blob -<span class="hljs-built_in">help</span><br>Usage: generate_launch_blob [options]<br>Valid options are:<br>    -<span class="hljs-built_in">help</span>            Display this summary<br>    -verbose         Enable debug <span class="hljs-built_in">log</span> <span class="hljs-built_in">print</span><br>    -<span class="hljs-built_in">dir</span> <span class="hljs-built_in">dir</span>         [optional] Specify the file generation directory<br>    -build ulong     Input the build <span class="hljs-built_in">id</span> of the Firmware<br>    -bios infile     Input bios file<br>    -kernel infile   [optional] Input kernel file<br>    -cmdline infile  [optional] Input cmdline file, default is <span class="hljs-string">&#x27;\0&#x27;</span><br>    -initrd infile   [optional] Input initrd file<br></code></pre></td></tr></table></figure>
+
+<p>这里我们将OVMF固件作为度量值的输入，计算度量值，示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">hag csv generate_launch_blob \<br>    -build 1881 \        /* 固件ID，通过hag csv platform_status查询得到 */<br>    -bios /opt/hygon/csv/OVMF.fd /* 度量值的输入：bios文件 */<br></code></pre></td></tr></table></figure>
+
+<p>Guest owner完成对度量值的计算后，就可以启动虚机了，后续只要获取虚机启动时PSP计算的初始化内存度量值，对比两者是否相等，就可以确认Hypervisor是否启动了一个期望的虚机。这里需要解决的一个问题是，Hypervisor需要怎么做，才能既做到为PSP提供度量值计算的输入，又无法窃取PSP计算的度量值输出，或者无法代替PSP进行度量值计算呢？</p>
+<p>我们知道 PSP 将 VMCB 中的 ASID 作为加密进程关联内存的密钥，对内存进行加密。为了让Hypervisor无法代替PSP做度量值计算，SEV的做法是：</p>
+<ul>
+<li>让Hypervisor将计算度量值所需的材料加载到Guest内存地址空间，这里主要指OVMF、kernel和initrd等启动文件，此时虚机的内存地址空间内容还是明文，Hypervisor虽然可以进行度量值计算，但因为PSP与Guest owner通信是密文，要得到密文必须先获取Guest owner与PSP之前通过PDH协商出来的共享密钥，因此它无法得到度量值加密后的密文数据。</li>
+<li>通过API ACTIVATE通知PSP将ASID与内存加密的密钥VEK（VM Encryption Key）关联，PSP的具体逻辑是以ASID为索引，在系统的所有密钥槽中找到对应的VEK，将其加载到内存</li>
+<li>通过API LAUNCH_UPDATE_DATA通知PSP对虚机内存进行加密。此时虚机的内存地址空间变为密文。</li>
+<li>通过API LAUNCH_MEASURE通知PSP对 ASID关联的内存地址空间内容进行度量值计算，并将加密后的明文返回给Guest owner</li>
+</ul>
+<h3 id="具体流程-1"><a href="#具体流程-1" class="headerlink" title="具体流程"></a>具体流程</h3><ul>
+<li>我们知道QEMU命令行支持<code>BIOS+grub</code>或<code>OVMF+UEFI+grub</code>固件启动，但在SEV机密计算场景下，只对<code>OVMF+UEFI+grub</code>启动方案做了适配。所以在具体启动SEV机密计算虚机，只能以OVMF方式引导虚机；</li>
+<li>另外QEMU命令行既支持以显式指定<code>kernel+initrd+command line</code>的方式启动虚机；也支持直接以虚机镜像的方式启动虚机。当用户通过前者启动虚机时，需要指定OVMF、kernel和initrd文件，command line可选，QEMU的传统做法是将OVMF载入虚机内存，将kernel和initrd文件添加到fw_cfg（Firmware Configuration）设备，然后启动虚机，虚机启动过程中，OVMF逻辑会从fw_cfg设备中读取kernel和initrd文件并加载到内存，准备工作完成之后，跳转到kernel，移交控制权，这里可以看出，PSP对虚机初始化内存的度量，只会包含OVMF固件，并没有kernel和initrd文件，因为kernel和initrd是在虚机运行（即Guest态）之后OVMF从设备加载到内存的。在机密计算场景下，由于Hypervisor是不可信的，静态度量并没有包含kernel和initrd的内容，它完全有可能将用户kernel和initrd文件替换为恶意镜像而不被Guest owner发现，机密计算的方案需要考虑如何处理这种情况。对于使用虚机镜像的方式启动虚机的场景，也存在Hypervisor直接将镜像替换为恶意镜像的可能。我们下面分别讨论这两种场景下机密计算给出的解决方案以及具体的实现流程。</li>
+</ul>
+<h4 id="内核启动"><a href="#内核启动" class="headerlink" title="内核启动"></a>内核启动</h4><p>内核启动指QEMU通过命令行参数显式指定kernel+initrd+cmdline启动虚机，kernel+initrd文件包含在虚机镜像之中</p>
+<h4 id="镜像启动"><a href="#镜像启动" class="headerlink" title="镜像启动"></a>镜像启动</h4><p>镜像启动指QEMU指定启动盘的方式启动虚机，kernel+initrd包含在虚机镜像之中。OVMF读取磁盘内容，通过grub指定磁盘上的kernel+initrd+cmdline。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/04/AI/llama-cpp/" title="Analysis Llama.cpp">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Analysis Llama.cpp</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/01/GPU/cuda-L2-persistent-cache/" title="CUDA L2 持久缓存">
+                        <span class="hidden-mobile">CUDA L2 持久缓存</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

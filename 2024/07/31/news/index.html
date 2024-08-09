@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="聚焦技术第一线">
+<meta property="og:type" content="article">
+<meta property="og:title" content="科技杂谈">
+<meta property="og:url" content="http://yoursite.com/2024/07/31/news/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="聚焦技术第一线">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/index_img/tech.png">
+<meta property="article:published_time" content="2024-07-31T22:26:04.000Z">
+<meta property="article:modified_time" content="2024-08-09T06:27:15.047Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="GPU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/index_img/tech.png">
+  
+  
+  
+  <title>科技杂谈 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="科技杂谈"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-31 22:26" pubdate>
+          2024年7月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          816 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">科技杂谈</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>聚焦技术第一线</p>
+<span id="more"></span>
+
+<p><a href="https://zhuanlan.zhihu.com/p/671570798">AMD 放CPU能让Instinct MI300A APU打败GPU吗？</a><br><a href="https://mp.weixin.qq.com/s/99t-0uavpbkLYhSecw4_tA">2024 英伟达 GTC 会议纪要（节选)</a><br><a href="https://mp.weixin.qq.com/s/OdQBrDhMSJ4Kq3jRrRPOmg">一张图看懂 CPU、GPU、NPU</a><br><a href="https://mp.weixin.qq.com/s/FD6GLPHENrDE23R20T7ayA">谈谈大模型推理 KV-Cache 加速和内存池化</a><br><a href="https://mp.weixin.qq.com/s/M_rkxrbsQYNtgDlFeaittg">英伟达 GB200 架构解析 4: BlackWell 多 die 和 Cache 一致性相关的分析</a><br><a href="https://mp.weixin.qq.com/s/qcynKSz2zQQQ2Ylk_sSorw">CUDA: 一文讲清共享内存和常量内存</a><br><a href="https://mp.weixin.qq.com/s/1hqtXKkB_TLLisiR9_w-kw">CUDA: 10 分钟搞懂英伟达核心壁垒</a><br><a href="https://mp.weixin.qq.com/s/HUYvGWGy8IS6zO2_n2Jf8g">Faster-Transformer Decoding 源码分析(四)- Self Attention 实现介绍</a><br><a href="https://mp.weixin.qq.com/s/WVAs9Tren91Q3ouXxsZn9Q">一文读懂 GPU 虚拟化：除了直通、全虚拟化 (vGPU)，还有谁？</a><br><a href="https://mp.weixin.qq.com/s/XBCodtzdCXsvcCov5-YHPQ">单卡跑 Llama 70B 快过双卡，微软硬生生把FP6搞到了 A100 里 | 开源</a><br><a href="https://mp.weixin.qq.com/s/3mQQbD1GJ8JBCMOXWDWJYA">清华接手，YOLOv10问世：性能大幅提升，登上GitHub热榜</a><br><a href="https://mp.weixin.qq.com/s/EO97Sj153K5CUKAF7chksA">芯片巨头组团，向英伟达NVLink开战</a><br><a href="https://mp.weixin.qq.com/s/BzAAV-08Lar5007sN5UFlw">GPU 之间的高度公路：一文全面了解NVLink</a><br><a href="https://mp.weixin.qq.com/s/Pe42xWHQHDxeInFYAezKdw">文生图王者登场：Stable Diffusion 3 Medium 正式开源</a><br><a href="https://mp.weixin.qq.com/s/gDWQGs4MyVWqsmONdEqvpQ">从零开始手搓GPU，照着英伟达CUDA来，只用两个星期</a><br><a href="https://mp.weixin.qq.com/s/YUeydPb-U_d2gCldur99IQ">硬的不行来软的，我还破解不了你？看老哥如何使用软件 Dump 你的 BootRom</a><br><a href="https://mp.weixin.qq.com/s/u9RG7zuDUO62CbrmGyZtOA">Kimi论文自曝推理架构，80% 流量都靠它承担</a><br><a href="https://mp.weixin.qq.com/s/aVdVUUfpLK3IKi_tj8d3Ow">大神卡帕西强烈推荐：通过做项目来学习，坚持“1万小时定律”</a><br><a href="https://mp.weixin.qq.com/s/KbdHlaVNS1ASBKiuoRTemQ">破解 ChatGPT 惊人耗电！DeepMind 新算法训练提效13倍，能耗暴降10倍</a><br><a href="https://mp.weixin.qq.com/s/iqy29NHgZumPXHVU_0C72A">新架构 RNN 反超 Transformer：每个隐藏状态都是一个模型，一作：从根本上改变语言模型</a><br><a href="https://mp.weixin.qq.com/s/JqGqtRmQQz7oDY8vVc06-g">NB！小哥竟然绕过安全启动，Dump 掉了 SoC 的 BootROM</a><br><a href="https://mp.weixin.qq.com/s/PkuM4sYe4V_IME6p-pvJmA">硬核！大佬通过 Intel CPU 的 JTAG 接口，DUMP微软原始Xbox的加密BootROM</a><br><a href="https://mp.weixin.qq.com/s/UweOUYv5_W2XKNoDs9GNdw">基于 Ascend C的FlashAttention算子性能优化最佳实践</a><br><a href="https://mp.weixin.qq.com/s/0YrHdL9bEtAZpgYy2REkZw">H100 利用率飙升至75%！英伟达亲自下场 Flash Attention 三代升级，比标准注意力快16倍</a><br><a href="https://mp.weixin.qq.com/s/7FiT-RVwA427OLMZB2IWcQ">编译器优化那些事儿（18）：自动调优技术</a><br><a href="https://mp.weixin.qq.com/s/xoKpvC5hZgt92lBapjCppA">Linux 内核发明人：RISC-V 将犯与 Arm 和 x86 相同的错误</a><br><a href="https://mp.weixin.qq.com/s/xzGfV4167clZikMLeKciXA">行业跟踪 | 英伟达宣布AI主权，不断上调的 GB200 预期</a><br><a href="https://mp.weixin.qq.com/s/vnC5wd90Pw8Fri4aYDJIfA">奥特曼深夜发动价格战，GPT-4o mini 暴跌 99%！清华同济校友立功，GPT-3.5 退役</a><br><a href="https://mp.weixin.qq.com/s/sg42mHf-5Jneu3GkdW5wBA">首个超越 GPT4o 级开源模型！Llama 3.1泄密：4050 亿参数，下载链接、模型卡都有了</a><br><a href="https://mp.weixin.qq.com/s/JbfXc9YRRv9lHUpEs6-Jqw">Llama 3.1横空出世！开源巨无霸首次击溃闭源，全民GPT-4时代来临</a><br><a href="https://mp.weixin.qq.com/s/apV-67K6LXscmrza8egjPw">Llama 3.1 - 405B、70B 和 8B 的多语言与长上下文能力解析</a><br><a href="https://mp.weixin.qq.com/s/1kUNJDqW6R5lSDH_2dM-sA">AI 训 AI 惨遭投毒9次大崩溃，牛津剑桥等惊天发现登Nature封面！</a><br><a href="https://mp.weixin.qq.com/s/C8xKaihSh5kGFpmwNAHOAg">牛津剑桥「投毒」AI 失败 9 次登 Nature 封面，引爆学术圈激辩！AI 训 AI 能否打破崩溃魔咒？</a><br><a href="https://mp.weixin.qq.com/s/unBu9qiDG5Xh38rZUhCL7w">黄仁勋对话扎克伯格万字实录：爆粗口抨击闭源，谈智能硬件，互送夹克，下一次还要送金链</a><br><a href="https://mp.weixin.qq.com/s/tZo1k8BAuuzcRQjxSAO6_g">苹果 AI 版 iOS 首日火爆：聊天秒变高情商，大模型成最强嘴替，Siri 华丽变身</a><br><a href="https://mp.weixin.qq.com/s/DA6VC39nDjHdIGDN3LXF3A">小扎老黄亲密换衣炉边对谈！小扎竟破防爆粗，老黄自曝第一批 Blackwell 已出炉</a><br><a href="https://mp.weixin.qq.com/s/J_e_7svrpDuxxefes-s7Xw">仅微调 0.02% 参数，性能接近全量微调！上交大推出高效微调统一新范式</a><br><a href="https://mp.weixin.qq.com/s/Gpj71vx37skw8JPTMH9ogQ">从炒菜到缝针！斯坦福炒虾团队打造自主「AI 达芬奇」，苦练神指当外科医生</a><br><a href="https://mp.weixin.qq.com/s/ITt3GLFVcTsZtayc3k27eA">颠覆LLM训练方法！Karpathy 仅凭 1000 行 C 语言代码、一台 Mac 训练出 GPT-2</a><br><a href="https://mp.weixin.qq.com/s/vnOlXzG9EJrlrR79nTs7rg">Kimi 连续宕机打醒巨头！阿里百度 360 连夜出手长文本，大模型商业化厮杀开始了</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/01/GPU/cuda-L2-persistent-cache/" title="CUDA L2 持久缓存">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CUDA L2 持久缓存</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/30/Security/Privacy-compute/" title="机密计算: 10 大隐私计算技术">
+                        <span class="hidden-mobile">机密计算: 10 大隐私计算技术</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>
