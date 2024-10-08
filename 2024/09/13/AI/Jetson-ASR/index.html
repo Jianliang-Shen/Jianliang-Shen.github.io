@@ -1,0 +1,859 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Whisper 是一种通用语音识别模型。它是在大量不同音频数据集上进行训练的，也是一个多任务模型，可以执行多语言语音识别、语音翻译和语言识别。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetson Whisper 语音识别测试">
+<meta property="og:url" content="http://yoursite.com/2024/09/13/AI/Jetson-ASR/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Whisper 是一种通用语音识别模型。它是在大量不同音频数据集上进行训练的，也是一个多任务模型，可以执行多语言语音识别、语音翻译和语言识别。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/whisper/index.png">
+<meta property="article:published_time" content="2024-09-13T11:06:57.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.990Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="ASR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/whisper/index.png">
+  
+  
+  
+  <title>Jetson Whisper 语音识别测试 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jetson Whisper 语音识别测试"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-13 11:06" pubdate>
+          2024年9月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Jetson Whisper 语音识别测试</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a href="https://github.com/openai/whisper">Whisper</a> 是一种通用语音识别模型。它是在大量不同音频数据集上进行训练的，也是一个多任务模型，可以执行多语言语音识别、语音翻译和语言识别。</p>
+<span id="more"></span>
+
+<p>由于官方NV的测试套件中，orin nano 8GB不支持TTS，本文使用 faster whisper 尝试运行 TTS。</p>
+<h1 id="Whisper"><a href="#Whisper" class="headerlink" title="Whisper"></a>Whisper</h1><p><img src="/img/ai/whisper/whisper.png" srcset="/img/loading.gif" lazyload alt="OpenAI Whisper"></p>
+<p>测试，用Chattts生成一段语音：<code>四川美食确实以辣闻名，但也有不辣的选择。比如甜水面、赖汤圆、蛋烘糕、叶儿粑等，这些小吃口味温和，甜而不腻，也很受欢迎。</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ pip install -U openai-whisper<br>$ <span class="hljs-built_in">sudo</span> apt update &amp;&amp; <span class="hljs-built_in">sudo</span> apt install ffmpeg<br>$ pip install setuptools-rust<br><br>$ whisper ../audio.wav --model tiny<br>100%|█████████████████████████████████████| 72.1M/72.1M [00:36&lt;00:00, 2.08MiB/s]<br>/home/jetson/.local/lib/python3.8/site-packages/whisper/__init__.py:146: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), <span class="hljs-built_in">which</span> uses the default pickle module implicitly. It is possible to construct malicious pickle data <span class="hljs-built_in">which</span> will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models <span class="hljs-keyword">for</span> more details). In a future release, the default value <span class="hljs-keyword">for</span> `weights_only` will be flipped to `True`. This limits the <span class="hljs-built_in">functions</span> that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` <span class="hljs-keyword">for</span> any use <span class="hljs-keyword">case</span> <span class="hljs-built_in">where</span> you don<span class="hljs-string">&#x27;t have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.</span><br><span class="hljs-string">  checkpoint = torch.load(fp, map_location=device)</span><br><span class="hljs-string">/home/jetson/.local/lib/python3.8/site-packages/whisper/transcribe.py:115: UserWarning: FP16 is not supported on CPU; using FP32 instead</span><br><span class="hljs-string">  warnings.warn(&quot;FP16 is not supported on CPU; using FP32 instead&quot;)</span><br><span class="hljs-string">Detecting language using up to the first 30 seconds. Use `--language` to specify the language</span><br><span class="hljs-string">Detected language: Chinese</span><br><span class="hljs-string">[00:00.000 --&gt; 00:03.680] 四川美時確實以辣文明 但以有不辣的選擇</span><br><span class="hljs-string">[00:03.680 --&gt; 00:07.200] 比如潛水面 賴湯圓 再轟高夜熱八等</span><br><span class="hljs-string">[00:07.200 --&gt; 00:11.560] 這些小市口維溫和 然後甜而不膩也很受歡迎</span><br></code></pre></td></tr></table></figure>
+
+<p>这个是CPU运行的😂，GPU都没带喘的。</p>
+<h1 id="Faster-Whisper"><a href="#Faster-Whisper" class="headerlink" title="Faster Whisper"></a>Faster Whisper</h1><p><a href="https://github.com/SYSTRAN/faster-whisper">fast-whisper</a> 是使用 <a href="https://github.com/OpenNMT/CTranslate2/">CTranslate2</a> 重新实现 OpenAI 的 Whisper 模型，CTranslate2 是 Transformer 模型的快速推理引擎。</p>
+<p><del>Funasr有个大问题，它的实时转录是CPU的，很慢。</del>GPU的支持离线语音转文字，但又不能实时。找到了一个faster-whisper可以支持实时GPU转录，也支持中文。</p>
+<div class="note note-primary">
+            <p>我收回这句话，实测FunAsr不仅比推理快，延时低，准确率还很高，至于faster-whisper在Jetson的实测效果，惨不忍睹</p>
+          </div>
+
+
+<ul>
+<li><a href="https://blog.csdn.net/a71468293a/article/details/135995878">Faster-Whisper 实时识别电脑语音转文本</a></li>
+<li><a href="https://huggingface.co/Systran/faster-whisper-large-v3">模型：faster-whisper-large-v3</a></li>
+</ul>
+<h2 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install faster-whisper<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br>model_size = <span class="hljs-string">&quot;large-v3&quot;</span><br><br><span class="hljs-comment"># Run on GPU with FP16</span><br><span class="hljs-comment"># model = WhisperModel(model_size, device=&quot;cuda&quot;, compute_type=&quot;float16&quot;)</span><br><br><span class="hljs-comment"># or run on GPU with INT8</span><br>model = WhisperModel(model_size, device=<span class="hljs-string">&quot;cuda&quot;</span>, compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br><span class="hljs-comment"># or run on CPU with INT8</span><br><span class="hljs-comment"># model = WhisperModel(model_size, device=&quot;cpu&quot;, compute_type=&quot;int8&quot;)</span><br><br>segments, info = model.transcribe(<span class="hljs-string">&quot;audio.mp3&quot;</span>, beam_size=<span class="hljs-number">5</span>)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Detected language &#x27;%s&#x27; with probability %f&quot;</span> % (info.language, info.language_probability))<br><br><span class="hljs-keyword">for</span> segment <span class="hljs-keyword">in</span> segments:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[%.2fs -&gt; %.2fs] %s&quot;</span> % (segment.start, segment.end, segment.text))<br></code></pre></td></tr></table></figure>
+
+<h2 id="尝试WSL部署"><a href="#尝试WSL部署" class="headerlink" title="尝试WSL部署"></a>尝试WSL部署</h2><ul>
+<li>Cuda：12.6</li>
+<li>Cudnn：9.2</li>
+</ul>
+<p>直接运行，报错<a href="https://github.com/SYSTRAN/faster-whisper/issues/951">Could not load library libcudnn_ops_infer.so.8. Error: libcudnn_ops_infer.so.8: cannot open shared object file: No such file or directory</a>，这是需要cublas，cudnn的python库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install nvidia-cublas-cu12 nvidia-cudnn-cu12<br><br><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=`python3 -c <span class="hljs-string">&#x27;import os; import nvidia.cublas.lib; import nvidia.cudnn.lib; print(os.path.dirname(nvidia.cublas.lib.__file__) + &quot;:&quot; + os.path.dirname(nvidia.cudnn.lib.__file__))&#x27;</span>`<br></code></pre></td></tr></table></figure>
+
+<p>但是仍然跑不起来，因为：</p>
+<blockquote>
+<p>Version 9+ of nvidia-cudnn-cu12 appears to cause issues due its reliance on cuDNN 9 (Faster-Whisper does not currently support cuDNN 9). Ensure your version of the Python package is for cuDNN 8.</p>
+</blockquote>
+<p>那我安装 Cudnn 8 不就行了？果断下载cudnn8 for cuda 12.x，但是每次都安装cudnn9.4，除了降cuda版本，否则没办法恢复到cudnn8。</p>
+<h2 id="尝试-Jetson-部署"><a href="#尝试-Jetson-部署" class="headerlink" title="尝试 Jetson 部署"></a>尝试 Jetson 部署</h2><ul>
+<li>Cuda：11.4</li>
+<li>Cudnn：8.6.0</li>
+</ul>
+<p>简直量身定制啊！首先尝试安装cudnn python库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ pip3 install faster-whisper -i https://mirrors.aliyun.com/pypi/simple/<br><br><span class="hljs-comment"># 贴心的提示我们：For all these methods below, keep in mind the above note</span><br><span class="hljs-comment"># regarding CUDA versions. Depending on your setup, you may need to install the</span><br><span class="hljs-comment"># CUDA 11 versions of libraries that correspond to the CUDA 12 libraries listed</span><br><span class="hljs-comment"># in the instructions below.</span><br><br>$ pip install --extra-index-url https://pypi.nvidia.com nvidia-cudnn-cu11<br>...<br>The installation of nvidia-cudnn-cu11 <span class="hljs-keyword">for</span> version 9.0.0.312 failed.<br><br>      This is a special placeholder package <span class="hljs-built_in">which</span> downloads a real wheel package<br>      from https://pypi.nvidia.com. If https://pypi.nvidia.com is not reachable, we<br>      cannot download the real wheel file to install.<br><br>      You might try installing this package via<br>      $ pip install --extra-index-url https://pypi.nvidia.com nvidia-cudnn-cu11<br><br>      Here is some debug information about your platform to include <span class="hljs-keyword">in</span> any bug<br>      report:<br><br>      Python Version: CPython 3.8.10<br>      Operating System: Linux 5.10.104-tegra<br>      CPU Architecture: aarch64<br>      nvidia-smi <span class="hljs-built_in">command</span> not found. Ensure NVIDIA drivers are installed.<br></code></pre></td></tr></table></figure>
+
+<p>原来是 <a href="https://pypi.nvidia.cn/nvidia-cudnn-cu11/">nvidia-cudnnn-cu11</a>没有<code>aarch64 Arm</code>版本！但是<a href="https://pypi.nvidia.cn/nvidia-cudnn-cu12/">nvidia-cudnn-cu12</a>有。</p>
+<p>怎么办，安装cuda 12.2？Jetson的系统是<a href="https://www.yahboom.com/build.html?id=6443&cid=590">离线刷机</a>，<a href="https://developer.nvidia.com/embedded/jetpack-sdk-60">jetpack 6</a>确实支持12.2和cudnn8：</p>
+<p><img src="/img/ai/whisper/1.png" srcset="/img/loading.gif" lazyload alt="Jetpack Cuda"></p>
+<p>已经准备买新的固态刷机了，但是太麻烦了，得装虚拟机装刷机SDK，得拆机箱改跳帽，得重新配置ssh网络连接，关键是，得花钱！</p>
+<p><img src="/img/ai/whisper/2.jpg" srcset="/img/loading.gif" lazyload alt="JD"></p>
+<p>不试试怎么行呢，我不信邪，就安装cudnn12 python库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ pip install --extra-index-url https://pypi.nvidia.com nvidia-cudnn-cu12<br>Defaulting to user installation because normal site-packages is not writeable<br>Looking <span class="hljs-keyword">in</span> indexes: https://pypi.org/simple, https://pypi.nvidia.com<br>Collecting nvidia-cudnn-cu12<br>  Downloading nvidia_cudnn_cu12-9.4.0.58-py3-none-manylinux2014_aarch64.whl.metadata (1.6 kB)<br>Collecting nvidia-cublas-cu12 (from nvidia-cudnn-cu12)<br>  Downloading https://pypi.nvidia.com/nvidia-cublas-cu12/nvidia_cublas_cu12-12.6.1.4-py3-none-manylinux2014_aarch64.whl (376.7 MB)<br>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 376.7/376.7 MB 12.9 MB/s eta 0:00:00<br>Downloading nvidia_cudnn_cu12-9.4.0.58-py3-none-manylinux2014_aarch64.whl (572.7 MB)<br>   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 572.7/572.7 MB 1.1 MB/s eta 0:00:00<br>Installing collected packages: nvidia-cublas-cu12, nvidia-cudnn-cu12<br>Successfully installed nvidia-cublas-cu12-12.6.1.4 nvidia-cudnn-cu12-9.4.0.58<br></code></pre></td></tr></table></figure>
+
+<p>跑一下demo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">test.py<br>preprocessor_config.json: 100%|████████████████████████████████| 340/340 [00:00&lt;00:00, 118kB/s]<br>config.json: 100%|█████████████████████████████████████████████| 2.39k/2.39k [00:00&lt;00:00, 1.03MB/s]<br>vocabulary.json: 100%|█████████████████████████████████████████| 1.07M/1.07M [00:00&lt;00:00, 1.13MB/s]<br>tokenizer.json: 100%|██████████████████████████████████████████| 2.48M/2.48M [00:01&lt;00:00, 2.14MB/s]<br>model.bin: 100%|███████████████████████████████████████████████| 3.09G/3.09G [03:18&lt;00:00, 9.89MB/s]<br>Traceback (most recent call last):<br>  File <span class="hljs-string">&quot;test.py&quot;</span>, line 9, <span class="hljs-keyword">in</span> &lt;module&gt;<br>    model = WhisperModel(model_size, device=<span class="hljs-string">&quot;cuda&quot;</span>, compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br>  File <span class="hljs-string">&quot;/home/jetson/.local/lib/python3.8/site-packages/faster_whisper/transcribe.py&quot;</span>, line 145, <span class="hljs-keyword">in</span> __init__<br>    self.model = ctranslate2.models.Whisper(<br>ValueError: This CTranslate2 package was not compiled with CUDA support<br></code></pre></td></tr></table></figure>
+
+<p>Holy🤬，这又是咋回事，找一下：<a href="https://github.com/OpenNMT/CTranslate2/issues/1306">This CTranslate2 package was not compiled with CUDA support #1306</a>，跳过他们的讨论，结合faster-whisper库里的描述：</p>
+<blockquote>
+<p>Note: Latest versions of ctranslate2 support CUDA 12 only. For CUDA 11, the current workaround is downgrading to the 3.24.0 version of ctranslate2 (This can be done with pip install –force-reinstall ctranslate2&#x3D;&#x3D;3.24.0 or specifying the version in a requirements.txt).</p>
+</blockquote>
+<p>又是cuda11的幺蛾子，它说要使用降级的方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ pip install --force-reinstall ctranslate2==3.24.0<br>ERROR: pip<span class="hljs-string">&#x27;s dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.</span><br><span class="hljs-string">mediapipe 0.8.4 requires opencv-contrib-python, which is not installed.</span><br><span class="hljs-string">onnx-graphsurgeon 0.3.12 requires onnx, which is not installed.</span><br><span class="hljs-string">d2l 0.17.6 requires numpy==1.21.5, but you have numpy 1.24.4 which is incompatible.</span><br><span class="hljs-string">d2l 0.17.6 requires requests==2.25.1, but you have requests 2.32.3 which is incompatible.</span><br><span class="hljs-string">faster-whisper 1.0.3 requires ctranslate2&lt;5,&gt;=4.0, but you have ctranslate2 3.24.0 which is incompatible.</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>呸！😶</strong></p>
+<p>我试试自己编一个cuda版本的：<a href="https://opennmt.net/CTranslate2/installation.html#compile-the-c-library">https://opennmt.net/CTranslate2/installation.html#compile-the-c-library</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ pip3 uninstall ctranslate2 whisper-ctranslate2<br>$ git <span class="hljs-built_in">clone</span> --recursive https://github.com/OpenNMT/CTranslate2.git<br>$ <span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>$ cmake ..<br>...<br>CMake Error at CMakeLists.txt:294 (message):<br>  Intel OpenMP runtime libiomp5 not found<br><br>-- Configuring incomplete, errors occurred!<br></code></pre></td></tr></table></figure>
+
+<p>哪来的intel？找找，原来是，By default, the library is compiled with the Intel MKL backend which should be installed separately. See the Build options to select or add another backend. 改一下，不用老in家的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 老张我给你表演什么叫一镜到底，注意看，我只表演一次：</span><br>$ cmake .. -DOPENMP_RUNTIME=COMP -DWITH_MKL=OFF -DWITH_CUDA=ON -DWITH_CUDNN=ON<br>$ make -j32<br>$ <span class="hljs-built_in">sudo</span> make install<br>$ <span class="hljs-built_in">sudo</span> ldconfig<br>$ <span class="hljs-built_in">cd</span> ../python<br>$ pip install -r install_requirements.txt<br>$ python setup.py bdist_wheel<br>$ pip install dist/*.whl<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/whisper/res.png" srcset="/img/loading.gif" lazyload alt="Result"></p>
+<p>喜大普奔！</p>
+<h2 id="时间戳"><a href="#时间戳" class="headerlink" title="时间戳"></a>时间戳</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br>model_size = <span class="hljs-string">&quot;large-v3&quot;</span><br><br><span class="hljs-comment"># Run on GPU with FP16</span><br><span class="hljs-comment"># model = WhisperModel(model_size, device=&quot;cuda&quot;, compute_type=&quot;float16&quot;)</span><br><br><span class="hljs-comment"># or run on GPU with INT8</span><br>model = WhisperModel(model_size, device=<span class="hljs-string">&quot;cuda&quot;</span>, compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br><span class="hljs-comment"># or run on CPU with INT8</span><br><span class="hljs-comment"># model = WhisperModel(model_size, device=&quot;cpu&quot;, compute_type=&quot;int8&quot;)</span><br><br><br><br>segments, _ = model.transcribe(<span class="hljs-string">&quot;audio.wav&quot;</span>, word_timestamps=<span class="hljs-literal">True</span>)<br><br><span class="hljs-keyword">for</span> segment <span class="hljs-keyword">in</span> segments:<br>    <span class="hljs-keyword">for</span> word <span class="hljs-keyword">in</span> segment.words:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[%.2fs -&gt; %.2fs] %s&quot;</span> % (word.start, word.end, word.word))<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs txt">[0.00s -&gt; 0.24s] 四<br>[0.24s -&gt; 0.44s] 川<br>[0.44s -&gt; 0.58s] 美<br>[0.58s -&gt; 0.78s] 食<br>[0.78s -&gt; 1.10s] 确<br>..<br>[9.72s -&gt; 9.96s] 腻<br>[9.96s -&gt; 10.42s] 也<br>[10.42s -&gt; 10.68s] 很<br>[10.68s -&gt; 10.82s] 受<br>[10.82s -&gt; 11.04s] 欢<br>[11.04s -&gt; 11.22s] 迎<br></code></pre></td></tr></table></figure>
+
+<h1 id="实时转录"><a href="#实时转录" class="headerlink" title="实时转录"></a>实时转录</h1><p><a href="https://github.com/ufal/whisper_streaming">Whisper 实时流式传输</a>，用于长时间语音到文本的转录和翻译。Whisper 是最近最先进的多语言语音识别和翻译模型之一，然而，它并不是为实时转录而设计的。在本文中，我们在 Whisper 之上构建并创建了 Whisper-Streaming，这是一种实时语音转录和类似 Whisper 模型翻译的实现。 Whisper-Streaming 使用本地协议策略和自适应延迟来实现流式转录。我们证明 Whisper-Streaming 在未分段的长格式语音转录测试集上实现了高质量和 3.3 秒的延迟，并且我们在多语言会议上展示了其作为实时转录服务组件的鲁棒性和实际可用性。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> git@github.com:ufal/whisper_streaming.git<br>$ <span class="hljs-built_in">cd</span> whisper_streaming<br>$ python3 whisper_online.py ../audio.wav --language zh --min-chunk-size 1<br>INFO    Audio duration is: 11.68 seconds<br>INFO    Loading Whisper large-v2 model <span class="hljs-keyword">for</span> zh...<br>INFO    <span class="hljs-keyword">done</span>. It took 14.19 seconds.<br>DEBUG   PROMPT:<br>DEBUG   CONTEXT:<br>DEBUG   transcribing 1.00 seconds from 0.00<br>DEBUG   &gt;&gt;&gt;&gt;COMPLETE NOW: (None, None, <span class="hljs-string">&#x27;&#x27;</span>)<br>DEBUG   INCOMPLETE: (0.0, 0.98, <span class="hljs-string">&#x27;四川美食群&#x27;</span>)<br>DEBUG   len of buffer now: 1.00<br>DEBUG   <span class="hljs-comment">## last processed 1.00 s, now is 5.30, the latency is 4.29</span><br>DEBUG   PROMPT:<br>DEBUG   CONTEXT:<br>DEBUG   transcribing 5.30 seconds from 0.00<br>DEBUG   &gt;&gt;&gt;&gt;COMPLETE NOW: (0.0, 0.88, <span class="hljs-string">&#x27;四川美食&#x27;</span>)<br>DEBUG   INCOMPLETE: (0.88, 5.26, <span class="hljs-string">&#x27;确实以辣为名,但也有不辣的选择,比如甜水面赖淘宝。&#x27;</span>)<br>DEBUG   len of buffer now: 5.30<br>11643.5227 0 880 四川美食<br>11643.5227 0 880 四川美食<br>DEBUG   <span class="hljs-comment">## last processed 5.30 s, now is 11.64, the latency is 6.35</span><br>DEBUG   PROMPT:<br>DEBUG   CONTEXT: 四川美食<br>DEBUG   transcribing 11.64 seconds from 0.00<br>DEBUG   &gt;&gt;&gt;&gt;COMPLETE NOW: (None, None, <span class="hljs-string">&#x27;&#x27;</span>)<br>DEBUG   INCOMPLETE: (0.88, 11.24, <span class="hljs-string">&#x27;確實以辣聞名,但也有不辣的選擇,比如甜水麵、瀨湯圓、炸烘糕 、葉子粑等,這些小吃口味溫和,然後甜而不膩,也很受歡迎。&#x27;</span>)<br>DEBUG   len of buffer now: 11.64<br>DEBUG   <span class="hljs-comment">## last processed 11.64 s, now is 21.61, the latency is 9.96</span><br>DEBUG   PROMPT:<br>DEBUG   CONTEXT: 四川美食<br>DEBUG   transcribing 11.68 seconds from 0.00<br>DEBUG   &gt;&gt;&gt;&gt;COMPLETE NOW: (None, None, <span class="hljs-string">&#x27;&#x27;</span>)<br>DEBUG   INCOMPLETE: (0.88, 11.32, <span class="hljs-string">&#x27;确实以辣闻名,但也有不辣的选择,比如甜水面、赖汤圆、炸烘糕 叶、热巴等,这些小吃口味温和,然后甜而不腻,也很受欢迎。&#x27;</span>)<br>DEBUG   len of buffer now: 11.68<br>DEBUG   <span class="hljs-comment">## last processed 21.61 s, now is 31.53, the latency is 9.92</span><br>DEBUG   last, noncommited: (0.88, 11.32, <span class="hljs-string">&#x27;确实以辣闻名,但也有不辣的选择,比如甜水面、赖汤圆、炸烘糕叶、热巴等,这些小吃口味温和,然后甜而不腻,也很受欢迎。&#x27;</span>)<br>31528.1091 880 11320 确实以辣闻名,但也有不辣的选择,比如甜水面、赖汤圆、炸烘糕叶、热巴等,这些小吃口味温和,然后甜而不腻,也很受欢迎。<br>31528.1091 880 11320 确实以辣闻名,但也有不辣的选择,比如甜水面、赖汤圆、炸烘糕叶、热巴等,这些小吃口味温和,然后甜而不腻,也很受欢迎。<br></code></pre></td></tr></table></figure>
+
+<p>注：更改模型量化：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># this worked fast and reliably on NVIDIA L40</span><br><span class="hljs-comment"># model = WhisperModel(model_size_or_path, device=&quot;cuda&quot;, compute_type=&quot;float16&quot;, download_root=cache_dir)</span><br><br><span class="hljs-comment"># or run on GPU with INT8</span><br><span class="hljs-comment"># tested: the transcripts were different, probably worse than with FP16, and it was slightly (appx 20%) slower</span><br>model = WhisperModel(model_size_or_path, device=<span class="hljs-string">&quot;cuda&quot;</span>, compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>实测在Jetson上，使用tiny和small模型，准确率不高，使用large-v2模型，速度很慢，延迟非常高。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>选择使用FunAsr CPU实时推理实现语音的输入。</p>
+<div class="note note-primary">
+            <p>注：Jetson语音识别的硬件：耳麦+USB转音频口</p><p><img src="/img/ai/whisper/jetson.png" srcset="/img/loading.gif" lazyload alt="Jetson音频输入"></p>
+          </div>
+
+<p>FunAsr 见 <a href="https://www.tech-odyssey.cn/2024/09/10/AI/ASR/">https://www.tech-odyssey.cn/2024/09/10/AI/ASR/</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ curl -O https://isv-data.oss-cn-hangzhou.aliyuncs.com/ics/MaaS/ASR/shell/funasr-runtime-deploy-online-cpu-zh.sh<br>$ <span class="hljs-built_in">sudo</span> bash funasr-runtime-deploy-online-cpu-zh.sh install --workspace ./funasr-runtime-resources<br>$ <span class="hljs-built_in">cd</span> samples/python<br>$ python3 funasr_wss_client.py --host <span class="hljs-string">&quot;127.0.0.1&quot;</span> --port 10096 --mode 2pass<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/ASR/" class="print-no-link">#ASR</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/17/AI/voice-assistant/" title="A Local AI Assistant like Siri">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">A Local AI Assistant like Siri</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/10/AI/AI-Applications/" title="莫塔社区有趣的 AI 应用">
+                        <span class="hidden-mobile">莫塔社区有趣的 AI 应用</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

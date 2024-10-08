@@ -1,0 +1,1229 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Hopper GPU驱动代码 CC 部分分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: HCC 驱动代码">
+<meta property="og:url" content="http://yoursite.com/2024/07/02/Nvidia-HCC-Driver-Code/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Hopper GPU驱动代码 CC 部分分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/HCC/hcc2_index.png">
+<meta property="article:published_time" content="2024-07-02T14:43:10.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.992Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/HCC/hcc2_index.png">
+  
+  
+  
+  <title>机密计算: HCC 驱动代码 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: HCC 驱动代码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-02 14:43" pubdate>
+          2024年7月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          72 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: HCC 驱动代码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Hopper GPU驱动代码 CC 部分分析。</p>
+<span id="more"></span>
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>535.43.02</p>
+<ul>
+<li>新增了Hopper CC，主架构为H100</li>
+<li>新增mbedtls和spdm库</li>
+<li>SEC2（Security Engine 2） 是一种集成在GPU或其他硬件中的安全模块，专门用于处理加密、解密和认证等安全操作。它通常用于确保数据在传输和存储过程中的机密性和完整性。</li>
+<li>CSL（Crypto Security Layer）</li>
+</ul>
+<h1 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h1><ul>
+<li>src&#x2F;nvidia&#x2F;src&#x2F;kernel&#x2F;gpu&#x2F;conf_compute&#x2F;conf_*</li>
+<li>src&#x2F;nvidia&#x2F;src&#x2F;kernel&#x2F;gpu&#x2F;conf_compute&#x2F;arch&#x2F;hopper&#x2F;conf_*</li>
+<li>src&#x2F;nvidia&#x2F;inc&#x2F;kernel&#x2F;gpu&#x2F;spdm&#x2F;</li>
+<li>src&#x2F;nvidia&#x2F;generated&#x2F;g_conf_compute_*</li>
+<li>src&#x2F;nvidia&#x2F;src&#x2F;libraries&#x2F;libspdm&#x2F;</li>
+<li>src&#x2F;nvidia&#x2F;src&#x2F;libraries&#x2F;libspdm&#x2F;2.3.1&#x2F;include&#x2F;hal&#x2F;library&#x2F;cryptlib&#x2F;</li>
+</ul>
+<h1 id="顶层架构图"><a href="#顶层架构图" class="headerlink" title="顶层架构图"></a>顶层架构图</h1><p><img src="/img/HCC/code/init.png" srcset="/img/loading.gif" lazyload alt="GPU 初始化"></p>
+<p><img src="/img/HCC/code/block_copy_push.png" srcset="/img/loading.gif" lazyload alt="Block Copy Push"></p>
+<p><img src="/img/HCC/code/tools_access_va_block.png" srcset="/img/loading.gif" lazyload alt="Tools Access VA Block"></p>
+<h1 id="nv-uvm-interface-h"><a href="#nv-uvm-interface-h" class="headerlink" title="nv_uvm_interface.h"></a>nv_uvm_interface.h</h1>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d06d829c" role="button" aria-expanded="false" aria-controls="collapse-d06d829c">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Init Context 为给定的安全通道分配并初始化 CSL 上下文
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d06d829c">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslInitContext</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                       uvmGpuChannelHandle channel)</span>;<br></code></pre></td></tr></table></figure><p>为给定的安全通道分配并初始化 CSL 上下文。上下文的生命周期与其配对的安全通道的生命周期相同。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>channel[IN]</strong> - 安全通道句柄。</li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INVALID_STATE</strong> - 系统未在机密计算模式下运行。</li><li><strong>NV_ERR_INVALID_CHANNEL</strong> - 关联通道不是安全通道。</li><li><strong>NV_ERR_IN_USE</strong> - 上下文已初始化。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-744eb808" role="button" aria-expanded="false" aria-controls="collapse-744eb808">
+        <div class="fold-arrow">▶</div>NV UVM Interface Deinit Csl Context 安全地取消初始化并清除上下文的内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-744eb808">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">nvUvmInterfaceDeinitCslContext</span><span class="hljs-params">(UvmCslContext *uvmCslContext)</span>;<br></code></pre></td></tr></table></figure><p>安全地取消初始化并清除上下文的内容。如果上下文已取消初始化，则函数立即返回。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN]</strong> - CSL 上下文。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-9d8895e3" role="button" aria-expanded="false" aria-controls="collapse-9d8895e3">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Acquire Encryption IV 返回一个 IV
+      </div>
+      <div class="fold-collapse collapse" id="collapse-9d8895e3">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslAcquireEncryptionIv</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                               UvmCslIv *encryptIv)</span>;<br></code></pre></td></tr></table></figure><p>返回一个 IV，稍后可在 <strong>nvUvmInterfaceCslEncrypt</strong> 方法中使用。IV 包含一个“freshness bit”，其值由此方法设置，随后由 <strong>nvUvmInterfaceCslEncrypt</strong> 弄脏，以防止 IV 的非恶意重用。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>encryptIv[OUT]</strong> - 设备加密成功之前存储的参数。它用作 <strong>nvUvmInterfaceCslEncrypt</strong> 的输入。</li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INSUFFICIENT_RESOURCES</strong> - 新的 IV 会导致计数器溢出。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-f6c4df22" role="button" aria-expanded="false" aria-controls="collapse-f6c4df22">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Log Device Encryption 记录并检查有关设备加密的信息
+      </div>
+      <div class="fold-collapse collapse" id="collapse-f6c4df22">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslLogDeviceEncryption</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                               UvmCslIv *decryptIv)</span>;<br></code></pre></td></tr></table></figure><p>记录并检查有关设备加密的信息。</p><ul><li><p>参数：</p><ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>decryptIv[OUT]</strong> - 设备加密成功之前存储的参数。它用作 nvUvmInterfaceCslDecrypt 的输入。</li></ul></li><li><p>错误代码：</p><ul><li><strong>NV_ERR_INSUFFICIENT_RESOURCES</strong> - 设备加密会导致计数器溢出。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-4481de76" role="button" aria-expanded="false" aria-controls="collapse-4481de76">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Rotate IV 旋转给定通道和方向的 IV
+      </div>
+      <div class="fold-collapse collapse" id="collapse-4481de76">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslRotateIv</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                    UvmCslDirection direction)</span>;<br></code></pre></td></tr></table></figure><p>旋转给定通道和方向的 IV。此函数将在 CPU 和 GPU 上旋转 IV。应首先解密已由 GPU 加密的未完成消息，然后调用方向等于 <strong>UVM_CSL_DIR_GPU_TO_CPU</strong> 的此函数。同样，应首先解密已由 CPU 加密的未完成消息，然后调用方向等于 <strong>UVM_CSL_DIR_CPU_TO_GPU</strong> 的此函数。对于给定方向，在调用此函数之前通道必须处于空闲状态。无论 IV 的消息计数器的值如何，都可以调用此函数。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>direction[IN]</strong> - 任一<ul><li><strong>UVM_CSL_DIR_CPU_TO_GPU</strong></li><li><strong>UVM_CSL_DIR_GPU_TO_CPU</strong></li></ul></li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INSUFFICIENT_RESOURCES</strong> - 旋转操作会导致计数器溢出。</li><li><strong>NV_ERR_INVALID_ARGUMENT</strong> - 方向值无效。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-6ccf396e" role="button" aria-expanded="false" aria-controls="collapse-6ccf396e">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Encrypt 加密数据并生成身份验证标签
+      </div>
+      <div class="fold-collapse collapse" id="collapse-6ccf396e">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslEncrypt</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                   NvU32 bufferSize,</span><br><span class="hljs-params">                                   NvU8 <span class="hljs-type">const</span> *inputBuffer,</span><br><span class="hljs-params">                                   UvmCslIv *encryptIv,</span><br><span class="hljs-params">                                   NvU8 *outputBuffer,</span><br><span class="hljs-params">                                   NvU8 *authTagBuffer)</span>;<br></code></pre></td></tr></table></figure><p>加密数据并生成身份验证标签。身份验证、输入和输出缓冲区不得重叠。如果重叠，则调用此函数会产生未定义的行为。当输入和输出缓冲区按 16 字节对齐时，性能通常会最大化。这是 AES 块的自然对齐。encryptIV 可以从 <strong>nvUvmInterfaceCslAcquireEncryptionIv</strong> 获得。但是，它是可选的。如果它为 NULL，则将使用行中的下一个 IV。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>bufferSize[IN]</strong> - 输入和输出缓冲区的大小（以字节为单位）。值的范围可以从 1 字节到 (2^32) - 1 字节。</li><li><strong>inputBuffer[IN]</strong> - 明文输入缓冲区的地址。</li><li><strong>encryptIv[IN&#x2F;OUT]</strong> - 用于加密的 IV。可以为 NULL。</li><li><strong>outputBuffer[OUT]</strong> - 密文输出缓冲区的地址。</li><li><strong>authTagBuffer[OUT]</strong> - 身份验证标签缓冲区的地址。其大小为 <strong>UVM_CSL_CRYPT_AUTH_TAG_SIZE_BYTES</strong></li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INVALID_ARGUMENT</strong><ul><li>数据大小为 0 字节。</li><li>encryptIv 已被使用。</li></ul></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-20e00cd9" role="button" aria-expanded="false" aria-controls="collapse-20e00cd9">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Decrypt 验证身份验证标签并解密数据
+      </div>
+      <div class="fold-collapse collapse" id="collapse-20e00cd9">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslDecrypt</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                   NvU32 bufferSize,</span><br><span class="hljs-params">                                   NvU8 <span class="hljs-type">const</span> *inputBuffer,</span><br><span class="hljs-params">                                   UvmCslIv <span class="hljs-type">const</span> *decryptIv,</span><br><span class="hljs-params">                                   NvU8 *outputBuffer,</span><br><span class="hljs-params">                                   NvU8 <span class="hljs-type">const</span> *authTagBuffer)</span>;<br></code></pre></td></tr></table></figure><p>验证身份验证标签并解密数据。身份验证、输入和输出缓冲区不得重叠。如果重叠，则调用此函数会产生未定义的行为。当输入和输出缓冲区按 16 字节对齐时，性能通常会最大化。这是 AES 块的自然对齐。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>bufferSize[IN]</strong> - 输入和输出缓冲区的大小（以字节为单位）。值的范围可以从 1 字节到 (2^32) - 1 字节。</li><li><strong>decryptIv[IN]</strong> - <strong>nvUvmInterfaceCslLogDeviceEncryption</strong> 给出的参数。</li><li><strong>inputBuffer[IN]</strong> - 密文输入缓冲区的地址。</li><li><strong>outputBuffer[OUT]</strong> - 明文输出缓冲区的地址。</li><li><strong>authTagBuffer[IN]</strong> - 身份验证标签缓冲区的地址。其大小为 UVM_CSL_CRYPT_AUTH_TAG_SIZE_BYTES。</li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INSUFFICIENT_RESOURCES</strong> - 解密操作会导致计数器溢出。</li><li><strong>NV_ERR_INVALID_ARGUMENT</strong> - 数据大小为 0 字节。</li><li><strong>NV_ERR_INVALID_DATA</strong> - 身份验证标签验证失败。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-c603e4b4" role="button" aria-expanded="false" aria-controls="collapse-c603e4b4">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Sign 为安全工作启动生成身份验证标签
+      </div>
+      <div class="fold-collapse collapse" id="collapse-c603e4b4">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslSign</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                NvU32 bufferSize,</span><br><span class="hljs-params">                                NvU8 <span class="hljs-type">const</span> *inputBuffer,</span><br><span class="hljs-params">                                NvU8 *authTagBuffer)</span>;<br></code></pre></td></tr></table></figure><p>为安全工作启动生成身份验证标签。身份验证和输入缓冲区不得重叠。如果重叠，则调用此函数会产生未定义的行为。</p><ul><li><p>参数：</p><ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>bufferSize[IN]</strong> - 输入缓冲区的大小（以字节为单位）。值的范围可以从 1 字节到 (2^32) - 1 字节。</li><li><strong>inputBuffer[IN]</strong> - 明文输入缓冲区的地址。</li><li><strong>authTagBuffer[OUT]</strong> - 身份验证标签缓冲区的地址。其大小为 UVM_CSL_SIGN_AUTH_TAG_SIZE_BYTES。</li></ul></li><li><p>错误代码：</p><ul><li><strong>NV_ERR_INSUFFICIENT_RESOURCES</strong> - 签名操作会导致计数器溢出。</li><li><strong>NV_ERR_INVALID_ARGUMENT</strong> - 数据大小为 0 字节。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-f2b99e34" role="button" aria-expanded="false" aria-controls="collapse-f2b99e34">
+        <div class="fold-arrow">▶</div>NV UVM Interface Csl Query Message Pool 返回在消息计数器溢出之前可以加密的消息数量
+      </div>
+      <div class="fold-collapse collapse" id="collapse-f2b99e34">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">nvUvmInterfaceCslQueryMessagePool</span><span class="hljs-params">(UvmCslContext *uvmCslContext,</span><br><span class="hljs-params">                                            UvmCslDirection direction,</span><br><span class="hljs-params">                                            NvU64 *messageNum)</span>;<br></code></pre></td></tr></table></figure><p>返回在消息计数器溢出之前可以加密的消息数量。</p><ul><li>参数：<ul><li><strong>uvmCslContext[IN&#x2F;OUT]</strong> - CSL 上下文。</li><li><strong>direction[IN]</strong> - <strong>UVM_CSL_DIR_CPU_TO_GPU</strong> 或 <strong>UVM_CSL_DIR_GPU_TO_CPU</strong></li><li><strong>messageNum[OUT]</strong> - 溢出前剩余的消息数量。</li></ul></li><li>错误代码：<ul><li><strong>NV_ERR_INVALID_ARGUMENT</strong> - direction 参数的值非法。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+<h1 id="uvm-conf-computing-h"><a href="#uvm-conf-computing-h" class="headerlink" title="uvm_conf_computing.h"></a>uvm_conf_computing.h</h1>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-a8163d0f" role="button" aria-expanded="false" aria-controls="collapse-a8163d0f">
+        <div class="fold-arrow">▶</div>宏定义等
+      </div>
+      <div class="fold-collapse collapse" id="collapse-a8163d0f">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_AUTH_TAG_SIZE (UVM_CSL_CRYPT_AUTH_TAG_SIZE_BYTES)</span><br><br><span class="hljs-comment">// 硬件要求认证标签指针必须 16 字节对齐。</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_AUTH_TAG_ALIGNMENT 16</span><br><br><span class="hljs-comment">// HW 要求 IV 指针为 16 字节对齐。使用 sizeof(UvmCslIv) 来引用 IV 大小。</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_IV_ALIGNMENT 16</span><br><br><span class="hljs-comment">// SEC2 解密操作缓冲区需要 16 字节对齐。如果缓冲区位于单个 32B 段中，则 CE 加密/解密可以</span><br><span class="hljs-comment">// 不对齐。否则，它们需要 32B 对齐。</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_BUF_ALIGNMENT 32</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_DMA_BUFFER_SIZE UVM_VA_BLOCK_SIZE</span><br><br><span class="hljs-comment">// SEC2 最多支持 64 个方法流条目进行签名。每个条目由方法地址和方法数据组成，因此最大缓冲区</span><br><span class="hljs-comment">// 大小为：UVM_METHOD_SIZE * 2 * 64 = 512。但是 UVM 不会使用这么多条目，在最坏的情况下，</span><br><span class="hljs-comment">// 我们会推送一个 semaphore_releases 或一个解密。SEC2 semaphore_release 使用 6 个</span><br><span class="hljs-comment">// 1U 条目，而 SEC2 解密使用 10 个 1U 条目。对于 10 个条目，UVM_METHOD_SIZE * 2 * 10 = 80。</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UVM_CONF_COMPUTING_SIGN_BUF_MAX_SIZE 80</span><br><br><span class="hljs-comment">// 所有 GPU 都从其父 GPU 获得机密计算状态。根据当前政策，所有父 GPU 都具有相同的机密计算状态。</span><br>NV_STATUS <span class="hljs-title function_">uvm_conf_computing_init_parent_gpu</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_parent_gpu_t</span> *parent)</span>;<br><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_enabled_parent</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_parent_gpu_t</span> *parent)</span>;<br><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_enabled</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_gpu_t</span> *gpu)</span>;<br><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_is_hcc</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_gpu_t</span> *gpu)</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-9a1c5b83" role="button" aria-expanded="false" aria-controls="collapse-9a1c5b83">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_dma_buffer_pool_t
+      </div>
+      <div class="fold-collapse collapse" id="collapse-9a1c5b83">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">// 空闲 DMA 缓冲区列表（uvm_conf_computing_dma_buffer_t）。空闲的 DMA 缓冲区可以随</span><br>    <span class="hljs-comment">// 时获取，但其中的跟踪器可能仍有待处理的工作。</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">free_dma_buffers</span>;</span><br><br>    <span class="hljs-comment">// 用于在池满时增大 pool</span><br>    <span class="hljs-type">size_t</span> num_dma_buffers;<br><br>    <span class="hljs-comment">// 保护 dma_buffer_pool 的锁</span><br>    <span class="hljs-type">uvm_mutex_t</span> lock;<br>&#125; <span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d02d7b34" role="button" aria-expanded="false" aria-controls="collapse-d02d7b34">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_dma_buffer_t
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d02d7b34">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">// 支持 DMA 分配</span><br>    <span class="hljs-type">uvm_mem_t</span> *alloc;<br><br>    <span class="hljs-comment">// 由池管理代码内部使用，以跟踪空闲缓冲区的状态。</span><br>    <span class="hljs-type">uvm_tracker_t</span> tracker;<br><br>    <span class="hljs-comment">// 当 DMA 缓冲区用作 GPU 加密的目标时，SEC2 会在此处写入身份验证标签。稍后，当缓冲区</span><br>    <span class="hljs-comment">// 在 CPU 上解密时，身份验证标签将再次用于（读取）CSL 以验证真实性。分配缓冲区中每个</span><br>    <span class="hljs-comment">// PAGE_SIZE 页的分配足够大，可以容纳一个身份验证标签。</span><br>    <span class="hljs-type">uvm_mem_t</span> *auth_tag;<br><br>    <span class="hljs-comment">// CSL 支持无序解密，解密 IV 的使用方式与身份验证标签类似。分配缓冲区中每个 PAGE_SIZE</span><br>    <span class="hljs-comment">// 页的分配足够大，可以容纳一个 IV。解密 IV 和身份验证标签之间的粒度必须匹配。</span><br>    UvmCslIv decrypt_iv[(UVM_CONF_COMPUTING_DMA_BUFFER_SIZE / PAGE_SIZE)];<br><br>    <span class="hljs-comment">// 后备分配中的加密页面的 mask</span><br>    <span class="hljs-type">uvm_page_mask_t</span> encrypted_page_mask;<br><br>    <span class="hljs-comment">// 参见 uvm_conf_computing_dma_pool 列表</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">node</span>;</span><br>&#125; <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-39f682c6" role="button" aria-expanded="false" aria-controls="collapse-39f682c6">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_dma_buffer_alloc 从给定的 DMA 分配池中检索 DMA 缓冲区
+      </div>
+      <div class="fold-collapse collapse" id="collapse-39f682c6">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">uvm_conf_computing_dma_buffer_alloc</span><span class="hljs-params">(<span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span> *dma_buffer_pool,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> **out_dma_buffer,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_tracker_t</span> *out_tracker)</span>;<br></code></pre></td></tr></table></figure><p>从给定的 DMA 分配池中检索 DMA 缓冲区。</p><ul><li><strong>NV_OK</strong> 阶段缓冲区已成功检索</li><li><strong>NV_ERR_NO_MEMORY</strong> 没有可供抓取的空闲 DMA 缓冲区，扩展内存池以获取新缓冲区失败。</li></ul><p><strong>out_dma_buffer</strong> 仅在返回 NV_OK 时才有效。调用者负责在完成此缓冲区上的操作后调用 <strong>uvm_conf_computing_dma_buffer_free</strong>。当 <strong>out_tracker</strong> 传递给函数时，缓冲区的依赖项将添加到跟踪器。调用者保证所有待处理的跟踪器条目都来自与池所有者相同的 GPU。在能够使用 DMA 缓冲区之前，调用者负责获取或等待 <strong>out_tracker</strong>。如果 <strong>out_tracker</strong> 为 NULL，则等待发生在分配本身中。</p><p><strong>成功后，encrypted_pa​​ge_mask</strong> 将作为分配的一部分被清除。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-b9950d2b" role="button" aria-expanded="false" aria-controls="collapse-b9950d2b">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_dma_buffer_free 将 DMA 缓冲区释放到 DMA 分配池
+      </div>
+      <div class="fold-collapse collapse" id="collapse-b9950d2b">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_dma_buffer_free</span><span class="hljs-params">(<span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span> *dma_buffer_pool,</span><br><span class="hljs-params">                                        <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer,</span><br><span class="hljs-params">                                        <span class="hljs-type">uvm_tracker_t</span> *tracker)</span>;<br></code></pre></td></tr></table></figure><p>将 DMA 缓冲区释放到 DMA 分配池。在 GPU 取消初始化之前，必须释放所有 DMA 缓冲区。跟踪器是可选的，NULL 跟踪器表示尚未为缓冲区推送任何新操作。非 NULL 跟踪器表示调用者推送的缓冲区上任何其他待处理操作，这些操作需要在释放或重新使用缓冲区之前进行同步。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-02d317b4" role="button" aria-expanded="false" aria-controls="collapse-02d317b4">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_dma_buffer_pool_sync 同步 GPU 的 DMA 池中的所有条目中的跟踪器
+      </div>
+      <div class="fold-collapse collapse" id="collapse-02d317b4">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_dma_buffer_pool_sync</span><span class="hljs-params">(<span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span> *dma_buffer_pool)</span>;<br></code></pre></td></tr></table></figure><p>同步 GPU 的 DMA 池中的所有条目中的跟踪器</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-9efd27d7" role="button" aria-expanded="false" aria-controls="collapse-9efd27d7">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_gpu_init 初始化和取消初始化给定 GPU 的机密计算数据结构
+      </div>
+      <div class="fold-collapse collapse" id="collapse-9efd27d7">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">uvm_conf_computing_gpu_init</span><span class="hljs-params">(<span class="hljs-type">uvm_gpu_t</span> *gpu)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_gpu_deinit</span><span class="hljs-params">(<span class="hljs-type">uvm_gpu_t</span> *gpu)</span>;<br></code></pre></td></tr></table></figure><p>初始化和取消初始化给定 GPU 的机密计算数据结构。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-50e381c7" role="button" aria-expanded="false" aria-controls="collapse-50e381c7">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_log_gpu_encryption 记录来自 GPU 的加密信息并返回 IV
+      </div>
+      <div class="fold-collapse collapse" id="collapse-50e381c7">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_log_gpu_encryption</span><span class="hljs-params">(<span class="hljs-type">uvm_channel_t</span> *channel, UvmCslIv *iv)</span>;<br></code></pre></td></tr></table></figure><p>记录来自 GPU 的加密信息并返回 IV。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-987976c4" role="button" aria-expanded="false" aria-controls="collapse-987976c4">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_acquire_encryption_iv 获取下一个 CPU 加密 IV 并返回
+      </div>
+      <div class="fold-collapse collapse" id="collapse-987976c4">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_acquire_encryption_iv</span><span class="hljs-params">(<span class="hljs-type">uvm_channel_t</span> *channel, UvmCslIv *iv)</span>;<br></code></pre></td></tr></table></figure><p>获取下一个 CPU 加密 IV 并返回。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-76e09153" role="button" aria-expanded="false" aria-controls="collapse-76e09153">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_cpu_encrypt CPU 端加密辅助程序
+      </div>
+      <div class="fold-collapse collapse" id="collapse-76e09153">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_conf_computing_cpu_encrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_channel_t</span> *channel,</span><br><span class="hljs-params">                                    <span class="hljs-type">void</span> *dst_cipher,</span><br><span class="hljs-params">                                    <span class="hljs-type">const</span> <span class="hljs-type">void</span> *src_plain,</span><br><span class="hljs-params">                                    UvmCslIv *encrypt_iv,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">                                    <span class="hljs-type">void</span> *auth_tag_buffer)</span><br>&#123;<br>    NV_STATUS status;<br><br>    UVM_ASSERT(size);<br><br>    uvm_mutex_lock(&amp;channel-&gt;csl.ctx_lock);<br>    status = nvUvmInterfaceCslEncrypt(&amp;channel-&gt;csl.ctx,<br>                                      size,<br>                                      (NvU8 <span class="hljs-type">const</span> *) src_plain,<br>                                      encrypt_iv,<br>                                      (NvU8 *) dst_cipher,<br>                                      (NvU8 *) auth_tag_buffer);<br>    uvm_mutex_unlock(&amp;channel-&gt;csl.ctx_lock);<br><br>    <span class="hljs-comment">// nvUvmInterfaceCslEncrypt fails when a 64-bit encryption counter</span><br>    <span class="hljs-comment">// overflows. This is not supposed to happen on CC.</span><br>    UVM_ASSERT(status == NV_OK);<br>&#125;<br></code></pre></td></tr></table></figure><p>CPU 端加密辅助程序，具有显式 IV，可从 <strong>uvm_conf_computing_acquire_encryption_iv</strong> 获取。如果没有显式 IV，该函数将按顺序使用下一个 IV。加密 <strong>src_plain</strong> 中的数据并将密文写入 <strong>dst_cipher</strong>。<strong>src_plain</strong> 和 <strong>dst_cipher</strong> 不能重叠。此操作后，IV 无效，无法再次使用。</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-89f0fe48" role="button" aria-expanded="false" aria-controls="collapse-89f0fe48">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_cpu_decrypt CPU 端解密辅助程序
+      </div>
+      <div class="fold-collapse collapse" id="collapse-89f0fe48">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c">NV_STATUS <span class="hljs-title function_">uvm_conf_computing_cpu_decrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_channel_t</span> *channel,</span><br><span class="hljs-params">                                         <span class="hljs-type">void</span> *dst_plain,</span><br><span class="hljs-params">                                         <span class="hljs-type">const</span> <span class="hljs-type">void</span> *src_cipher,</span><br><span class="hljs-params">                                         <span class="hljs-type">const</span> UvmCslIv *src_iv,</span><br><span class="hljs-params">                                         <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">                                         <span class="hljs-type">const</span> <span class="hljs-type">void</span> *auth_tag_buffer)</span><br>&#123;<br>    NV_STATUS status;<br><br>    uvm_mutex_lock(&amp;channel-&gt;csl.ctx_lock);<br>    status = nvUvmInterfaceCslDecrypt(&amp;channel-&gt;csl.ctx,<br>                                      size,<br>                                      (<span class="hljs-type">const</span> NvU8 *) src_cipher,<br>                                      src_iv,<br>                                      (NvU8 *) dst_plain,<br>                                      (<span class="hljs-type">const</span> NvU8 *) auth_tag_buffer);<br>    uvm_mutex_unlock(&amp;channel-&gt;csl.ctx_lock);<br><br>    <span class="hljs-keyword">return</span> status;<br>&#125;<br><br></code></pre></td></tr></table></figure><p>CPU 端解密辅助程序。从 <strong>src_cipher</strong> 解密数据并将纯文本写入 <strong>dst_plain</strong>。<strong>src_cipher</strong> 和 <strong>dst_plain</strong> 不能重叠。从 <strong>uvm_conf_computing_log_gpu_encryption()</strong> 获得的 IV 需要传递给 <strong>src_iv</strong></p>
+        </div>
+      </div>
+    </div>
+
+<h1 id="uvm-hal-h"><a href="#uvm-hal-h" class="headerlink" title="uvm_hal.h"></a>uvm_hal.h</h1>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-b829a153" role="button" aria-expanded="false" aria-controls="collapse-b829a153">
+        <div class="fold-arrow">▶</div>指针指向的函数
+      </div>
+      <div class="fold-collapse collapse" id="collapse-b829a153">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_maxwell_sec2_init_noop</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_sec2_init</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push)</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_maxwell_ce_encrypt_unsupported</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                                            NvU32 size,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_maxwell_ce_decrypt_unsupported</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                                            NvU32 size,</span><br><span class="hljs-params">                                            <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_ce_encrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                               NvU32 size,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_ce_decrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                               NvU32 size,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_maxwell_sec2_decrypt_unsupported</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                                              NvU64 dst_va,</span><br><span class="hljs-params">                                              NvU64 src_va,</span><br><span class="hljs-params">                                              NvU32 size,</span><br><span class="hljs-params">                                              NvU64 auth_tag_va)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_sec2_decrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push, NvU64 dst_va, NvU64 src_va, NvU32 size, NvU64 auth_tag_va)</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-832292e7" role="button" aria-expanded="false" aria-controls="collapse-832292e7">
+        <div class="fold-arrow">▶</div>函数指针 uvm_hal_ce_encrypt_t，将源缓冲区的内容加密到目标缓冲区中，直到指定的大小
+      </div>
+      <div class="fold-collapse collapse" id="collapse-832292e7">
+        <div class="fold-content">
+          <p>将源缓冲区的内容加密到目标缓冲区中，直到指定的大小。加密内容的认证标签（auth_tag）将写入auth_tag，以便稍后通过解密操作进行验证。目标地址和认证标签地址的寻址模式应匹配。如果寻址模式为物理模式，则地址范围也应匹配。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-title function_">void</span> <span class="hljs-params">(*<span class="hljs-type">uvm_hal_ce_encrypt_t</span>)</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                                     NvU32 size,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br></code></pre></td></tr></table></figure><p>copy engine 表使用了该函数指针：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 用于复制引擎函数的表。</span><br><span class="hljs-comment">// 每个条目通过 &#x27;class&#x27; 字段与一个复制引擎类关联。</span><br><span class="hljs-comment">// 通过设置 &#x27;parent_class&#x27; 字段，如果在模块加载时调用 uvm_hal_init_table() 时某些字段为空，</span><br><span class="hljs-comment">// 该类将继承父类的函数。父类必须出现在数组中子类之前。</span><br><span class="hljs-type">static</span> <span class="hljs-type">uvm_hal_class_ops_t</span> ce_table[] =<br>&#123;<br>    &#123;<br>        .id = MAXWELL_DMA_COPY_A,<br>        .u.ce_ops = &#123;<br>            <span class="hljs-comment">// ...</span><br>            .encrypt = uvm_hal_maxwell_ce_encrypt_unsupported,<br>            .decrypt = uvm_hal_maxwell_ce_decrypt_unsupported,<br>        &#125;<br>    &#125;,<br>    <span class="hljs-comment">// ...</span><br>    &#123;<br>        .id = HOPPER_DMA_COPY_A,<br>        .parent_id = AMPERE_DMA_COPY_B,<br>        .u.ce_ops = &#123;<br>            <span class="hljs-comment">// ...</span><br>            .memcopy_copy_type = uvm_hal_hopper_ce_memcopy_copy_type,<br>            <span class="hljs-comment">// ...</span><br>            .encrypt = uvm_hal_hopper_ce_encrypt,<br>            .decrypt = uvm_hal_hopper_ce_decrypt,<br>        &#125;,<br>    &#125;,<br>&#125;;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">// id is either a hardware class or GPU architecture</span><br>    NvU32 id;<br>    NvU32 parent_id;<br>    <span class="hljs-class"><span class="hljs-keyword">union</span></span><br><span class="hljs-class">    &#123;</span><br>        <span class="hljs-comment">// host_ops: id is a hardware class</span><br>        <span class="hljs-type">uvm_host_hal_t</span> host_ops;<br><br>        <span class="hljs-comment">// ce_ops: id is a hardware class</span><br>        <span class="hljs-type">uvm_ce_hal_t</span> ce_ops;<br><br>        <span class="hljs-comment">// arch_ops: id is an architecture</span><br>        <span class="hljs-type">uvm_arch_hal_t</span> arch_ops;<br><br>        <span class="hljs-comment">// fault_buffer_ops: id is an architecture</span><br>        <span class="hljs-type">uvm_fault_buffer_hal_t</span> fault_buffer_ops;<br><br>        <span class="hljs-comment">// access_counter_buffer_ops: id is an architecture</span><br>        <span class="hljs-type">uvm_access_counter_buffer_hal_t</span> access_counter_buffer_ops;<br><br>        <span class="hljs-comment">// sec2_ops: id is an architecture</span><br>        <span class="hljs-type">uvm_sec2_hal_t</span> sec2_ops;<br>    &#125; u;<br>&#125; <span class="hljs-type">uvm_hal_class_ops_t</span>;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_ce_hal_struct</span> <span class="hljs-title">uvm_ce_hal_t</span>;</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_ce_hal_struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">// ...</span><br>    <span class="hljs-type">uvm_hal_ce_memcopy_type_t</span> memcopy_copy_type;<br>    <span class="hljs-comment">// ...</span><br>    <span class="hljs-type">uvm_hal_ce_encrypt_t</span> encrypt;<br>    <span class="hljs-type">uvm_hal_ce_decrypt_t</span> decrypt;<br>&#125;;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_sec2_hal_struct</span> <span class="hljs-title">uvm_sec2_hal_t</span>;</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_sec2_hal_struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">uvm_hal_init_t</span> init;<br>    <span class="hljs-type">uvm_hal_sec2_decrypt_t</span> decrypt;<br>    <span class="hljs-type">uvm_hal_semaphore_release_t</span> semaphore_release;<br>    <span class="hljs-type">uvm_hal_semaphore_timestamp_t</span> semaphore_timestamp;<br>&#125;;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-64d2c9e3" role="button" aria-expanded="false" aria-controls="collapse-64d2c9e3">
+        <div class="fold-arrow">▶</div>uvm_hal_hopper_ce_encrypt 用于在指定的GPU上执行加密操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-64d2c9e3">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_ce_encrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                               NvU32 size,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span><br></code></pre></td></tr></table></figure><p>用于在指定的GPU上执行加密操作。它将源地址的数据加密后存储到目标地址，并生成一个认证标签。</p><ul><li>参数<ul><li><strong>push</strong>：指向用于推送命令的结构体。</li><li><strong>dst</strong>：目标地址，解密后的数据将存储在此地址。</li><li><strong>src</strong>：源地址，包含需要加密的数据。</li><li><strong>size</strong>：加密数据的大小，必须大于0且为4字节的倍数。</li><li><strong>auth_tag</strong>：认证标签的地址，用于验证源数据的完整性。</li></ul></li><li>执行流程：<ul><li><strong>获取GPU和参数验证</strong><ul><li><strong>获取GPU</strong>：从 <code>push</code> 结构体中获取GPU指针。</li><li><strong>参数验证</strong>：<ul><li>确保GPU处于特定计算模式（例如HCC模式）。</li><li>确保 <code>push</code> 是虚拟的或通道是安全的。</li><li>确保认证标签地址是对齐的。</li><li>如果源地址不是虚拟地址，确保其光圈类型是 <code>UVM_APERTURE_VID</code>。</li></ul></li></ul></li><li><strong>目的地址和认证标签验证</strong><ul><li>确保目标地址和认证标签的地址模式一致（都是虚拟或都是物理地址）。</li><li>如果目标地址不是虚拟地址，确保其光圈类型和认证标签的光圈类型都是 <code>UVM_APERTURE_SYS</code>。</li></ul></li><li><strong>设置加密模式</strong>：通过 <code>NV_PUSH_1U</code> 设置安全复制模式为加密</li><li><strong>设置认证标签和IV地址</strong><ul><li>计算并设置认证标签的高32位和低32位地址。</li><li>计算初始化向量（IV）的地址。</li><li>计算并设置IV的高32位和低32位地址。</li><li>使用 <code>NV_PUSH_4U</code> 将这些地址推送到硬件寄存器。</li></ul></li><li><strong>执行加密操作</strong>：调用 <code>encrypt_or_decrypt</code> 函数执行实际的加密操作，将源地址的数据加密后存储到目标地址</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-b9ab48e6" role="button" aria-expanded="false" aria-controls="collapse-b9ab48e6">
+        <div class="fold-arrow">▶</div>函数指针 uvm_hal_ce_decrypt_t，将源缓冲区的内容解密到目标缓冲区中，直到指定的大小
+      </div>
+      <div class="fold-collapse collapse" id="collapse-b9ab48e6">
+        <div class="fold-content">
+          <p>将源缓冲区的内容解密到目标缓冲区中，直到指定的大小。该方法还通过计算加密缓冲区的认证标签并将其与作为参数提供的标签进行比较，以验证其完整性。源地址和认证标签地址的寻址模式应匹配。如果寻址模式为物理模式，则地址范围也应匹配。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-title function_">void</span> <span class="hljs-params">(*<span class="hljs-type">uvm_hal_ce_decrypt_t</span>)</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                                     NvU32 size,</span><br><span class="hljs-params">                                     <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-7f63652d" role="button" aria-expanded="false" aria-controls="collapse-7f63652d">
+        <div class="fold-arrow">▶</div>uvm_hal_hopper_ce_decrypt 用于在指定的GPU上执行解密操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-7f63652d">
+        <div class="fold-content">
+          <p>用于在指定的GPU上执行解密操作。它将源地址的数据解密后存储到目标地址，并验证源数据的完整性。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">uvm_hal_hopper_ce_decrypt</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> dst,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> src,</span><br><span class="hljs-params">                               NvU32 size,</span><br><span class="hljs-params">                               <span class="hljs-type">uvm_gpu_address_t</span> auth_tag)</span><br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>push</strong>：指向用于推送命令的结构体。</li><li><strong>dst</strong>：目标地址，解密后的数据将存储在此地址。</li><li><strong>src</strong>：源地址，包含需要解密的数据。</li><li><strong>size</strong>：解密数据的大小，必须大于0且为4字节的倍数。</li><li><strong>auth_tag</strong>：认证标签的地址，用于验证源数据的完整性。</li></ul></li><li>执行流程：<ul><li>获取GPU和参数验证<ul><li><strong>获取GPU</strong>：从 <code>push</code> 结构体中获取GPU指针。</li><li><strong>参数验证</strong>：<ul><li>确保GPU处于特定计算模式（例如HCC模式）。</li><li>确保 <code>push</code> 没有通道或者通道是安全的。</li><li>确保认证标签地址是对齐的。</li></ul></li></ul></li><li>源地址和认证标签验证<ul><li>确保源地址和认证标签的地址模式一致（都是虚拟或都是物理地址）。</li><li>如果源地址不是虚拟地址，确保其光圈类型和认证标签的光圈类型都是 <code>UVM_APERTURE_SYS</code>。</li></ul></li><li>目的地址验证：如果目标地址不是虚拟地址，确保其光圈类型是 <code>UVM_APERTURE_VID</code>。</li><li>设置解密模式：通过 <code>NV_PUSH_1U</code> 设置安全复制模式为解密。</li><li>设置认证标签地址<ul><li>计算并设置认证标签的高32位和低32位地址。</li><li>使用 <code>NV_PUSH_2U</code> 将这些地址推送到硬件寄存器。</li></ul></li><li>执行解密操作：调用 <code>encrypt_or_decrypt</code> 函数执行实际的解密操作，将源地址的数据解密后存储到目标地址。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-50e550f4" role="button" aria-expanded="false" aria-controls="collapse-50e550f4">
+        <div class="fold-arrow">▶</div>函数指针 uvm_hal_sec2_decrypt_t
+      </div>
+      <div class="fold-collapse collapse" id="collapse-50e550f4">
+        <div class="fold-content">
+          <p>源地址和目标地址必须是16字节对齐的。注意，最佳性能是在256字节对齐时实现的。解密大小必须大于0，并且是4字节的倍数。认证标签地址也必须是16字节对齐的。认证标签缓冲区大小在uvm_conf_computing.h中定义为UVM_CONF_COMPUTING_AUTH_TAG_SIZE字节。将src缓冲区解密到给定大小的dst缓冲区中。该方法还通过计算src缓冲区的认证标签并与提供的标签进行比较来验证其完整性。注意：SEC2不支持加密。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-title function_">void</span> <span class="hljs-params">(*<span class="hljs-type">uvm_hal_sec2_decrypt_t</span>)</span><span class="hljs-params">(<span class="hljs-type">uvm_push_t</span> *push, NvU64 dst_va, NvU64 src_va, NvU32 size, NvU64 auth_tag_va)</span>;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h1 id="nvrm-registry-h"><a href="#nvrm-registry-h" class="headerlink" title="nvrm_registry.h"></a>nvrm_registry.h</h1>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-e033605d" role="button" aria-expanded="false" aria-controls="collapse-e033605d">
+        <div class="fold-arrow">▶</div>宏定义等
+      </div>
+      <div class="fold-collapse collapse" id="collapse-e033605d">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 添加条件以从 Orin 构建中排除这些宏，因为 CONFIDENTIAL_COMPUTE 是一个保护字。当从 Orin 构建中修剪 nvRmReg.h 文件时，可以删除 #if。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 启用禁用机密计算并控制其各种操作模式</span><br><span class="hljs-comment">// 0 - 功能禁用</span><br><span class="hljs-comment">// 1 - 功能启用</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE                              <span class="hljs-string">&quot;RmConfidentialCompute&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_ENABLED                      0:0</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_ENABLED_NO                   0x00000000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_ENABLED_YES                  0x00000001</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_DEV_MODE_ENABLED             1:1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_DEV_MODE_ENABLED_NO          0x00000000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_DEV_MODE_ENABLED_YES         0x00000001</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_GPUS_READY_CHECK             2:2</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_GPUS_READY_CHECK_DISABLED    0x00000000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONFIDENTIAL_COMPUTE_GPUS_READY_CHECK_ENABLED     0x00000001</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONF_COMPUTE_EARLY_INIT                            <span class="hljs-string">&quot;RmConfComputeEarlyInit&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONF_COMPUTE_EARLY_INIT_DISABLED                   0x00000000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NV_REG_STR_RM_CONF_COMPUTE_EARLY_INIT_ENABLED                    0x00000001</span><br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h1 id="uvm-va-block-c"><a href="#uvm-va-block-c" class="headerlink" title="uvm_va_block.c"></a>uvm_va_block.c</h1>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-30f54d6f" role="button" aria-expanded="false" aria-controls="collapse-30f54d6f">
+        <div class="fold-arrow">▶</div>encrypted_memcopy_gpu_to_cpu 在 GPU 和 CPU 之间进行同步加密复制的操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-30f54d6f">
+        <div class="fold-content">
+          <p>实现了在 GPU 和 CPU 之间进行同步加密复制的操作。它通过 GPU 端的加密（<strong>使用Copy Engine</strong>）和 CPU 端的解密，将 GPU 上的数据传输到 CPU，最终在目标 CPU 缓冲区中得到解密后的明文数据。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 启动 GPU 和 CPU 之间的同步加密复制操作。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 该复制操作包括 GPU 端加密（依赖于Copy Engine）和 CPU 端解密步骤，</span><br><span class="hljs-comment">// 使得目标 CPU 缓冲区（由 dst_plain 指向）将包含未加密的（明文）内容。</span><br><span class="hljs-comment">// 目标缓冲区可以在受保护或未受保护的系统内存中，而源缓冲区必须在受保护的显存中。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 允许的最大复制大小是 UVM_CONF_COMPUTING_DMA_BUFFER_SIZE。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 如果输入追踪器不为 NULL，则由负责加密复制的推送命令内部获取。</span><br>__attribute__ ((format(<span class="hljs-built_in">printf</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>)))<br><span class="hljs-type">static</span> NV_STATUS <span class="hljs-title function_">encrypted_memcopy_gpu_to_cpu</span><span class="hljs-params">(<span class="hljs-type">uvm_gpu_t</span> *gpu,</span><br><span class="hljs-params">                                              <span class="hljs-type">void</span> *dst_plain,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_gpu_address_t</span> src_gpu_address,</span><br><span class="hljs-params">                                              <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_tracker_t</span> *tracker,</span><br><span class="hljs-params">                                              <span class="hljs-type">const</span> <span class="hljs-type">char</span> *format,</span><br><span class="hljs-params">                                              ...)</span><br>&#123;<br>    NV_STATUS status;<br>    UvmCslIv decrypt_iv;<br>    <span class="hljs-type">uvm_push_t</span> push;<br>    <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer;<br>    <span class="hljs-type">uvm_gpu_address_t</span> dst_gpu_address, auth_tag_gpu_address;<br>    <span class="hljs-type">void</span> *src_cipher, *auth_tag;<br>    va_list args;<br><br>    UVM_ASSERT(uvm_conf_computing_mode_enabled(gpu));<br>    UVM_ASSERT(size &lt;= UVM_CONF_COMPUTING_DMA_BUFFER_SIZE);<br><br>    status = uvm_conf_computing_dma_buffer_alloc(&amp;gpu-&gt;conf_computing.dma_buffer_pool, &amp;dma_buffer, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">return</span> status;<br><br>    va_start(args, format);<br>    status = uvm_push_begin_acquire(gpu-&gt;channel_manager, UVM_CHANNEL_TYPE_GPU_TO_CPU, tracker, &amp;push, format, args);<br>    va_end(args);<br><br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">goto</span> out;<br><br>    uvm_conf_computing_log_gpu_encryption(push.channel, &amp;decrypt_iv);<br><br>    dst_gpu_address = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;alloc, gpu);<br>    auth_tag_gpu_address = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;auth_tag, gpu);<br>    gpu-&gt;parent-&gt;ce_hal-&gt;encrypt(&amp;push, dst_gpu_address, src_gpu_address, size, auth_tag_gpu_address);<br><br>    status = uvm_push_end_and_wait(&amp;push);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">goto</span> out;<br><br>    src_cipher = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;alloc);<br>    auth_tag = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;auth_tag);<br>    status = uvm_conf_computing_cpu_decrypt(push.channel, dst_plain, src_cipher, &amp;decrypt_iv, size, auth_tag);<br><br> out:<br>    uvm_conf_computing_dma_buffer_free(&amp;gpu-&gt;conf_computing.dma_buffer_pool, dma_buffer, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">return</span> status;<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>gpu</strong>：指向 GPU 结构体的指针。</li><li><strong>dst_plain</strong>：目标 CPU 缓冲区的指针，用于存储解密后的明文数据。</li><li><strong>src_gpu_address</strong>：源 GPU 地址，包含需要加密的数据。</li><li><strong>size</strong>：需要复制的数据大小。</li><li><strong>tracker</strong>：用于跟踪操作的追踪器，可以为 NULL。</li><li><strong>format</strong>：格式化字符串，用于日志记录。</li><li><strong>...</strong>：可变参数列表，与格式化字符串对应。</li></ul></li><li>返回值<ul><li><strong>NV_STATUS</strong>：表示操作的状态，可能的值包括 <code>NV_OK</code>（成功）或其他错误代码。</li></ul></li><li>流程<ul><li>初始化变量和检查条件<ul><li><strong>初始化状态变量和加密相关变量</strong>。</li><li><strong>检查 GPU 是否启用了机密计算模式</strong>。</li><li><strong>确保要复制的数据大小不超过最大限制</strong> <code>UVM_CONF_COMPUTING_DMA_BUFFER_SIZE</code>。</li></ul></li><li>分配 DMA 缓冲区<ul><li><strong>从 GPU 的 DMA 缓冲池中分配一个 DMA 缓冲区</strong>。</li><li><strong>如果分配失败，返回错误状态</strong>。</li></ul></li><li>开始推送命令并记录日志<ul><li><strong>使用可变参数列表初始化推送命令</strong>。</li><li><strong>如果推送命令初始化失败，跳转到错误处理部分</strong>。</li><li><strong>记录 GPU 加密操作的日志</strong>。</li></ul></li><li>设置地址并执行加密<ul><li><strong>设置目标 GPU 地址和认证标签地址</strong>。</li><li><strong>使用复制引擎在 GPU 上执行加密操作</strong>。</li><li><strong>等待推送命令完成</strong>。</li><li><strong>如果等待失败，跳转到错误处理部分</strong>。</li></ul></li><li>获取加密数据并在 CPU 上解密<ul><li><strong>获取加密数据和认证标签的 CPU 地址</strong>。</li><li><strong>在 CPU 上执行解密操作</strong>。</li><li><strong>如果解密失败，跳转到错误处理部分</strong>。</li></ul></li><li>错误处理和释放资源<ul><li><strong>释放分配的 DMA 缓冲区</strong>。</li><li><strong>返回操作状态</strong>。</li></ul></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d64150a0" role="button" aria-expanded="false" aria-controls="collapse-d64150a0">
+        <div class="fold-arrow">▶</div>encrypted_memcopy_cpu_to_gpu 在 CPU 和 GPU 之间进行同步加密复制的操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d64150a0">
+        <div class="fold-content">
+          <p>实现了在 CPU 和 GPU 之间进行同步加密复制的操作。它通过 CPU 端的加密和 GPU 端的解密，将 CPU 上的明文数据传输到 GPU，最终在目标 GPU 缓冲区中得到解密后的密文数据。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 启动 CPU 和 GPU 之间的同步加密复制操作。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 源 CPU 缓冲区（由 src_plain 指向）包含未加密的明文内容；</span><br><span class="hljs-comment">// 该函数在内部执行 CPU 端加密步骤，然后启动 GPU 端 CE 解密。</span><br><span class="hljs-comment">// 源缓冲区可以在受保护或未受保护的系统内存中，而目标缓冲区必须在受保护的显存中。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 允许的最大复制大小是 UVM_CONF_COMPUTING_DMA_BUFFER_SIZE。</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">// 如果输入追踪器不为 NULL，则由负责加密复制的推送命令内部获取。</span><br>__attribute__ ((format(<span class="hljs-built_in">printf</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>)))<br><span class="hljs-type">static</span> NV_STATUS <span class="hljs-title function_">encrypted_memcopy_cpu_to_gpu</span><span class="hljs-params">(<span class="hljs-type">uvm_gpu_t</span> *gpu,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_gpu_address_t</span> dst_gpu_address,</span><br><span class="hljs-params">                                              <span class="hljs-type">void</span> *src_plain,</span><br><span class="hljs-params">                                              <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">                                              <span class="hljs-type">uvm_tracker_t</span> *tracker,</span><br><span class="hljs-params">                                              <span class="hljs-type">const</span> <span class="hljs-type">char</span> *format,</span><br><span class="hljs-params">                                              ...)</span><br>&#123;<br>    NV_STATUS status;<br>    <span class="hljs-type">uvm_push_t</span> push;<br>    <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer;<br>    <span class="hljs-type">uvm_gpu_address_t</span> src_gpu_address, auth_tag_gpu_address;<br>    <span class="hljs-type">void</span> *dst_cipher, *auth_tag;<br>    va_list args;<br><br>    <span class="hljs-comment">// 确认 GPU 启用了机密计算模式</span><br>    UVM_ASSERT(uvm_conf_computing_mode_enabled(gpu));<br>    <span class="hljs-comment">// 确认数据大小不超过最大限制</span><br>    UVM_ASSERT(size &lt;= UVM_CONF_COMPUTING_DMA_BUFFER_SIZE);<br><br>    <span class="hljs-comment">// 分配 DMA 缓冲区</span><br>    status = uvm_conf_computing_dma_buffer_alloc(&amp;gpu-&gt;conf_computing.dma_buffer_pool, &amp;dma_buffer, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">return</span> status;<br><br>    <span class="hljs-comment">// 初始化推送命令</span><br>    va_start(args, format);<br>    status = uvm_push_begin_acquire(gpu-&gt;channel_manager, UVM_CHANNEL_TYPE_CPU_TO_GPU, tracker, &amp;push, format, args);<br>    va_end(args);<br><br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">goto</span> out;<br><br>    <span class="hljs-comment">// 获取加密数据和认证标签的 CPU 地址</span><br>    dst_cipher = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;alloc);<br>    auth_tag = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;auth_tag);<br>    <span class="hljs-comment">// 在 CPU 上执行加密操作</span><br>    uvm_conf_computing_cpu_encrypt(push.channel, dst_cipher, src_plain, <span class="hljs-literal">NULL</span>, size, auth_tag);<br><br>    <span class="hljs-comment">// 设置源 GPU 地址和认证标签地址</span><br>    src_gpu_address = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;alloc, gpu);<br>    auth_tag_gpu_address = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;auth_tag, gpu);<br>    <span class="hljs-comment">// 在 GPU 上执行解密操作</span><br>    gpu-&gt;parent-&gt;ce_hal-&gt;decrypt(&amp;push, dst_gpu_address, src_gpu_address, size, auth_tag_gpu_address);<br><br>    <span class="hljs-comment">// 等待推送命令完成</span><br>    status = uvm_push_end_and_wait(&amp;push);<br><br>out:<br>    <span class="hljs-comment">// 释放 DMA 缓冲区</span><br>    uvm_conf_computing_dma_buffer_free(&amp;gpu-&gt;conf_computing.dma_buffer_pool, dma_buffer, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">return</span> status;<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>gpu</strong>：指向 GPU 结构体的指针。</li><li><strong>dst_gpu_address</strong>：目标 GPU 地址，存储解密后的密文数据。</li><li><strong>src_plain</strong>：源 CPU 缓冲区的指针，包含未加密的明文数据。</li><li><strong>size</strong>：需要复制的数据大小。</li><li><strong>tracker</strong>：用于跟踪操作的追踪器，可以为 NULL。</li><li><strong>format</strong>：格式化字符串，用于日志记录。</li><li><strong>...</strong>：可变参数列表，与格式化字符串对应。</li></ul></li><li>返回值<ul><li><strong>NV_STATUS</strong>：表示操作的状态，可能的值包括 <code>NV_OK</code>（成功）或其他错误代码。</li></ul></li><li>流程<ul><li>初始化变量和检查条件<ul><li><strong>初始化状态变量和加密相关变量</strong>。</li><li><strong>检查 GPU 是否启用了机密计算模式</strong>。</li><li><strong>确保要复制的数据大小不超过最大限制</strong> <code>UVM_CONF_COMPUTING_DMA_BUFFER_SIZE</code>。</li></ul></li><li>分配 DMA 缓冲区<ul><li><strong>从 GPU 的 DMA 缓冲池中分配一个 DMA 缓冲区</strong>。</li><li><strong>如果分配失败，返回错误状态</strong>。</li></ul></li><li>开始推送命令并记录日志<ul><li><strong>使用可变参数列表初始化推送命令</strong>。</li><li><strong>如果推送命令初始化失败，跳转到错误处理部分</strong>。</li></ul></li><li>CPU 端加密操作<ul><li><strong>获取加密数据和认证标签的 CPU 地址</strong>。</li><li><strong>在 CPU 上执行加密操作</strong>。</li></ul></li><li>设置地址并执行解密<ul><li><strong>设置源 GPU 地址和认证标签地址</strong>。</li><li><strong>使用复制引擎在 GPU 上执行解密操作</strong>。</li><li><strong>等待推送命令完成</strong>。</li></ul></li><li>错误处理和释放资源<ul><li><strong>释放分配的 DMA 缓冲区</strong>。</li><li><strong>返回操作状态</strong>。</li></ul></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-0fbfa9de" role="button" aria-expanded="false" aria-controls="collapse-0fbfa9de">
+        <div class="fold-arrow">▶</div>uvm_conf_computing_mode_enabled 查询 HCC 状态
+      </div>
+      <div class="fold-collapse collapse" id="collapse-0fbfa9de">
+        <div class="fold-content">
+          <p>查询 HCC 状态。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_enabled_parent</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_parent_gpu_t</span> *parent)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> uvm_conf_computing_get_mode(parent) != UVM_GPU_CONF_COMPUTE_MODE_NONE;<br>&#125;<br><br><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_enabled</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_gpu_t</span> *gpu)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> uvm_conf_computing_mode_enabled_parent(gpu-&gt;parent);<br>&#125;<br><br><span class="hljs-type">bool</span> <span class="hljs-title function_">uvm_conf_computing_mode_is_hcc</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_gpu_t</span> *gpu)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> uvm_conf_computing_get_mode(gpu-&gt;parent) == UVM_GPU_CONF_COMPUTE_MODE_HCC;<br>&#125;<br><br><span class="hljs-type">static</span> UvmGpuConfComputeMode <span class="hljs-title function_">uvm_conf_computing_get_mode</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">uvm_parent_gpu_t</span> *parent)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> parent-&gt;rm_info.gpuConfComputeCaps.mode;<br>&#125;WS<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">enum</span></span><br><span class="hljs-class">&#123;</span><br>    UVM_GPU_CONF_COMPUTE_MODE_NONE,<br>    UVM_GPU_CONF_COMPUTE_MODE_APM,<br>    UVM_GPU_CONF_COMPUTE_MODE_HCC,<br>    UVM_GPU_CONF_COMPUTE_MODE_COUNT<br>&#125; UvmGpuConfComputeMode;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">UvmGpuInfo_tag</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">// ...</span><br><br>    <span class="hljs-comment">// Confidential Compute capabilities of this GPU</span><br>    UvmGpuConfComputeCaps gpuConfComputeCaps;<br><br>    <span class="hljs-comment">// ...</span><br>&#125; UvmGpuInfo;<br><br>nvGpuOpsGetGpuInfo()<br>--&gt; status = nvGpuOpsQueryGpuConfidentialComputeCaps(clientHandle, &amp;pGpuInfo-&gt;gpuConfComputeCaps);<br><br><span class="hljs-type">static</span> NV_STATUS<br><span class="hljs-title function_">nvGpuOpsQueryGpuConfidentialComputeCaps</span><span class="hljs-params">(NvHandle hClient,</span><br><span class="hljs-params">                                        UvmGpuConfComputeCaps *pGpuConfComputeCaps)</span><br>&#123;<br>    NV_CONFIDENTIAL_COMPUTE_ALLOC_PARAMS confComputeAllocParams = &#123;<span class="hljs-number">0</span>&#125;;<br>    NV_CONF_COMPUTE_CTRL_CMD_SYSTEM_GET_CAPABILITIES_PARAMS confComputeParams = &#123;<span class="hljs-number">0</span>&#125;;<br>    RM_API *pRmApi = rmapiGetInterface(RMAPI_EXTERNAL_KERNEL);<br>    NvHandle hConfCompute = <span class="hljs-number">0</span>;<br>    NV_STATUS status = NV_OK;<br><br>    <span class="hljs-comment">// ...</span><br><br>    <span class="hljs-keyword">if</span> (confComputeParams.ccFeature == NV_CONF_COMPUTE_SYSTEM_FEATURE_APM_ENABLED)<br>    &#123;<br>        pGpuConfComputeCaps-&gt;mode = UVM_GPU_CONF_COMPUTE_MODE_APM;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (confComputeParams.ccFeature == NV_CONF_COMPUTE_SYSTEM_FEATURE_HCC_ENABLED)<br>    &#123;<br>        pGpuConfComputeCaps-&gt;mode = UVM_GPU_CONF_COMPUTE_MODE_HCC;<br>    &#125;<br><br>cleanup:<br>    pRmApi-&gt;Free(pRmApi, hClient, hConfCompute);<br>    <span class="hljs-keyword">return</span> status;<br>&#125;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-87d70493" role="button" aria-expanded="false" aria-controls="collapse-87d70493">
+        <div class="fold-arrow">▶</div>conf_computing_dma_buffer_pool_init
+      </div>
+      <div class="fold-collapse collapse" id="collapse-87d70493">
+        <div class="fold-content">
+          <p>分配并映射新的 DMA 阶段缓冲区到 CPU 和 GPU（VA）</p><p>主体调用了 <code>dma_buffer_create()</code>：</p><p>用于分配并映射新的DMA缓冲区到CPU和GPU的虚拟地址空间。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> NV_STATUS <span class="hljs-title function_">dma_buffer_create</span><span class="hljs-params">(<span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span> *dma_buffer_pool,</span><br><span class="hljs-params">                                   <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> **dma_buffer_out)</span><br></code></pre></td></tr></table></figure><ul><li><strong>参数</strong>：<ul><li><code>dma_buffer_pool</code>：指向DMA缓冲区池的指针，用于管理DMA缓冲区的分配。</li><li><code>dma_buffer_out</code>：指向指针的指针，用于输出分配的DMA缓冲区。</li></ul></li><li><strong>返回值</strong>：<ul><li><code>NV_STATUS</code>：表示操作的状态，可以是成功（<code>NV_OK</code>）或失败（如<code>NV_ERR_NO_MEMORY</code>）。</li></ul></li><li>流程<ul><li>变量定义和初始化</li><li>分配并初始化DMA缓冲区结构</li><li>获取DMA缓冲区所有者并初始化相关结构</li><li>分配和映射DMA缓冲区到CPU内核空间</li><li>将分配的内存映射到GPU内核空间</li><li>分配和映射认证标签内存到CPU内核空间</li><li>将认证标签内存映射到GPU内核空间</li><li>成功分配并返回</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-15f185ba" role="button" aria-expanded="false" aria-controls="collapse-15f185ba">
+        <div class="fold-arrow">▶</div>dummy_iv_mem_init 为指定的GPU分配和映射用于存储初始化向量（IV）的内存
+      </div>
+      <div class="fold-collapse collapse" id="collapse-15f185ba">
+        <div class="fold-content">
+          <p>为指定的GPU分配和映射用于存储初始化向量（IV）的内存。如果GPU处于特定的计算模式（例如HCC模式），则执行这些操作。</p><ul><li>参数 <strong>gpu</strong>：指向表示GPU的结构体的指针。</li><li>返回值 <strong>NV_STATUS</strong>：表示操作的状态，可以是<code>NV_OK</code>（成功）或其他错误代码。</li><li>流程<ul><li>检查GPU计算模式：检查GPU是否处于特定的计算模式（例如HCC模式）。如果不处于该模式，则不需要进行任何初始化，直接返回成功状态<code>NV_OK</code>。</li><li>分配系统内存用于初始化向量（IV）<ul><li>调用 <code>uvm_mem_alloc_sysmem_dma</code> 函数分配系统内存，并将其映射为DMA内存。</li><li>分配的内存大小为 <code>sizeof(UvmCslIv)</code>，存储在 <code>gpu-&gt;conf_computing.iv_mem</code> 中。</li><li>如果分配失败，返回相应的错误状态 <code>status</code>。</li></ul></li><li>将分配的内存映射到GPU内核空间<ul><li>调用 <code>uvm_mem_map_gpu_kernel</code> 函数将分配的内存映射到GPU内核空间。</li><li>如果映射失败，跳转到错误处理部分 <code>error</code>。</li></ul></li><li>成功返回：如果所有操作都成功，返回 <code>NV_OK</code>，表示初始化成功。</li><li>错误处理部分<ul><li>如果在内存分配或映射过程中发生错误，跳转到 <code>error</code> 标签。</li><li>调用 <code>dummy_iv_mem_deinit</code> 函数进行清理，释放已经分配的资源。</li><li>返回错误状态 <code>status</code>。</li></ul></li></ul></li></ul><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> NV_STATUS <span class="hljs-title function_">dummy_iv_mem_init</span><span class="hljs-params">(<span class="hljs-type">uvm_gpu_t</span> *gpu)</span><br>&#123;<br>    NV_STATUS status;<br><br>    <span class="hljs-keyword">if</span> (!uvm_conf_computing_mode_is_hcc(gpu))<br>        <span class="hljs-keyword">return</span> NV_OK;<br><br>    status = uvm_mem_alloc_sysmem_dma(<span class="hljs-keyword">sizeof</span>(UvmCslIv), gpu, <span class="hljs-literal">NULL</span>, &amp;gpu-&gt;conf_computing.iv_mem);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">return</span> status;<br><br>    status = uvm_mem_map_gpu_kernel(gpu-&gt;conf_computing.iv_mem, gpu);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">goto</span> error;<br><br>    <span class="hljs-keyword">return</span> NV_OK;<br><br>error:<br>    dummy_iv_mem_deinit(gpu);<br>    <span class="hljs-keyword">return</span> status;<br>&#125;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_gpu_struct</span> <span class="hljs-title">uvm_gpu_t</span>;</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">uvm_gpu_struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">uvm_parent_gpu_t</span> *parent;<br>    <span class="hljs-comment">// ...</span><br><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">    &#123;</span><br>        <span class="hljs-type">uvm_conf_computing_dma_buffer_pool_t</span> dma_buffer_pool;<br><br>        <span class="hljs-comment">// 在CE加密过程中用于存储IV内容的临时内存。这个内存位置只有在CE通道之后才可用，</span><br>        <span class="hljs-comment">// 因为我们使用它们来写入分配所需的PTE（页表项）。当需要物理地址来访问IV缓冲区时使用这个位置。</span><br>        <span class="hljs-comment">// 参考函数：uvm_hal_hopper_ce_encrypt()。</span><br>        <span class="hljs-type">uvm_mem_t</span> *iv_mem;<br><br>        <span class="hljs-comment">// 在CE加密过程中用于存储IV内容的临时内存。由于`iv_mem`的限制，并且需要在通道初始化时使用此类缓冲区，</span><br>        <span class="hljs-comment">// 我们使用RM分配。当需要虚拟地址来访问IV缓冲区时使用这个位置。</span><br>        <span class="hljs-comment">// 参考函数：uvm_hal_hopper_ce_encrypt()。</span><br>        <span class="hljs-type">uvm_rm_mem_t</span> *iv_rm_mem;<br>    &#125; conf_computing;<br><br>    <span class="hljs-comment">// ...</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-aae03ce4" role="button" aria-expanded="false" aria-controls="collapse-aae03ce4">
+        <div class="fold-arrow">▶</div>conf_computing_block_copy_push_cpu_to_gpu CPU 端页面加密和 GPU 端解密操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-aae03ce4">
+        <div class="fold-content">
+          <p>间接调用了 <code>uvm_hal_hopper_ce_decrypt</code></p><p>实现了在启用机密计算功能时，CPU 端页面加密和 GPU 端解密操作。它使用推送命令（push）在 GPU 上执行这些操作，并且 GPU 操作会遵守调用者先前在推送命令中设置的内存屏障（membar）。以下是对这段代码的详细分析：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 当启用机密计算功能时，该函数执行 CPU 端页面加密和 GPU 端解密到 CPR。</span><br><span class="hljs-comment">// GPU 操作遵守调用者在推送命令中先前设置的内存屏障。</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">conf_computing_block_copy_push_cpu_to_gpu</span><span class="hljs-params">(<span class="hljs-type">uvm_va_block_t</span> *block,</span><br><span class="hljs-params">                                                      <span class="hljs-type">block_copy_state_t</span> *copy_state,</span><br><span class="hljs-params">                                                      <span class="hljs-type">uvm_va_block_region_t</span> region,</span><br><span class="hljs-params">                                                      <span class="hljs-type">uvm_push_t</span> *push)</span><br>&#123;<br>    <span class="hljs-type">uvm_push_flag_t</span> membar_flag = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uvm_gpu_t</span> *gpu = uvm_push_get_gpu(push);<br>    <span class="hljs-type">uvm_page_index_t</span> page_index = region.first;<br>    <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer = copy_state-&gt;dma_buffer;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">page</span> *<span class="hljs-title">src_page</span> =</span> uvm_cpu_chunk_get_cpu_page(block, page_index);<br>    <span class="hljs-type">uvm_gpu_address_t</span> staging_buffer = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;alloc, gpu);<br>    <span class="hljs-type">uvm_gpu_address_t</span> auth_tag_buffer = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;auth_tag, gpu);<br>    <span class="hljs-type">char</span> *cpu_auth_tag_buffer = (<span class="hljs-type">char</span> *)uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;auth_tag) +<br>                                        (page_index * UVM_CONF_COMPUTING_AUTH_TAG_SIZE);<br>    <span class="hljs-type">uvm_gpu_address_t</span> dst_address = block_copy_get_address(block, &amp;copy_state-&gt;dst, page_index, gpu);<br>    <span class="hljs-type">char</span> *cpu_va_staging_buffer = (<span class="hljs-type">char</span> *)uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;alloc) + (page_index * PAGE_SIZE);<br><br>    UVM_ASSERT(UVM_ID_IS_CPU(copy_state-&gt;src.id));<br>    UVM_ASSERT(UVM_ID_IS_GPU(copy_state-&gt;dst.id));<br><br>    UVM_ASSERT(uvm_conf_computing_mode_enabled(gpu));<br><br>    <span class="hljs-comment">// 参见 block_copy_begin_push 中的注释。</span><br>    UVM_ASSERT(uvm_tracker_is_completed(&amp;block-&gt;tracker));<br><br>    staging_buffer.address += page_index * PAGE_SIZE;<br>    auth_tag_buffer.address += page_index * UVM_CONF_COMPUTING_AUTH_TAG_SIZE;<br><br>    <span class="hljs-keyword">if</span> (uvm_push_get_and_reset_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_NONE))<br>        membar_flag = UVM_PUSH_FLAG_NEXT_MEMBAR_NONE;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (uvm_push_get_and_reset_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_GPU))<br>        membar_flag = UVM_PUSH_FLAG_NEXT_MEMBAR_GPU;<br><br>    <span class="hljs-comment">// kmap() 只保证 PAGE_SIZE 的连续性，所有加密和解密必须在 PAGE_SIZE 的基础上进行。</span><br>    for_each_va_block_page_in_region(page_index, region) &#123;<br>        <span class="hljs-type">void</span> *src_cpu_virt_addr;<br><br>        <span class="hljs-comment">// 调用者保证区域内的所有页面都是连续的，</span><br>        <span class="hljs-comment">// 这意味着它们被保证是同一个复合页面的一部分。</span><br>        UVM_ASSERT(src_page == uvm_cpu_chunk_get_cpu_page(block, page_index));<br><br>        src_cpu_virt_addr = kmap(src_page);<br>        uvm_conf_computing_cpu_encrypt(push-&gt;channel,<br>                                       cpu_va_staging_buffer,<br>                                       src_cpu_virt_addr,<br>                                       <span class="hljs-literal">NULL</span>,<br>                                       PAGE_SIZE,<br>                                       cpu_auth_tag_buffer);<br>        kunmap(src_page);<br><br>        <span class="hljs-comment">// 第一个 LCE 操作应该是非流水线的，以保证顺序，因为我们不知道上次非流水线复制的时间。</span><br>        <span class="hljs-comment">// 最后一个应用最初为推送计划的 membar（如果有的话）</span><br>        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 3857691: 继承策略而不是强制第一次调用非流水线。</span><br>        <span class="hljs-keyword">if</span> (page_index &gt; region.first)<br>            uvm_push_set_flag(push, UVM_PUSH_FLAG_CE_NEXT_PIPELINED);<br><br>        <span class="hljs-keyword">if</span> (page_index &lt; (region.outer - <span class="hljs-number">1</span>))<br>            uvm_push_set_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_NONE);<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (membar_flag)<br>            uvm_push_set_flag(push, membar_flag);<br><br>        gpu-&gt;parent-&gt;ce_hal-&gt;decrypt(push, dst_address, staging_buffer, PAGE_SIZE, auth_tag_buffer);<br><br>        src_page++;<br>        dst_address.address += PAGE_SIZE;<br>        cpu_va_staging_buffer += PAGE_SIZE;<br>        staging_buffer.address += PAGE_SIZE;<br>        cpu_auth_tag_buffer += UVM_CONF_COMPUTING_AUTH_TAG_SIZE;<br>        auth_tag_buffer.address += UVM_CONF_COMPUTING_AUTH_TAG_SIZE;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>block</strong>：表示虚拟地址块的结构体指针。</li><li><strong>copy_state</strong>：表示块复制状态的结构体指针。</li><li><strong>region</strong>：表示虚拟地址块区域的结构体。</li><li><strong>push</strong>：用于推送命令的结构体指针。</li></ul></li><li>流程<ul><li>初始化变量<ul><li><strong>初始化 GPU 和 DMA 缓冲区相关的变量</strong>。</li><li><strong>获取源页面、目标地址和认证标签的相关信息</strong>。</li></ul></li><li>参数和状态验证<ul><li><strong>验证源和目标是否为 CPU 和 GPU</strong>。</li><li><strong>确保 GPU 启用了机密计算模式</strong>。</li><li><strong>确保块追踪器已经完成</strong>。</li></ul></li><li>调整缓冲区地址：<strong>根据页面索引调整 staging_buffer 和 auth_tag_buffer 的地址</strong>。</li><li>内存屏障标志设置：<strong>根据推送命令设置内存屏障标志</strong>。</li><li>循环处理每个页面<ul><li><strong>循环处理区域内的每个页面</strong>。</li><li><strong>对每个页面进行 kmap 和 kunmap 操作</strong>。</li><li><strong>执行 CPU 端加密，并使用 GPU 端解密</strong>。</li></ul></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-0efd135b" role="button" aria-expanded="false" aria-controls="collapse-0efd135b">
+        <div class="fold-arrow">▶</div>conf_computing_block_copy_push_gpu_to_cpu GPU 端页面加密和 CPU 端解密操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-0efd135b">
+        <div class="fold-content">
+          <p>调用了decrypt，间接调用了 <code>uvm_hal_hopper_ce_encrypt</code></p><p>实现了在启用机密计算功能时，GPU 端页面加密和 CPU 端解密操作。它使用推送命令（push）在 GPU 上执行这些操作，并且 GPU 操作会遵守调用者先前在推送命令中设置的内存屏障（membar）。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 当启用机密计算功能时，该函数执行 GPU 端页面加密。GPU 操作遵守调用者在推送命令中先前设置的内存屏障。</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">conf_computing_block_copy_push_gpu_to_cpu</span><span class="hljs-params">(<span class="hljs-type">uvm_va_block_t</span> *block,</span><br><span class="hljs-params">                                                      <span class="hljs-type">block_copy_state_t</span> *copy_state,</span><br><span class="hljs-params">                                                      <span class="hljs-type">uvm_va_block_region_t</span> region,</span><br><span class="hljs-params">                                                      <span class="hljs-type">uvm_push_t</span> *push)</span><br>&#123;<br>    <span class="hljs-type">uvm_push_flag_t</span> membar_flag = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uvm_gpu_t</span> *gpu = uvm_push_get_gpu(push);<br>    <span class="hljs-type">uvm_page_index_t</span> page_index = region.first;<br>    <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer = copy_state-&gt;dma_buffer;<br>    <span class="hljs-type">uvm_gpu_address_t</span> staging_buffer = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;alloc, gpu);<br>    <span class="hljs-type">uvm_gpu_address_t</span> auth_tag_buffer = uvm_mem_gpu_address_virtual_kernel(dma_buffer-&gt;auth_tag, gpu);<br>    <span class="hljs-type">uvm_gpu_address_t</span> src_address = block_copy_get_address(block, &amp;copy_state-&gt;src, page_index, gpu);<br><br>    UVM_ASSERT(UVM_ID_IS_GPU(copy_state-&gt;src.id));<br>    UVM_ASSERT(UVM_ID_IS_CPU(copy_state-&gt;dst.id));<br><br>    UVM_ASSERT(uvm_conf_computing_mode_enabled(gpu));<br><br>    staging_buffer.address += page_index * PAGE_SIZE;<br>    auth_tag_buffer.address += page_index * UVM_CONF_COMPUTING_AUTH_TAG_SIZE;<br><br>    <span class="hljs-keyword">if</span> (uvm_push_get_and_reset_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_NONE))<br>        membar_flag = UVM_PUSH_FLAG_NEXT_MEMBAR_NONE;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (uvm_push_get_and_reset_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_GPU))<br>        membar_flag = UVM_PUSH_FLAG_NEXT_MEMBAR_GPU;<br><br>    <span class="hljs-comment">// 由于我们使用 kmap() 映射用于 CPU 端加密操作的页面，它只保证 PAGE_SIZE 的连续性，</span><br>    <span class="hljs-comment">// 所有加密和解密操作必须在 PAGE_SIZE 基础上进行。</span><br>    for_each_va_block_page_in_region(page_index, region) &#123;<br>        uvm_conf_computing_log_gpu_encryption(push-&gt;channel, &amp;dma_buffer-&gt;decrypt_iv[page_index]);<br><br>        <span class="hljs-comment">// 第一个 LCE 操作应该是非流水线的，以保证顺序，因为我们不知道上次非流水线复制的时间。</span><br>        <span class="hljs-comment">// 最后一个应用最初为推送计划的 membar（如果有的话）</span><br>        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 3857691: 继承策略而不是强制第一次调用非流水线。</span><br>        <span class="hljs-keyword">if</span> (page_index &gt; region.first)<br>            uvm_push_set_flag(push, UVM_PUSH_FLAG_CE_NEXT_PIPELINED);<br><br>        <span class="hljs-keyword">if</span> (page_index &lt; (region.outer - <span class="hljs-number">1</span>))<br>            uvm_push_set_flag(push, UVM_PUSH_FLAG_NEXT_MEMBAR_NONE);<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (membar_flag)<br>            uvm_push_set_flag(push, membar_flag);<br><br>        gpu-&gt;parent-&gt;ce_hal-&gt;encrypt(push, staging_buffer, src_address, PAGE_SIZE, auth_tag_buffer);<br><br>        src_address.address += PAGE_SIZE;<br>        staging_buffer.address += PAGE_SIZE;<br>        auth_tag_buffer.address += UVM_CONF_COMPUTING_AUTH_TAG_SIZE;<br>    &#125;<br><br>    uvm_page_mask_region_fill(&amp;dma_buffer-&gt;encrypted_page_mask, region);<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>block</strong>：表示虚拟地址块的结构体指针。</li><li><strong>copy_state</strong>：表示块复制状态的结构体指针。</li><li><strong>region</strong>：表示虚拟地址块区域的结构体。</li><li><strong>push</strong>：用于推送命令的结构体指针。</li></ul></li><li>流程<ul><li>初始化变量<ul><li><strong>初始化 GPU 和 DMA 缓冲区相关的变量</strong>。</li><li><strong>获取源地址和认证标签的相关信息</strong>。</li></ul></li><li>参数和状态验证<ul><li><strong>验证源和目标是否为 GPU 和 CPU</strong>。</li><li><strong>确保 GPU 启用了机密计算模式</strong>。</li></ul></li><li>调整缓冲区地址：<strong>根据页面索引调整 staging_buffer 和 auth_tag_buffer 的地址</strong>。</li><li>内存屏障标志设置：<strong>根据推送命令设置内存屏障标志</strong>。</li><li>循环处理每个页面<ul><li><strong>循环处理区域内的每个页面</strong>。</li><li><strong>记录 GPU 加密操作</strong>。</li><li><strong>执行 GPU 端加密操作，并根据页面索引调整地址和认证标签地址</strong>。</li></ul></li><li>填充已加密页面掩码：<strong>更新 DMA 缓冲区中的已加密页面掩码</strong>。</li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-985bda36" role="button" aria-expanded="false" aria-controls="collapse-985bda36">
+        <div class="fold-arrow">▶</div>conf_computing_copy_pages_finish 完成机密计算中的页面复制操作
+      </div>
+      <div class="fold-collapse collapse" id="collapse-985bda36">
+        <div class="fold-content">
+          <p>负责完成机密计算中的页面复制操作。它在推送命令完成后，处理从GPU到CPU的页面数据传输，并在CPU端解密这些数据。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 当启用机密计算功能时，该函数完成 GPU 到 CPU 的页面复制操作。</span><br><span class="hljs-comment">// GPU 操作遵守调用者在推送命令中先前设置的内存屏障。</span><br><span class="hljs-type">static</span> NV_STATUS <span class="hljs-title function_">conf_computing_copy_pages_finish</span><span class="hljs-params">(<span class="hljs-type">uvm_va_block_t</span> *block,</span><br><span class="hljs-params">                                                  <span class="hljs-type">block_copy_state_t</span> *copy_state,</span><br><span class="hljs-params">                                                  <span class="hljs-type">uvm_push_t</span> *push)</span><br>&#123;<br>    NV_STATUS status;<br>    <span class="hljs-type">uvm_page_index_t</span> page_index;<br>    <span class="hljs-type">uvm_conf_computing_dma_buffer_t</span> *dma_buffer = copy_state-&gt;dma_buffer;<br>    <span class="hljs-type">uvm_page_mask_t</span> *encrypted_page_mask = &amp;dma_buffer-&gt;encrypted_page_mask;<br>    <span class="hljs-type">void</span> *auth_tag_buffer_base = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;auth_tag);<br>    <span class="hljs-type">void</span> *staging_buffer_base = uvm_mem_get_cpu_addr_kernel(dma_buffer-&gt;alloc);<br><br>    UVM_ASSERT(uvm_channel_is_secure(push-&gt;channel));<br><br>    <span class="hljs-keyword">if</span> (UVM_ID_IS_GPU(copy_state-&gt;dst.id))<br>        <span class="hljs-keyword">return</span> NV_OK;<br><br>    UVM_ASSERT(UVM_ID_IS_GPU(copy_state-&gt;src.id));<br><br>    status = uvm_push_wait(push);<br>    <span class="hljs-keyword">if</span> (status != NV_OK)<br>        <span class="hljs-keyword">return</span> status;<br><br>    <span class="hljs-comment">// kmap() 只保证 PAGE_SIZE 的连续性，所有加密和解密操作必须在 PAGE_SIZE 的基础上进行。</span><br>    for_each_va_block_page_in_mask(page_index, encrypted_page_mask, block) &#123;<br>        <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">page</span> *<span class="hljs-title">dst_page</span> =</span> uvm_cpu_chunk_get_cpu_page(block, page_index);<br>        <span class="hljs-type">void</span> *staging_buffer = (<span class="hljs-type">char</span> *)staging_buffer_base + (page_index * PAGE_SIZE);<br>        <span class="hljs-type">void</span> *auth_tag_buffer = (<span class="hljs-type">char</span> *)auth_tag_buffer_base + (page_index * UVM_CONF_COMPUTING_AUTH_TAG_SIZE);<br>        <span class="hljs-type">void</span> *cpu_page_address = kmap(dst_page);<br><br>        status = uvm_conf_computing_cpu_decrypt(push-&gt;channel,<br>                                                cpu_page_address,<br>                                                staging_buffer,<br>                                                &amp;dma_buffer-&gt;decrypt_iv[page_index],<br>                                                PAGE_SIZE,<br>                                                auth_tag_buffer);<br>        kunmap(dst_page);<br>        <span class="hljs-keyword">if</span> (status != NV_OK) &#123;<br>            <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> Bug 3814087: [UVM][HCC] 处理 CSL 认证标签验证失败和其他失败情况。</span><br>            <span class="hljs-comment">// uvm_conf_computing_cpu_decrypt() 可能因为认证标签验证失败而失败。</span><br>            <span class="hljs-comment">// 如果发生这种情况，认为是严重故障，无法恢复。</span><br>            uvm_global_set_fatal_error(status);<br>            <span class="hljs-keyword">return</span> status;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> NV_OK;<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>参数<ul><li><strong>block</strong>：表示虚拟地址块的结构体指针。</li><li><strong>copy_state</strong>：表示块复制状态的结构体指针。</li><li><strong>push</strong>：用于推送命令的结构体指针。</li></ul></li><li>返回值<ul><li><strong>NV_STATUS</strong>：表示操作的状态，可能的值包括 <code>NV_OK</code>（成功）或其他错误代码。</li></ul></li><li>流程<ul><li>初始化变量<ul><li><strong>初始化DMA缓冲区和相关内存地址</strong>。</li><li><strong>获取加密页面掩码、认证标签缓冲区基地址和暂存缓冲区基地址</strong>。</li></ul></li><li>参数和状态验证<ul><li><strong>确保推送命令的通道是安全的</strong>。</li><li><strong>如果目标是GPU，直接返回成功状态</strong>。</li><li><strong>确保源是GPU</strong>。</li></ul></li><li>等待推送命令完成<ul><li><strong>等待推送命令完成</strong>。</li><li><strong>如果等待失败，返回错误状态</strong>。</li></ul></li><li>处理每个页面<ul><li><strong>遍历加密页面掩码中的每个页面</strong>。</li><li><strong>获取目标页面和相关缓冲区地址</strong>。</li><li><strong>将页面映射到CPU地址空间</strong>。</li><li><strong>调用 <code>uvm_conf_computing_cpu_decrypt</code> 函数在CPU端解密页面数据</strong>。</li><li><strong>解除页面映射</strong>。</li><li><strong>如果解密失败，记录严重错误并返回错误状态</strong>。</li></ul></li></ul></li></ul>
+        </div>
+      </div>
+    </div>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/23/AI/Stable-Diffusion/" title="Stable Diffusion 安裝配置">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stable Diffusion 安裝配置</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/24/AI/Computing-Startup/" title="GPU Computing Startup">
+                        <span class="hidden-mobile">GPU Computing Startup</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

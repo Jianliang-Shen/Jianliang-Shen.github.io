@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="参考：通过可信内存区域（Trusted Memory Zone）支持安全缓冲区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trusted Memory Zone 介绍">
+<meta property="og:url" content="http://yoursite.com/2024/10/08/tmz/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="参考：通过可信内存区域（Trusted Memory Zone）支持安全缓冲区">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/gpu/amd/tmz2.png">
+<meta property="article:published_time" content="2024-10-08T14:38:47.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.993Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="KMD">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/gpu/amd/tmz2.png">
+  
+  
+  
+  <title>Trusted Memory Zone 介绍 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Trusted Memory Zone 介绍"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-10-08 14:38" pubdate>
+          2024年10月8日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Trusted Memory Zone 介绍</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>参考：<a href="https://lpc.events/event/9/contributions/630/attachments/703/1300/xdc2020_rayhuang_secure_buffer_with_tmz.pdf">通过可信内存区域（Trusted Memory Zone）支持安全缓冲区</a></p>
+<span id="more"></span>
+
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><ul>
+<li>内存加密是一项重要功能，可保护内容不被未经授权的应用程序访问。</li>
+<li>AMD GPU 开发了 TMZ（可信内存区域）来支持视频内存和系统内存加密。</li>
+<li>Linux® 内核、Mesa 和用户空间应用程序正在利用 TMZ 的功能来实现安全缓冲区支持，该支持可用于 Linux® 上的许多其他场景。</li>
+</ul>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><ul>
+<li>可信内存区域 (TMZ) 是一种保护正在写入和从内存读取的内容的方法。</li>
+<li>AMD GPU 平台支持全内存带宽 AES 密码。<ul>
+<li>所有 TMZ 读取和 TMZ 写入在到达内存之前都会经过 AES 密码。</li>
+<li>页表中的 TMZ 位和可信事务提供多重保护。<ul>
+<li>即使 TMZ 位配置错误，内容仍然是安全的，不会暴露。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="硬件平台支持"><a href="#硬件平台支持" class="headerlink" title="硬件平台支持"></a>硬件平台支持</h1><ul>
+<li>支持的硬件平台：<ul>
+<li>独立 GPU 平台（可加密显存）。</li>
+<li>APU（CPU + GPU）平台（可加密显存和系统内存）。</li>
+</ul>
+</li>
+<li>注意：我们目前仅在 Linux® 上启用了 APU 支持。</li>
+</ul>
+<h1 id="Secure-BO-Buffer-Object"><a href="#Secure-BO-Buffer-Object" class="headerlink" title="Secure BO(Buffer Object)"></a>Secure BO(Buffer Object)</h1><p><img src="/img/gpu/amd/tmz.png" srcset="/img/loading.gif" lazyload alt="Secure Buffer Object"></p>
+<h1 id="内核和-Mesa-安全缓冲区定义和握手"><a href="#内核和-Mesa-安全缓冲区定义和握手" class="headerlink" title="内核和 Mesa 安全缓冲区定义和握手"></a>内核和 Mesa 安全缓冲区定义和握手</h1><ul>
+<li>在内核驱动程序中初始化 BO 级保护，以便为 gem create ioctl 和 libdrm 提供新标志 AMDGPU_GEM_CREATE_ENCRYPTED，以进行安全缓冲区分配。<ul>
+<li>Mesa 使用分配缓冲区来决定是否安全。</li>
+<li>如果 Mesa 设置了 AMDGPU_GEM_CREATE_ENCRYPTED，则必须设置此缓冲区的整个页表条目的 TMZ 位。</li>
+</ul>
+</li>
+<li>提供 AMDGPU_IB_FLAGS_SECURE 来指示 IB（存储 GPU 命令的间接缓冲区）是否受信任。<ul>
+<li>Mesa 在命令提交上下文的 IB 句柄中使用此标志来通知内核图形引擎是否需要转换为受信任状态。</li>
+</ul>
+</li>
+<li>提供 AMDGPU_IDS_FLAGS_TMZ 来指示 TMZ 功能是否集成。<ul>
+<li>Mesa 使用此信息标志来了解当前 gpu 是否支持 TMZ。</li>
+</ul>
+</li>
+</ul>
+<h1 id="安全策略"><a href="#安全策略" class="headerlink" title="安全策略"></a>安全策略</h1><ul>
+<li><strong>CPU 作为不受信任的域</strong>，无法使用 TMZ 解密安全缓冲区。<ul>
+<li>即使经过 k 映射，用户也无法从 CPU 地址获取原始数据。</li>
+</ul>
+</li>
+<li>只有受信任的硬件块才有能力解密安全缓冲区。<ul>
+<li>所有加密内存只能通过映射 GPUVM 进行解密。</li>
+</ul>
+</li>
+<li>受信任的硬件块<ul>
+<li>GFX</li>
+<li>SDMA</li>
+<li>Video Codec Next (VCN) &#x2F; (JEPG)</li>
+<li>显示引擎</li>
+</ul>
+</li>
+</ul>
+<h1 id="写操作调制表"><a href="#写操作调制表" class="headerlink" title="写操作调制表"></a>写操作调制表</h1><table>
+<thead>
+<tr>
+<th>Transaction Trust State (0:Not trusted, 1:Trusted)</th>
+<th>TMZ bit in GPU table</th>
+<th>Modulation Result</th>
+<th>Encryption State in TMZ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>Not Encrypted</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>Encrypted</td>
+<td>ON</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>Encrypted</td>
+<td>ON</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>Encrypted</td>
+<td>ON</td>
+</tr>
+</tbody></table>
+<h1 id="读操作调制表"><a href="#读操作调制表" class="headerlink" title="读操作调制表"></a>读操作调制表</h1><table>
+<thead>
+<tr>
+<th>Transaction Trust State (0:Not trusted, 1:Trusted)</th>
+<th>TMZ bit in GPU table</th>
+<th>Modulation Result</th>
+<th>Decryption State in TMZ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>Not Decrypted</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>Not Decrypted</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>Not Decrypted</td>
+<td>OFF</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>Decrypted</td>
+<td>ON</td>
+</tr>
+</tbody></table>
+<h1 id="Per-IB-保护机制"><a href="#Per-IB-保护机制" class="headerlink" title="Per-IB 保护机制"></a>Per-IB 保护机制</h1><ul>
+<li>Per-IB 保护提交<ul>
+<li>IB（间接缓冲区）是存储 GFX 队列执行的数据包的命令缓冲区。</li>
+<li>内核实现 Per-IB 保护以使用安全缓冲区执行命令提交。<ul>
+<li>当发出具有不安全缓冲区的 IB 时，内核必须将 Transaction Trust State 设置为 Not Trusted。（遗留情况）</li>
+<li>当发出具有安全缓冲区的 IB 时，内核必须将 Transaction Trust State 设置为 Trusted</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/gpu/amd/tmz2.png" srcset="/img/loading.gif" lazyload alt="Per-IB"></p>
+<h1 id="使用安全缓冲区提交命令-GFX-SDMA-VCN"><a href="#使用安全缓冲区提交命令-GFX-SDMA-VCN" class="headerlink" title="使用安全缓冲区提交命令 - GFX&#x2F;SDMA&#x2F;VCN"></a>使用安全缓冲区提交命令 - GFX&#x2F;SDMA&#x2F;VCN</h1><ul>
+<li>GFX 使用 FRAME_TMZ 位和 PACKET3_FRAME_CONTROL 数据包来控制 GFX 引擎进入可信状态。</li>
+<li>SDMA 作为另一个可信硬件模块，它使用页表中的 TMZ 标志来决定执行常规读&#x2F;写还是可信读&#x2F;写。<ul>
+<li>当内核使用 SDMA 进行安全缓冲区复制时，内核需要在 COPY_LINEAR 数据包的操作码处设置 TMZ 位。</li>
+</ul>
+</li>
+<li>VCN 引擎不需要内核支持在上下文切换期间切换信任级别，它能够根据页表中的 TMZ 标志自行切换。</li>
+</ul>
+<h1 id="Display-Secure-Frame-Buffer"><a href="#Display-Secure-Frame-Buffer" class="headerlink" title="Display Secure Frame Buffer"></a>Display Secure Frame Buffer</h1><ul>
+<li>根据寄存器设置显示引擎安全状态。（不同于 GFX&#x2F;SDMA&#x2F;VCN）<ul>
+<li>显示驱动程序只对寄存器中的一位进行编程，以切换显示引擎的安全状态，而不是使用页表的 TMZ 位。（如果位编程错误，则无法获得有效数据）</li>
+<li>这允许在不使用页表的情况下安全访问 VRAM 中的显示缓冲区。</li>
+</ul>
+</li>
+</ul>
+<h1 id="安全单元测试套件和相关参数"><a href="#安全单元测试套件和相关参数" class="headerlink" title="安全单元测试套件和相关参数"></a>安全单元测试套件和相关参数</h1><ul>
+<li>在 libdrm amdgpu_test 中初始化安全测试套件：<ul>
+<li>套件：11：ENABLED：安全测试<ul>
+<li>测试：1：ENABLED：分配安全缓冲区测试</li>
+<li>测试：2：ENABLED：图形安全命令提交</li>
+<li>测试：3：ENABLED：sDMA 安全命令提交</li>
+<li>测试：4：ENABLED：安全反弹</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>启用 TMZ 的内核参数：amdgpu.tmz&#x3D;1</li>
+<li>启用 TMZ 的 Mesa 参数：AMD_DEBUG&#x3D;tmz</li>
+</ul>
+<h1 id="未加密与加密数据对比"><a href="#未加密与加密数据对比" class="headerlink" title="未加密与加密数据对比"></a>未加密与加密数据对比</h1><p><img src="/img/gpu/amd/tmz3.png" srcset="/img/loading.gif" lazyload alt="data"><br>参考</p>
+<ul>
+<li><a href="https://lists.freedesktop.org/archives/amd-gfx/2019-September/039928.html">linux</a></li>
+<li><a href="https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/70">drm</a></li>
+<li><a href="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/4401">mesa</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+        <a href="/tags/KMD/" class="print-no-link">#KMD</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/30/rust/" title="Rust 学习笔记">
+                        <span class="hidden-mobile">Rust 学习笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,833 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Transformer 的可视化解释：了解 LLM Transformer 模型如何与交互式可视化配合使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transformer Explainer 中文">
+<meta property="og:url" content="http://yoursite.com/2024/09/06/AI/Transformer-Explainer/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Transformer 的可视化解释：了解 LLM Transformer 模型如何与交互式可视化配合使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/TransformerExplainer/index.png">
+<meta property="article:published_time" content="2024-09-06T00:00:46.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.990Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/TransformerExplainer/index.png">
+  
+  
+  
+  <title>Transformer Explainer 中文 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><script src="/assets/js/DPlayer.min.js"></script></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Transformer Explainer 中文"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-06 00:00" pubdate>
+          2024年9月6日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Transformer Explainer 中文</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a href="https://github.com/poloclub/transformer-explainer">Transformer 的可视化解释：了解 LLM Transformer 模型如何与交互式可视化配合使用</a></p>
+<span id="more"></span>
+
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>Nodejs version &gt; 20.0</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/poloclub/transformer-explainer.git<br><span class="hljs-built_in">cd</span> transformer-explainer<br>npm install<br>npm run dev<br><br><span class="hljs-comment"># fix: cnpm install --platform=win32 --arch=x64 sharp</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="中文演示"><a href="#中文演示" class="headerlink" title="中文演示"></a>中文演示</h1><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"lang":"zh-cn","screenshot":true,"hotkey":true,"preload":"auto","volume":0.9,"mutex":true,"video":{"url":"/img/ai/TransformerExplainer/transformer.mp4","pic":"/img/ai/TransformerExplainer/index.png"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+<h1 id="互动功能"><a href="#互动功能" class="headerlink" title="互动功能"></a>互动功能</h1><p>Transformer Explainer 是交互式的，可让您探索 Transformer 的内部工作原理。以下是您可以使用的一些交互式功能：</p>
+<ul>
+<li>输入您自己的文本序列，看看模型如何处理它并预测下一个单词。探索注意力权重、中间计算， 并看看最终输出概率是如何计算的。</li>
+<li>使用温度滑块控制模型预测的随机性。探索如何通过更改温度值使模型输出更具确定性或更具创造性。</li>
+<li>与注意力图交互，查看模型如何关注输入序列中的不同标记。将鼠标悬停在标记上 以突出显示其注意力权重，并探索模型如何捕获上下文和单词之间的关系。</li>
+</ul>
+<h1 id="什么是-Transformer？"><a href="#什么是-Transformer？" class="headerlink" title="什么是 Transformer？"></a>什么是 Transformer？</h1><p>Transformer 首次出现在 2017 年的开创性论文 《Attention is All You Need》 中，此后已成为深度学习模型的首选架构，为 OpenAI 的 GPT、Meta 的 Llama 和 Google 的 Gemini 等文本生成模型提供支持。 除了文本之外，Transformer 还应用于 音频生成、 图像识别、 蛋白质结构预测，甚至 游戏中，展示了其在众多领域的多功能性。</p>
+<p>从根本上讲，文本生成 Transformer 模型的运行原理是下一个单词预测：给定用户的文本提示， 紧随此输入之后的最有可能的下一个单词是什么？Transformer 的核心创新和强大之处在于它们使用了 自注意力机制，这使得它们能够比以前的架构更有效地处理整个序列并捕获长距离依赖关系。</p>
+<p>GPT-2 系列模型是文本生成 Transformers 的杰出代表。Transformer Explainer 基于 GPT-2 (small)，该模型有 1.24 亿个参数。虽然它不是最新或最强大的 Transformer 模型， 但它具有许多与当前最先进模型相同的架构组件和原理，使其成为理解基础知识的理想起点。</p>
+<h1 id="Transformer-架构"><a href="#Transformer-架构" class="headerlink" title="Transformer 架构"></a>Transformer 架构</h1><p>每个文本生成 Transformer 都由以下三个关键组件组成：</p>
+<ul>
+<li>嵌入（Embedding）：文本输入被划分为更小的单位， 称为标记（token），可以是单词或子单词。这些标记被转换成数值向量，称为嵌入（Embedding），用于捕获单词的语义。</li>
+<li>Transformer Block 是模型的基本构建块，用于处理和转换输入数据。 每个块包括：<ul>
+<li>注意力机制（Attention Mechanism），Transformer 模块的核心组件。它允许 token 与其他 token 进行通信，从而捕获上下文信息和单词之间的关系。</li>
+<li>MLP 层（多层感知器 Multilayer Perceptron）, 一个独立对每个标记进行操作的前馈网络。注意层的目标是在标记之间路由 信息，而 MLP 的目标是优化每个标记的表示。</li>
+</ul>
+</li>
+<li>输出概率（Output Probabilities）： 最后的线性层和 softmax 层将处理后的嵌入转换为概率，使模型能够对序列中的下一个标记做出预测。</li>
+</ul>
+<h2 id="嵌入"><a href="#嵌入" class="headerlink" title="嵌入"></a>嵌入</h2><p>假设您想使用 Transformer 模型生成文本。您添加如下提示词（prompt）：“Data visualization empowers users to”。 此输入需要转换为模型可以理解和处理的格式。这就是嵌入的作用所在：它将文本转换为模型可以使用的数字表示。要将提示转换为嵌入， 我们需要 1) 对输入进行标记，2) 获取标记嵌入，3) 添加位置信息，最后 4) 将标记和位置编码相加以获得最终嵌入。 让我们看看每个步骤是如何完成的。</p>
+<p><img src="/img/ai/TransformerExplainer/embedding.png" srcset="/img/loading.gif" lazyload alt="图1，展开嵌入层视图，显示如何将输入提示转换为矢量表示。 该过程涉及 (1)标记化(2)标记嵌入(3)位置编码和(4)最终嵌入"></p>
+<h3 id="步骤1：标记化"><a href="#步骤1：标记化" class="headerlink" title="步骤1：标记化"></a>步骤1：标记化</h3><p>标记化（Tokenization）是将输入文本分解为更小、更易于管理的部分（称为标记）的过程。这些标记可以是单词或子单词。 单词 “Data” 和 “visualization” 对应于唯一标记，而单词 “empowers” 则 被拆分为两个标记。完整的标记词汇表是在训练模型之前确定的：GPT-2 的词汇表有 50,257 个唯一标记。 现在我们将输入文本拆分为具有不同 ID 的标记，我们可以从嵌入中获取它们的向量表示。</p>
+<h3 id="步骤2：Token-嵌入"><a href="#步骤2：Token-嵌入" class="headerlink" title="步骤2：Token 嵌入"></a>步骤2：Token 嵌入</h3><p>GPT-2 Small 将词汇表中的每个标记表示为一个 768 维向量；向量的维度取决于模型。这些嵌入向量存储在形状为 (50,257, 768) 的矩阵中，包含大约 3900 万个参数！这个广泛的矩阵允许模型为每个标记分配语义含义。</p>
+<h3 id="步骤3：位置编码"><a href="#步骤3：位置编码" class="headerlink" title="步骤3：位置编码"></a>步骤3：位置编码</h3><p>Embedding 层还对每个 token 在输入提示中的位置信息进行编码。不同的模型使用不同的方法进行位置编码。 GPT-2 从头开始​​训练自己的位置编码矩阵，将其直接集成到训练过程中。</p>
+<h3 id="步骤4：最终嵌入"><a href="#步骤4：最终嵌入" class="headerlink" title="步骤4：最终嵌入"></a>步骤4：最终嵌入</h3><p>最后，我们将标记和位置编码相加以获得最终的嵌入表示。这种组合表示既捕获了标记的语义含义，也捕获了它们在输入序列中的位置。</p>
+<h2 id="Transformer-块"><a href="#Transformer-块" class="headerlink" title="Transformer 块"></a>Transformer 块</h2><p>Transformer 处理的核心在于 Transformer 块，它由多头自注意力和多层感知器层组成。大多数模型由多个这样的块组成， 这些块按顺序一个接一个地堆叠在一起。Token 表示通过层级演变，从第一个块到第 12 个块，使模型能够对每个 Token 建立复杂的理解。 这种分层方法可以实现输入的高阶表示。</p>
+<h3 id="多头自注意力"><a href="#多头自注意力" class="headerlink" title="多头自注意力"></a>多头自注意力</h3><p>自注意力机制使模型能够专注于输入序列的相关部分，从而能够捕获数据中的复杂关系和依赖关系。 让我们一步步看看这种自注意力是如何计算的。</p>
+<h4 id="第一步：查询、键和值矩阵（Query-Key-and-Value-Matrices）"><a href="#第一步：查询、键和值矩阵（Query-Key-and-Value-Matrices）" class="headerlink" title="第一步：查询、键和值矩阵（Query, Key, and Value Matrices）"></a>第一步：查询、键和值矩阵（Query, Key, and Value Matrices）</h4><p><img src="/img/ai/TransformerExplainer/QKV.png" srcset="/img/loading.gif" lazyload alt="图2，根据原始嵌入计算查询、键和值矩阵"><br>每个 token 的嵌入向量被转换成三个向量： Query (Q)、 Key (K)和 Value (V)。这些向量是通过将输入嵌入矩阵与学习到的权重矩阵相乘而得出的 Q、 K和 V。这里有一个网络搜索类比，可以帮助我们建立这些矩阵背后的一些直觉：</p>
+<ul>
+<li>Query (Q) 是您在搜索引擎栏中输入的搜索文本。 这是您想要“查找更多信息”的标记。</li>
+<li>Key (K) 是搜索结果窗口中每个网页的标题。 它表示查询可以关注的可能的标记。</li>
+<li>Value (V)是网页显示的实际内容。 当我们将适当的搜索词（Query）与相关结果（Key）匹配后，我们希望获得最相关页面的内容（Value）。<br>通过使用这些 QKV 值，模型可以计算注意力分数，这决定了每个标记在生成预测时应该获得多少关注。</li>
+</ul>
+<h4 id="第二步：掩码自注意力机制"><a href="#第二步：掩码自注意力机制" class="headerlink" title="第二步：掩码自注意力机制"></a>第二步：掩码自注意力机制</h4><p>掩码自注意力机制（Masked Self-Attention）允许模型通过关注输入的相关部分来生成序列，同时阻止访问未来的标记。</p>
+<p><img src="/img/ai/TransformerExplainer/attention.png" srcset="/img/loading.gif" lazyload alt="图3，使用查询、键和值矩阵来计算掩蔽自注意力"></p>
+<ul>
+<li>注意力分数：Query和Key 矩阵的点积确定每个查询与每个键的对齐方式，从而产生一个反映所有输入标记之间关系的方阵。</li>
+<li>掩码：对注意力矩阵的上三角应用掩码，以防止模型访问未来的标记，并将这些值设置为负无穷大。 模型需要学习如何在不“窥视”未来的情况下预测下一个标记。</li>
+<li>Softmax：经过掩码处理后，注意力得分通过 softmax 运算转换为概率，该运算取每个注意 力得分的指数。矩阵的每一行总和为 1，并表示其左侧每个其他标记的相关性。</li>
+</ul>
+<h4 id="第三步：输出"><a href="#第三步：输出" class="headerlink" title="第三步：输出"></a>第三步：输出</h4><p>该模型使用掩码后的自注意力得分，并将其与 Value 矩阵相乘， 以获得自注意力机制的 最终输出。GPT-2 有 12 个 自注意力 heads，每个 head 捕获 token 之间的不同关系。这些 head 的输出被连接起来并通过线性投影（linear projection）。</p>
+<h3 id="多层感知器"><a href="#多层感知器" class="headerlink" title="多层感知器"></a>多层感知器</h3><p><img src="/img/ai/TransformerExplainer/mlp.png" srcset="/img/loading.gif" lazyload alt="图4，使用 MLP 层将自注意力表征投影到更高维度，以增强模型的表征能力"></p>
+<p>在多个自注意力机制捕获输入 token 之间的不同关系后，连接的输出将通过多层感知器（MLP，Multi-Layer Perceptron）层， 以增强模型的表示能力。MLP 块由两个线性变换组成，中间有一个 GELU 激活函数。 第一个线性变换将输入的维数从 768 增加了四倍至 3072。 第二个线性变换将维数降低回原始大小 768，确保后续层接收一致维度的输入。 与自注意力机制不同，MLP 独立处理 token 并简单地将它们从一种表示映射到另一种表示。</p>
+<h2 id="输出概率"><a href="#输出概率" class="headerlink" title="输出概率"></a>输出概率</h2><p>在输入经过所有 Transformer 块处理后，输出将通过最后的线性层，为标记预测做好准备。 此层将最终表示投影到 50,257 维空间中，词汇表中的每个标记都有一个对应的值， 称为 logit。任何标记都可以是下一个单词，因此此过程允许我们根据它们成为 下一个单词的可能性对这些标记进行简单排序。然后，我们应用 softmax 函数将 logit 转换为 总和为 1 的概率分布。这将使我们能够根据其可能性对下一个标记进行采样。</p>
+<p><img src="/img/ai/TransformerExplainer/softmax.png" srcset="/img/loading.gif" lazyload alt="图5，词汇表中的每个标记都根据模型的输出逻辑 分配一个概率，这些概率决定了每个标记成为序列中下一个单词的可能性"></p>
+<p>最后一步是从该分布中采样来生成下一个标记。temperature 超参数在 此过程中起着关键作用。从数学上讲，这是一个非常简单的操作：模型输出 logits 只 需除以 temperature：</p>
+<ul>
+<li>temperature &#x3D; 1：将 logits 除以 1 对 softmax 输出没有影响。</li>
+<li>temperature &lt; 1：较低的温度通过锐化概率分布使模型更加自信和确定，从而产生更可预测的输出。</li>
+<li>temperature &gt; 1：较高的温度会产生更柔和的概率分布，从而允许生成的文本具有更多的随机性 - 有些人称之为模型“创造力”。<br>调节温度，看看如何在确定性和多样化输出之间取得平衡！</li>
+</ul>
+<h1 id="高级架构功能"><a href="#高级架构功能" class="headerlink" title="高级架构功能"></a>高级架构功能</h1><p>有几种高级架构功能可增强 Transformer 模型的性能。虽然它们对于模型的整体性能很重要， 但对于理解架构的核心概念却不那么重要。层规范化、Dropout 和残差连接是 Transformer 模型中的关键组件，尤其是在训练阶段。层规范化可以稳定训练并帮助模型更快地收敛。 Dropout 通过随机停用神经元来防止过度拟合。残差连接允许梯度直接流过网络并有助于防止梯度消失问题。</p>
+<h2 id="层归一化"><a href="#层归一化" class="headerlink" title="层归一化"></a>层归一化</h2><p>层归一化（Layer Normalization）有助于稳定训练过程并提高收敛性。它通过对特征之间的输入进行归一化来工作， 确保激活的均值和方差一致。这种归一化有助于缓解与内部协变量偏移相关的问题， 使模型能够更有效地学习并降低对初始权重的敏感度。每个 Transformer 块中都会 应用两次层归一化，一次在自注意力机制之前，一次在 MLP 层之前。</p>
+<h2 id="暂退法"><a href="#暂退法" class="headerlink" title="暂退法"></a>暂退法</h2><p>暂退法（Dropout）是一种正则化技术，通过在训练期间随机将模型权重的一部分设置为零来防止神经网络过度拟合。 这鼓励模型学习更稳健的特征并减少对特定神经元的依赖，帮助网络更好地推广到新的、未见过的数据。 在模型推理期间，Dropout 被停用。这本质上意味着我们正在使用经过训练的子网络的集合，从而提高模型性能。</p>
+<h2 id="残差连接"><a href="#残差连接" class="headerlink" title="残差连接"></a>残差连接</h2><p>残差连接（Residual Connections）于 2015 年首次在 ResNet 模型中引入。这种架构创新通过实现非常深的神经网络的训练， 彻底改变了深度学习。本质上，残差连接是绕过一个或多个层的捷径，将层的输入添加到其输出中。 这有助于缓解梯度消失问题，从而更容易训练堆叠在一起的多个 Transformer 块的深度网络。 在 GPT-2 中，每个 Transformer 块内使用两次残差连接：一次在 MLP 之前，一次在 MLP 之后， 以确保梯度更容易流动，并且较早的层在反向传播期间获得足够的更新。</p>
+<h1 id="Transformer-Explainer-是如何构建的？"><a href="#Transformer-Explainer-是如何构建的？" class="headerlink" title="Transformer Explainer 是如何构建的？"></a>Transformer Explainer 是如何构建的？</h1><p>Transformer Explainer 具有一个可直接在浏览器中运行的实时 GPT-2（小型）模型。 该模型源自 Andrej Karpathy 的 nanoGPT 项目 PyTorch GPT 实现，并已转换为 ONNX Runtime 实现浏览器内无缝执行。该界面使用 JavaScript 构建，借助 Svelte 作为前端框架以及使用 D3.js 创建动态可视化。数值根据用户输入实时更新。</p>
+<h1 id="谁开发了-Transformer-Explainer？"><a href="#谁开发了-Transformer-Explainer？" class="headerlink" title="谁开发了 Transformer Explainer？"></a>谁开发了 Transformer Explainer？</h1><p>Transformer Explainer 的作者包括 Aeree Cho， Grace C. Kim， Alexander Karpekov， Alec Helbling， Jay Wang， Seongmin Lee， Benjamin Hoover，以及佐治亚理工学院的 Polo Chau。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/10/AI/ASR/" title="FunASR 部署">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">FunASR 部署</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/04/AI/NanoGPT/" title="NanoGPT 教程及训练推理">
+                        <span class="hidden-mobile">NanoGPT 教程及训练推理</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

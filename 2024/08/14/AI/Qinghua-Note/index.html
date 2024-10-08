@@ -1,0 +1,1490 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="深入介绍人工智能(AI)，重点介绍大型语言模型(LLM)的前沿发展，深入了解人工智能领域的历史、关键技术和现有挑战。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2024 清华 LLM 公开课 - 笔记">
+<meta property="og:url" content="http://yoursite.com/2024/08/14/AI/Qinghua-Note/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="深入介绍人工智能(AI)，重点介绍大型语言模型(LLM)的前沿发展，深入了解人工智能领域的历史、关键技术和现有挑战。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/openbmb/index.png">
+<meta property="article:published_time" content="2024-08-14T20:35:10.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.990Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/openbmb/index.png">
+  
+  
+  
+  <title>2024 清华 LLM 公开课 - 笔记 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2024 清华 LLM 公开课 - 笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-14 20:35" pubdate>
+          2024年8月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.4k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          70 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2024 清华 LLM 公开课 - 笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>深入介绍人工智能(AI)，重点介绍大型语言模型(LLM)的前沿发展，深入了解人工智能领域的历史、关键技术和现有挑战。</p>
+<span id="more"></span>
+
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#1-%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%AF%BC%E8%AE%BA">1 大语言模型导论</a><ul>
+<li><a href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%86%E5%8F%B2">人工智能历史</a><ul>
+<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
+<li><a href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E6%A6%82%E5%BF%B5%E5%8C%96">人工智能的概念化</a></li>
+<li><a href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E5%8F%91%E5%B1%95">人工智能的发展</a><ul>
+<li><a href="#%E7%AC%A6%E5%8F%B7%E6%99%BA%E8%83%BD">符号智能</a></li>
+<li><a href="#%E4%B8%93%E7%94%A8%E6%99%BA%E8%83%BD">专用智能</a></li>
+<li><a href="#%E9%80%9A%E7%94%A8%E6%99%BA%E8%83%BD">通用智能</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">通用人工智能</a><ul>
+<li><a href="#%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E5%AE%9A%E4%B9%89">通用人工智能的定义</a></li>
+<li><a href="#%E4%BB%8E%E4%B8%93%E7%94%A8%E6%99%BA%E8%83%BD%E5%88%B0%E9%80%9A%E7%94%A8%E6%99%BA%E8%83%BD">从专用智能到通用智能</a></li>
+<li><a href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">大语言模型</a><ul>
+<li><a href="#%E4%B8%8B%E4%B8%80%E4%B8%AAtoken%E9%A2%84%E6%B5%8B">下一个token预测</a></li>
+<li><a href="#%E8%AE%AD%E7%BB%83">训练</a></li>
+<li><a href="#%E6%8E%A8%E7%90%86">推理</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%96%B9%E6%B3%95">大语言模型训练方法</a><ul>
+<li><a href="#%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83">自监督预训练</a></li>
+<li><a href="#%E6%A0%87%E6%B3%A8%E5%BE%AE%E8%B0%83">标注微调</a></li>
+<li><a href="#%E4%BB%8E%E4%BA%BA%E7%B1%BB%E5%8F%8D%E9%A6%88%E4%B8%AD%E5%AD%A6%E4%B9%A0">从人类反馈中学习</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%88%90%E5%8A%9F%E7%9A%84%E5%85%B3%E9%94%AE">大语言模型成功的关键</a><ul>
+<li><a href="#%E6%83%85%E5%A2%83%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AD%A6%E4%B9%A0">情境（上下文）学习</a></li>
+<li><a href="#%E9%81%B5%E5%BE%AA%E6%8C%87%E4%BB%A4">遵循指令</a></li>
+<li><a href="#%E6%80%9D%E7%BB%B4%E9%93%BE">思维链</a></li>
+</ul>
+</li>
+<li><a href="#%E6%BD%9C%E5%8A%9B%E5%92%8C%E6%8C%91%E6%88%98">潜力和挑战</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%AA%E6%9D%A5">未来</a><ul>
+<li><a href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%A7%91%E5%AD%A6">人工智能科学</a></li>
+<li><a href="#%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E7%B3%BB%E7%BB%9F">智能计算系统</a></li>
+<li><a href="#%E5%B9%BF%E6%B3%9B%E5%BA%94%E7%94%A8%E4%BA%8E%E5%90%84%E4%B8%AA%E9%A2%86%E5%9F%9F">广泛应用于各个领域</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93-1">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">2 神经网络基础知识</a><ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">简单神经网络</a><ul>
+<li><a href="#%E7%A5%9E%E7%BB%8F%E5%85%83">神经元</a></li>
+<li><a href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">神经网络</a></li>
+<li><a href="#%E5%A4%9A%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">多层神经网络</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0">为什么需要激活函数</a></li>
+<li><a href="#%E5%85%B8%E5%9E%8B%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0">典型的激活函数</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">如何训练神经网络</a><ul>
+<li><a href="#%E8%AE%AD%E7%BB%83%E7%9B%AE%E6%A0%87">训练目标</a></li>
+<li><a href="#%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D">随机梯度下降</a></li>
+<li><a href="#%E6%A2%AF%E5%BA%A6%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD">梯度和反向传播</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">循环神经网络</a><ul>
+<li><a href="#%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">语言模型</a></li>
+<li><a href="#%E7%94%A8%E4%BA%8E%E8%AF%AD%E8%A8%80%E5%BB%BA%E6%A8%A1%E7%9A%84%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">用于语言建模的循环神经网络</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">卷积神经网络</a><ul>
+<li><a href="#%E5%AF%B9%E6%AF%94">对比</a></li>
+</ul>
+</li>
+<li><a href="#seq2seq-%E5%92%8C-transformer">seq2seq 和 transformer</a><ul>
+<li><a href="#%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91%E4%B8%AD%E7%9A%84-seq2seq">机器翻译中的 seq2seq</a></li>
+<li><a href="#transformer">transformer</a></li>
+<li><a href="#decoder-only-%E5%92%8C-encoder-decoder">decoder-only 和 encoder-decoder</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">3 大语言模型基础知识</a><ul>
+<li><a href="#%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0">迁移学习</a></li>
+<li><a href="#%E8%AF%AD%E8%A8%80%E5%BB%BA%E6%A8%A1%E7%9A%84%E9%A2%84%E8%AE%AD%E7%BB%83">语言建模的预训练</a><ul>
+<li><a href="#word2vec">word2vec</a></li>
+<li><a href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9B%B8%E5%85%B3%E7%9A%84%E8%AF%8D%E8%AF%AD%E8%A1%A8%E7%A4%BA">上下文相关的词语表示</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">预训练模型和大语言模型</a><ul>
+<li><a href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">预训练模型</a></li>
+<li><a href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B-1">大语言模型</a></li>
+<li><a href="#%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E6%80%A7%E5%92%8C%E5%8A%9F%E8%83%BD">语言模型的特性和功能</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%AD%E7%BB%83%E6%96%B9%E6%B3%95">4 大语言模型的训练方法</a><ul>
+<li><a href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%99%AE%E5%8F%8A">大模型的普及</a><ul>
+<li><a href="#tokenization">tokenization</a></li>
+<li><a href="#%E8%BF%87%E5%8E%BB%E7%9A%84%E9%A2%84%E8%AE%AD%E7%BB%83%E5%B5%8C%E5%85%A5">过去的预训练嵌入</a></li>
+</ul>
+</li>
+<li><a href="#transformer-1">transformer</a><ul>
+<li><a href="#gpt">gpt</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>课程将讨论人工智能的未来趋势，帮助学生参与由人工智能驱动的技术变革浪潮。</p>
+<ul>
+<li><a href="https://www.openbmb.cn/home">OpenBMB 官网</a></li>
+<li><a href="https://github.com/OpenBMB">OpenBMB Github</a></li>
+<li><a href="https://www.bilibili.com/video/BV1pf421z757/">OpenBMB 公开课</a></li>
+<li><a href="https://modelbest.feishu.cn/wiki/D2tFw8Pcsi5CIzkaHNacLK64npg">MiniCPM 部署指南</a></li>
+<li><a href="https://github.com/ggerganov/llama.cpp/commit/d565bb2fd5a2a58b9924a7a34e77a87c78c52137">llama.cpp 支持 MiniCPM</a></li>
+<li><a href="https://edu.csdn.net/course/detail/39736">CSDN 课程</a></li>
+</ul>
+<p>笔记包含下述标签：</p>
+<div class="note note-primary">
+            <p>讲义引用的观点</p>
+          </div>
+
+<div class="note note-danger">
+            <p>课程笔记</p>
+          </div>
+
+<h1 id="1-大语言模型导论"><a href="#1-大语言模型导论" class="headerlink" title="1 大语言模型导论"></a>1 大语言模型导论</h1><h2 id="人工智能历史"><a href="#人工智能历史" class="headerlink" title="人工智能历史"></a>人工智能历史</h2><p>人工智能已经成为我们日常生活中必不可少的组成部分，极大地提高了我们的日常活动和工作效率: <strong>人脸识别、自动驾驶、语音识别与合成、推荐系统、信息检索</strong>。人工智能促进了知识的有效获取和新思想的探索，在我们社会的进步中发挥着至关重要的作用。</p>
+<div class="note note-primary">
+            <p>人工智能本质上是每个人的<strong>生产力倍增器</strong>。它将使我们最好的科学家变得更好，使科学加快很多。<strong>人工智能将帮助我们在一个大脑中储存更多的知识，并发现新的联系，新的想法</strong> —— 山姆 · 奥特曼</p><p>我们致力于解决智能问题，<strong>推动科学发展，造福人类</strong> —— Demis Hassabis</p><p>人工智能是人类正在研究的最重要的事情之一，它比电或火更深刻 —— Sundar Pichai</p>
+          </div>
+
+<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><ul>
+<li>目前，人工智能的定义缺乏共识</li>
+<li>从广义上讲，<strong>人工智能是机器，特别是计算机系统所表现出的智能。它是计算机科学的一个研究领域，开发和研究方法和软件，使机器能够感知环境，并利用学习和智能采取行动，最大限度地提高实现既定目标的机会</strong></li>
+</ul>
+<div class="note note-primary">
+            <p>长期以来，人类一直对人工智能的概念着迷。根据希腊神话的记载，塔洛斯是一个巨大的青铜自动机，用来保护克里特岛上的欧罗巴免受海盗和入侵者的侵害。这是西方文学中最早对机器人的描述之一。据《列子 · 唐文》(列⼦ · 汤问)记载，工匠严石(偃师)向穆王(周穆王)展示了一个能唱歌跳舞的自主木偶。这是中国文学中最早描述机器人的作品之一。</p>
+          </div>
+
+<h3 id="人工智能的概念化"><a href="#人工智能的概念化" class="headerlink" title="人工智能的概念化"></a>人工智能的概念化</h3><p>图灵(Alan Mathison Turing)，计算机科学和人工智能之父。1950年，图灵发表了一篇开创性的论文，题为《计算机器与智能》。在书中，他问道：<strong>机器能思考吗？</strong>从而引入了<strong>思考机器</strong>的概念，作为人工智能的基本概念。</p>
+<div class="note note-danger">
+            <p>图灵和冯 · 诺伊曼，现代计算机科学两位重要奠基人。</p>
+          </div>
+
+<p><strong>图灵测试</strong>是由图灵在他的论文《计算机器与智能》中介绍的。这是一种评估机器是否具有智能的方法。</p>
+<div class="note note-primary">
+            <p>在图灵测试中，考官同时向人和机器提出问题。考官被要求辨别哪个是人，哪个是机器。如果考官不能区分它们，则认为机器通过了测试，显示出人类水平的智能。</p>
+          </div>
+
+<div class="note note-danger">
+            <p>图灵测试从<strong>外部评判</strong>机器具不具备智能，计算机尽量“伪装”为人类，欺骗测试者，类似<strong>黑盒测试</strong>。<br>冯 · 诺伊曼也有相关研究：《计算机与人脑》</p>
+          </div>
+
+<p>Dartmouth 研讨会：1956年夏天在达特茅斯学院举行，该研讨会为人工智能作为一门学科的研究奠定了基础。达特茅斯工作室的科学家约翰 · 麦卡锡、马文 · 明斯基、艾伦 · 纽维尔和赫伯特 · 西蒙获得了“图灵奖”。</p>
+<div class="note note-danger">
+            <p>提出有价值，有引领意义的问题。</p>
+          </div>
+
+<h3 id="人工智能的发展"><a href="#人工智能的发展" class="headerlink" title="人工智能的发展"></a>人工智能的发展</h3><p><img src="/img/ai/openbmb/lecture1/1.png" srcset="/img/loading.gif" lazyload alt="人工智能的关键问题:赋予机器执行复杂任务所需的知识"></p>
+<div class="note note-danger">
+            <p>基于对AI挑战的未知，不同阶段都有低谷和高潮</p>
+          </div>
+
+<h4 id="符号智能"><a href="#符号智能" class="headerlink" title="符号智能"></a>符号智能</h4><p>基于符号和规则的早期范式，这种范式使用预定义的<strong>符号和规则</strong>来表示知识，允许进一步的信息分析和推理</p>
+<p><img src="/img/ai/openbmb/lecture1/2.png" srcset="/img/loading.gif" lazyload alt="Symbolic Intelligence"></p>
+<p>局限性：构建一个涵盖无限知识的知识库具有挑战性，并且并非所有知识都可以明确地用结构化三元组表示。基于符号智能的系统不能处理知识库未涵盖的任务。</p>
+<p><img src="/img/ai/openbmb/lecture1/3.png" srcset="/img/loading.gif" lazyload alt="专家系统无法解决知识库未涵盖的问题"></p>
+<div class="note note-danger">
+            <p>机器翻译和人脸识别，符号智能无法穷尽式的描述和解决</p>
+          </div>
+
+<h4 id="专用智能"><a href="#专用智能" class="headerlink" title="专用智能"></a>专用智能</h4><p>特定任务的经典范式：这种范式通常从特定于任务的数据中训练数据驱动的机器学习模型，并将任务知识存储在特定于任务的小模型的参数中。</p>
+<p><img src="/img/ai/openbmb/lecture1/4.png" srcset="/img/loading.gif" lazyload alt="Narrow Intelligence"></p>
+<p>局限性：为特定任务注释数据的成本很高，而且<strong>专用智能无法解决标注数据未涵盖的任务</strong>。</p>
+<p><img src="/img/ai/openbmb/lecture1/5.png" srcset="/img/loading.gif" lazyload alt="为特定任务设计的训练数据和小模型不能推广到数据分布之外的问题"></p>
+<div class="note note-danger">
+            <p><strong>我们总是要定义任务</strong>，然后我们搜集数据，然后训练模型归纳，再应用于解决专用的任务<br>模型的泛化能力很差，只能在范围内工作，无法举一反三</p>
+          </div>
+
+<h4 id="通用智能"><a href="#通用智能" class="headerlink" title="通用智能"></a>通用智能</h4><p>通用能力的未来范式：该范式采用自监督训练从大量未标记数据集中学习，将知识存储在大规模模型参数中</p>
+<p><img src="/img/ai/openbmb/lecture1/6.png" srcset="/img/loading.gif" lazyload alt="General Intelligence"></p>
+<p>优势：未标记数据具有成本效益，易于获取；大尺度参数有利于一般知识的学习和存储。</p>
+<p><img src="/img/ai/openbmb/lecture1/7.png" srcset="/img/loading.gif" lazyload alt="大型语言模型通过对大规模未标记数据进行自监督预训练来学习一般知识"></p>
+<div class="note note-danger">
+            <p>整个互联网的知识都可以学习，更强的泛化能力</p>
+          </div>
+
+<h2 id="通用人工智能"><a href="#通用人工智能" class="headerlink" title="通用人工智能"></a>通用人工智能</h2><p>通用人工智能的曙光：</p>
+<ul>
+<li>LLM 的性能随着计算成本的增加而不断提高</li>
+<li>在许多任务中，现有的 LLM，如 GPT-3.5&#x2F;4，已经取得了比人类更好的性能，预示着通用人工智能的曙光</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/8.png" srcset="/img/loading.gif" lazyload alt="左：随着计算成本的增加，模型性能不断提高；注:Perplexity被广泛用于评价LLM的能力，Perplexity值越低表示模型性能越好，圆圈的大小表示用于训练模型的计算成本。右：GPT-4在多个专业考试中表现优于人类"></p>
+<div class="note note-primary">
+            <p>我们需要科技突破来引导和控制比我们聪明得多的人工智能系统。为了<strong>在四年内</strong>解决这个问题，我们正在组建一个新的团队(超级联盟)。—— OpenAI</p><p>在<strong>不到三年</strong>的时间里，人工智能就能写出j.k.罗琳(《哈利波特》的作者)水平的小说，在物理学上有新的发现，在各个领域普遍超越人类的能力 —— 马斯克</p><p>我们不确定人工智能的未来会如何发展。然而，我们必须认真对待这样一种可能性，即在<strong>当前十年或下一个十年里</strong>，强大的通才人工智能系统将被开发出来，在许多关键领域超越人类的能力 —— 图灵奖得主Yoshua Bengio, Geoffrey Hinton, Andrew Yao</p>
+          </div>
+
+<h3 id="通用人工智能的定义"><a href="#通用人工智能的定义" class="headerlink" title="通用人工智能的定义"></a>通用人工智能的定义</h3><ul>
+<li><strong>通用人工智能（AGI）</strong>一词最早出现在Mark gubroud 1997年一篇关于军事技术的文章中<ul>
+<li>我所说的高级通用人工智能，指的是<strong>在复杂性和速度上与人类大脑相媲美或超过人类大脑</strong>的人工智能系统，它们可以用一般知识获取、操纵和推理，基本上可以在任何需要人类智能的工业或军事行动阶段使用。</li>
+</ul>
+</li>
+<li>随着技术的进步，AGI的定义已经被扩大，不再对特定的实现机制施加要求<ul>
+<li>OpenAI：我们的使命是确保通用人工智能，<strong>比人类更聪明的人工智能系统</strong>，造福全人类。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/9.png" srcset="/img/loading.gif" lazyload alt="谷歌DeepMind试图将AGI分为不同的级别"></p>
+<div class="note note-danger">
+            <p>能力方面和自动化方面</p>
+          </div>
+
+<h3 id="从专用智能到通用智能"><a href="#从专用智能到通用智能" class="headerlink" title="从专用智能到通用智能"></a>从专用智能到通用智能</h3><p>从专用人工智能到通用人工智能的演变以三个关键转换为标志：</p>
+<ul>
+<li>各种领域的统一架构：从特定于领域的架构到统一的<strong>Transformer</strong>架构的转换</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/10.png" srcset="/img/loading.gif" lazyload alt="多种领域网络架构统一为 Transformer 架构"></p>
+<ul>
+<li>各种任务的统一模型：从特定于任务的小模型到统一的大模型的转换</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/11.png" srcset="/img/loading.gif" lazyload alt="专用智能时代：为不同的任务训练特定任务的小模型"></p>
+<div class="note note-danger">
+            <p>每个模型只能干一个任务，翻译，数学计算和诗歌生成</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/12.png" srcset="/img/loading.gif" lazyload alt="通用智能时代：统一大模型解决多任务"></p>
+<ul>
+<li>各种模态的统一模型：从不同模态数据到统一的token序列的转换，这些token序列被输入到统一的大模型中</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/13.png" srcset="/img/loading.gif" lazyload alt="序列化token"></p>
+<h3 id="大语言模型"><a href="#大语言模型" class="headerlink" title="大语言模型"></a>大语言模型</h3><ul>
+<li>什么是大语言模型</li>
+<li>LLM 如何学习知识</li>
+<li>LLM 实现人工通用智能的关键</li>
+<li>LLM 的潜力和挑战</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/14.png" srcset="/img/loading.gif" lazyload alt="LLM"></p>
+<h4 id="下一个token预测"><a href="#下一个token预测" class="headerlink" title="下一个token预测"></a>下一个token预测</h4><ul>
+<li>几乎所有用自然语言表达的任务都可以统一为一个概念：下一个 Token 预测，在给定任何上下文的情况下，任务是生成下一个 Token</li>
+<li>一次生成一个 Token 的过程也称为<strong>自回归生成</strong></li>
+</ul>
+<div class="note note-danger">
+            <p>根据已经生成的内容继续生成下一个词</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/15.png" srcset="/img/loading.gif" lazyload alt="Autoregressive Generation 自回归生成"></p>
+<p><strong>Next Token Prediction</strong> 适用于各种任务，例如问答和机器翻译</p>
+<p><img src="/img/ai/openbmb/lecture1/16.png" srcset="/img/loading.gif" lazyload alt="应用"></p>
+<h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p>大型语言模型的训练过程：学习将训练语料中的 token 逐个输出</p>
+<p><img src="/img/ai/openbmb/lecture1/17.png" srcset="/img/loading.gif" lazyload alt="Train"></p>
+<div class="note note-danger">
+            <p>输入 Tinghua University is a，预测不是标准答案 public，则更新权重，继续 university，预测不是则更新权重</p>
+          </div>
+
+<h4 id="推理"><a href="#推理" class="headerlink" title="推理"></a>推理</h4><ul>
+<li>LLM 输出<strong>所有 token 上的概率分布</strong>，输出 token 是从该分布中采样的</li>
+<li>该模型可以使用不同的采样从相同的上下文中生成不同的响应</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/18.png" srcset="/img/loading.gif" lazyload alt="Inference"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>什么是大型语言模型？</p>
+<ul>
+<li>大型语言模型充当 <strong>Next Token Prediction</strong> 模型，根据前面的上下文不断生成下一个 Token</li>
+<li>大型语言模型的训练过程涉及逐个 Token 输出训练语料库</li>
+<li>大型语言模型的输出是概率分布，每次从中采样下一个 Token</li>
+</ul>
+<h3 id="大语言模型训练方法"><a href="#大语言模型训练方法" class="headerlink" title="大语言模型训练方法"></a>大语言模型训练方法</h3><p><img src="/img/ai/openbmb/lecture1/19.png" srcset="/img/loading.gif" lazyload alt="自监督预训练，标注微调，从人类反馈中学习"></p>
+<h4 id="自监督预训练"><a href="#自监督预训练" class="headerlink" title="自监督预训练"></a>自监督预训练</h4><ul>
+<li>第一阶段：自监督预训练，此阶段<strong>利用未标记的数据</strong>，要求模型预测下一个 Token 并根据正确答案（即文本本身）调整模型<ul>
+<li>LLM 从庞大的语料库中进行 <strong>Next Token Prediction</strong> 训练，学习语言中嵌入的丰富世界知识</li>
+</ul>
+</li>
+<li>第一阶段的结果：可以为任何给定上下文生成流畅的后续文本的模型<ul>
+<li>此阶段的模型不知道如何应用从预训练中学到的知识，仅能够继续给定的输入</li>
+</ul>
+</li>
+</ul>
+<div class="note note-danger">
+            <p>这时候的模型知会续写，不知道怎么应用知识来满足人类的需求</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/20.png" srcset="/img/loading.gif" lazyload alt="用于模型训练的数据规模不断增长"></p>
+<h4 id="标注微调"><a href="#标注微调" class="headerlink" title="标注微调"></a>标注微调</h4><ul>
+<li>第二阶段：标注微调 (Supervised Fine-Tuning，SFT)，此阶段涉及使用人类标记的响应来训练模型</li>
+<li>此阶段的目标是使模型具备理解用户意图的能力，从而将模型转变为有效的 AI 助手</li>
+<li>为 SFT 收集大规模人类注释的聊天数据</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/21.png" srcset="/img/loading.gif" lazyload alt="该模型模仿人类注释的回答，学习理解用户意图，并学习拒绝回答“不适当”的问题"></p>
+<ul>
+<li>SFT 使 LLM 能够学习如何应用从预训练中获得的知识来回答用户的问题</li>
+<li>挑战：<strong>每个问题都有多个正确答案</strong>。限制模型只能学习一个答案可能会降低其应用知识的“灵活性”</li>
+</ul>
+<div class="note note-danger">
+            <p>人类给出大量的对话数据，告知模型应该怎么回答，包括正面的和负面的回答。但对话数据的回答相对单一，会限制灵活性</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/22.png" srcset="/img/loading.gif" lazyload alt="SFT 要求模型逐个 Token 学习标记的响应，这可能会误导模型"></p>
+<h4 id="从人类反馈中学习"><a href="#从人类反馈中学习" class="headerlink" title="从人类反馈中学习"></a>从人类反馈中学习</h4><div class="note note-danger">
+            <p><strong>RLHF, Re-Learning From Human Feedback</strong><br>不再规定怎么输出，根据评分来评判输出的正面和负面，给出人类对模型输出的偏向，更好地照顾模型输出的灵活性</p>
+          </div>
+
+<p>第三阶段：从人工反馈中学习，不再向模型提供逐字参考答案，而是仅提供模型输出的质量反馈（评分）。然后对模型进行训练以提高其响应的分数</p>
+<p><img src="/img/ai/openbmb/lecture1/23.png" srcset="/img/loading.gif" lazyload alt="从人类反馈中学习"></p>
+<h3 id="大语言模型成功的关键"><a href="#大语言模型成功的关键" class="headerlink" title="大语言模型成功的关键"></a>大语言模型成功的关键</h3><p>通过 LLM 实现通用人工智能的关键：<strong>大规模数据 + 大规模参数</strong>，获取通用知识需要大量数据，而存储知识则需要大量参数</p>
+<ul>
+<li><strong>大规模数据</strong>：对海量数据集进行预训练使 LLM 能够学习语言中蕴含的世界知识</li>
+<li><strong>大规模参数</strong>：参数规模的增长使得模型能够存储更多的知识，并表现出“涌现能力”<ul>
+<li><strong>涌现能力（Emergent abilities）</strong>：当参数规模超过一定阈值时，LLM 会表现出新的能力，有效解决小模型难以应对的挑战性任务</li>
+<li><strong>LLM 的涌现能力</strong>：情境（上下文）学习、指令遵循、思路链（In-context learning, instruction following, chain-of-thought）</li>
+</ul>
+</li>
+</ul>
+<div class="note note-danger">
+            <p>涌现，是爆发的，是突然出现的</p>
+          </div>
+
+<div class="note note-primary">
+            <p>很好地预测下一个 token 意味着你了解导致创建该 token 的根本现实……人们有思想、有感觉，有想法，他们以特定的方式做事。所有这些都可以从下一个 token 预测中推断出来。 —— Ilya Sutskever OpenAI 前首席科学家</p>
+          </div>
+
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture1/24.png" srcset="/img/loading.gif" lazyload alt="LLM 的训练数据和参数规模呈指数级增长"></div><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture1/25.png" srcset="/img/loading.gif" lazyload alt="LLM 学习的各类知识"></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture1/26.png" srcset="/img/loading.gif" lazyload alt="现实世界系统中的“涌现”"></div><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture1/27.png" srcset="/img/loading.gif" lazyload alt="随着 LLM 参数规模的增加，性能飞跃"></div></div></div>
+
+<h4 id="情境（上下文）学习"><a href="#情境（上下文）学习" class="headerlink" title="情境（上下文）学习"></a>情境（上下文）学习</h4><p><img src="/img/ai/openbmb/lecture1/28.png" srcset="/img/loading.gif" lazyload alt="LLM 只需几个例子就能学习复杂的任务。左：我们定义一个新的数学运算符@：𝑎@𝑏 = (𝑎 + 𝑏)^2。我们只向GPT-4提供了几个示例，并要求GPT-4计算“4@5”；右：GPT-3 从有限数量的示例中学习时的准确率"></p>
+<h4 id="遵循指令"><a href="#遵循指令" class="headerlink" title="遵循指令"></a>遵循指令</h4><p>这涉及理解用户指令并准确满足用户请求。即使任务以前没有出现在训练数据中，模型也能够理解和执行所需的指令</p>
+<p><img src="/img/ai/openbmb/lecture1/29.png" srcset="/img/loading.gif" lazyload alt="Instruction following"></p>
+<h4 id="思维链"><a href="#思维链" class="headerlink" title="思维链"></a>思维链</h4><p>LLM 可以将复杂任务分解为多个子任务，逐步思考和推理每个步骤，以完成最终的复杂任务</p>
+<p><img src="/img/ai/openbmb/lecture1/30.png" srcset="/img/loading.gif" lazyload alt="Chain-of-Thought"></p>
+<h3 id="潜力和挑战"><a href="#潜力和挑战" class="headerlink" title="潜力和挑战"></a>潜力和挑战</h3><p>语言是人类知识的载体，LLM 在语言理解和生成方面的出色表现可以大大加速人类社会知识的生产和获取。</p>
+<div class="note note-primary">
+            <p>将 GPT3 的惊人表现推断到未来，生命、宇宙和一切的答案不过是 4.398 万亿个参数。 —— 杰弗里 · 辛顿，图灵奖获得者</p><p>ChatGPT 与个人电脑、互联网一样重要。 —— 比尔 · 盖茨，微软联合创始人</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/31.png" srcset="/img/loading.gif" lazyload alt="人工智能协助创作文本和图像"><br><img src="/img/ai/openbmb/lecture1/32.png" srcset="/img/loading.gif" lazyload alt="人工智能助力科学研究"><br><img src="/img/ai/openbmb/lecture1/33.png" srcset="/img/loading.gif" lazyload alt="AI协助信息收集和汇总"></p>
+<ul>
+<li><strong>信息污染</strong>：LLM 不可避免地会遇到<strong>幻觉问题</strong>，即他们生成的内容<strong>包含虚假信息</strong>。此外，当受到负面提示时，LLM 还会产生有害或有偏见的信息<ul>
+<li><strong>谣言传播</strong>：2023年2月16日下午，杭州某小区业主在群里讨论ChatGPT，其中一位业主开玩笑地建议尝试用它写一篇关于杭州取消交通限行的新闻报道，这位业主随即用ChatGPT直播了写作过程，并将报道发布在群里。部分业主当真，截图转发，导致错误信息传播。</li>
+</ul>
+</li>
+<li><strong>社会分工的变化</strong>：从长远来看，LLM 预计将导致高重复性和低创造力的工作减少或被取代。<ul>
+<li>OpenAI 的研究显示，大约 80% 的美国劳动力的至少 10% 的工作任务可能会受到 LLM 引入的影响，而大约 19% 的劳动者的至少 50% 的工作任务可能会受到影响。</li>
+</ul>
+</li>
+<li><strong>道德和法律问题</strong>：LLM 生成内容的使用涉及复杂的道德和法律挑战，例如<strong>知识产权、隐私和学术诚信</strong><ul>
+<li>首例涉及人工智能生成图像的版权案件：2023年2月24日，李先生利用开源软件Stable Diffusion生成了一张图片。两天后，他在社交媒体上分享了这张图片，并配文“春天来了，温柔”。后来，李先生发现刘女士在3月2日发表在百家号上的文章《三月桃花盛开的爱情》中使用了他的图片。法院判决刘女士侵犯了李先生对图片的署名权和网络传播权。判决要求刘女士公开道歉并向李先生赔偿500元经济赔偿金</li>
+</ul>
+</li>
+</ul>
+<div class="note note-danger">
+            <p>垃圾数据进入互联网，在被大模型训练时学习，导致污染</p>
+          </div>
+
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p><img src="/img/ai/openbmb/lecture1/39.png" srcset="/img/loading.gif" lazyload alt="OpenBMB团队的2.4B大模型 miniCPM 可以与GPT3媲美"><br><img src="/img/ai/openbmb/lecture1/40.png" srcset="/img/loading.gif" lazyload alt="GPT可以部署于端侧"></p>
+<div class="note note-danger">
+            <ul><li>参考摩尔定律，芯片面积不断减小，在未来，模型不会永远的大下去，<strong>在有限的参数内塞下更多的知识（知识密度），是未来竞争的焦点之一</strong>。</li><li>端侧的设备的算力在未来可以充分利用，支撑起 LLM 的运行。</li></ul>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture1/34.png" srcset="/img/loading.gif" lazyload alt="大型语言模型的未来方向"></p>
+<h3 id="人工智能科学"><a href="#人工智能科学" class="headerlink" title="人工智能科学"></a>人工智能科学</h3><ul>
+<li>追求架构、算法和数据的迭代进步</li>
+<li>专注于提高 LLM 的“知识密度”——用更少的参数存储更多的知识。</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/35.png" srcset="/img/loading.gif" lazyload alt="Science in Artificial Intelligence"></p>
+<div class="note note-danger">
+            <p>模型风洞：在训练前预测模型</p>
+          </div>
+
+<h3 id="智能计算系统"><a href="#智能计算系统" class="headerlink" title="智能计算系统"></a>智能计算系统</h3><p>LLM将人类知识的管理转变为基于界面的过程，与<strong>芯片、操作系统、数据库、编程和网络通信</strong>等计算组件深度融合，增强计算系统的智能化.<br><img src="/img/ai/openbmb/lecture1/36.png" srcset="/img/loading.gif" lazyload alt="Intelligent Computing System"></p>
+<h3 id="广泛应用于各个领域"><a href="#广泛应用于各个领域" class="headerlink" title="广泛应用于各个领域"></a>广泛应用于各个领域</h3><ul>
+<li><strong>长序列处理</strong>：LLM 需要与人类进行长时间的互动和协作，成为现实世界生产的重要组成部分</li>
+<li><strong>专业能力提升</strong>：LLM 需要提升自己的专业能力，才能应用于潜在收益更高的场景，超越人类的能力</li>
+<li><strong>应对失败风险</strong>： LLM 应有效应对并适应不同的环境，确保在高风险情况下可靠地使用</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/37.png" srcset="/img/loading.gif" lazyload alt="Widespread Applications across Various Domains"></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>符号智能（1950-1980） 人类标注的规则与知识</li>
+<li>专用智能 （1990-2018） 监督数据 特定任务模型</li>
+<li><strong>通用智能 1.0（现在）</strong><ul>
+<li>LLM 利用<strong>大量计算资源</strong>，采用<strong>自监督训练</strong>从大量未标记数据中学习知识。这种方法实现了“<strong>统一模型解决多项任务</strong>”，引发了人工智能通用智能 2.0 的早期迹象（早期原型）</li>
+</ul>
+</li>
+<li>通用智能 2.0（早期原型）人工智能科学智能计算系统</li>
+<li>通用智能 3.0（早期原型）广泛应用于各个领域</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture1/38.png" srcset="/img/loading.gif" lazyload alt="LLM 发展历史"></p>
+<h1 id="2-神经网络基础知识"><a href="#2-神经网络基础知识" class="headerlink" title="2 神经网络基础知识"></a>2 神经网络基础知识</h1><ul>
+<li>简单神经网络</li>
+<li>如何训练神经网络</li>
+<li>循环神经网络和卷积神经网络</li>
+<li>Seq2Seq 和 Transformers</li>
+</ul>
+<h2 id="简单神经网络"><a href="#简单神经网络" class="headerlink" title="简单神经网络"></a>简单神经网络</h2><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture2/0.png" srcset="/img/loading.gif" lazyload alt="单个神经元"></div><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture2/1.png" srcset="/img/loading.gif" lazyload alt="单层神经网络"></div><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture2/2.png" srcset="/img/loading.gif" lazyload alt="多层神经网络"></div></div></div>
+
+<h3 id="神经元"><a href="#神经元" class="headerlink" title="神经元"></a>神经元</h3><p>神经元是一个计算单元，具有 𝑛 维输入𝒙、一维偏置𝑏、𝑛 维权重𝒘和<strong>激活函数</strong>𝑓(𝑧)，其中𝒘、𝑏 是该神经元的参数。</p>
+<p>$$<br>\bbox[,5px,border:2px solid red]<br>{<br>  \begin{equation}\begin{split}<br>  ℎ_{𝒘, 𝑏}(𝒙)&amp;&#x3D;𝑓(𝒘^{T}𝒙+𝑏)\\<br>  \\<br>  𝑓(𝑧)&amp;&#x3D;\frac{1}{1+𝑒^{-𝑧}}<br>  \end{split}\end{equation}<br>}<br>$$</p>
+<div class="note note-danger">
+            <p>激活函数就是开和关，模仿人脑中激活研究。</p>
+          </div>
+
+<h3 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h3><p>单层神经网络是由许多简单的神经元连接在一起构成的。</p>
+<p>$$<br>\begin{equation}\begin{split}<br>𝑎_{1}&#x3D;𝑓(𝑊_{11}𝑥_{1}+𝑊_{12}𝑥_{2}+𝑊_{13}𝑥_{3}+𝑏_{1})\\<br>\\<br>𝑎_{2}&#x3D;𝑓(𝑊_{21}𝑥_{1}+𝑊_{22}𝑥_{2}+𝑊_{23}𝑥_{3}+𝑏_{2})\\<br>\\<br>𝑎_{3}&#x3D;𝑓(𝑊_{31}𝑥_{1}+𝑊_{32}𝑥_{2}+𝑊_{33}𝑥_{3}+𝑏_{3})\\<br>\end{split}\end{equation}<br>$$</p>
+<p>以矩阵形式：</p>
+<p>$$<br>𝒂&#x3D;𝑓(𝑾𝒙+𝒃)<br>$$</p>
+<h3 id="多层神经网络"><a href="#多层神经网络" class="headerlink" title="多层神经网络"></a>多层神经网络</h3><p>多层神经网络由多层神经网络堆叠而成，<strong>中间输出称为隐藏状态</strong>。</p>
+<div class="note note-danger">
+            <p>输入输出是有明确意义的，中间层则为黑盒。</p>
+          </div>
+
+<p>前馈计算(Feedforward Computation)：</p>
+<p>$$<br>\begin{equation}\begin{split}<br>𝒉_{1}&amp;&#x3D;𝑓(𝑊_{1}𝑥+𝑏_{1})\\<br>\\<br>𝒉_{2}&amp;&#x3D;𝑓(𝑊_{2}𝒉_{1}+𝑏_{2})\\<br>\\<br>𝒉_{3}&amp;&#x3D;𝑓(𝑊_{3}𝒉_{2}+𝑏_{3})\\<br>\end{split}\end{equation}<br>$$</p>
+<div class="note note-primary">
+            <p>为何采用多层：多层神经网络可以通过分层表示来表示更复杂的特征。</p>
+          </div>
+
+<h3 id="为什么需要激活函数"><a href="#为什么需要激活函数" class="headerlink" title="为什么需要激活函数"></a>为什么需要激活函数</h3><p>如果没有激活函数（非线性），深度神经网络就只能进行线性变换，多层级结构可以编译成单一的线性变换。</p>
+<div class="note note-danger">
+            <p>计算退化为线性变换</p>
+          </div>
+
+<div class="note note-primary">
+            <p>由于具有非线性，多层神经网络可以用更多层来逼近更复杂的函数。</p>
+          </div>
+
+<p>$$<br>𝒉&#x3D;𝑊_{2}(𝑊_{1}𝑥+𝑏_{1})+𝑏_{2}&#x3D;(𝑊_{2}𝑊_{1})𝑥+(𝑊_{2}𝑏_{1}+𝑏_{2})<br>$$</p>
+<h3 id="典型的激活函数"><a href="#典型的激活函数" class="headerlink" title="典型的激活函数"></a>典型的激活函数</h3><p>Sigmoid 函数：</p>
+<p>$$<br>𝑓(𝑧)&#x3D;\frac{1}{1+𝑒^{-𝑧}}<br>$$</p>
+<p>Tanh 函数：</p>
+<p>$$<br>𝑓(𝑧)&#x3D;tanh(𝑧)&#x3D;\frac{𝑒^{𝑧}-𝑒^{-𝑧}}{𝑒^{𝑧}+𝑒^{-𝑧}}<br>$$</p>
+<p>ReLU 函数：</p>
+<p>$$<br>\bbox[,5px,border:2px solid red]<br>{𝑓(𝑧)&#x3D; max(𝑧, 0)}<br>$$</p>
+<div class="note note-danger">
+            <p>ReLU 现在在大语言模型应用广泛</p>
+          </div>
+
+<div class="note note-danger">
+            <p>计算机视觉模型中间层包含了图像的边缘信息等，是模型自己“学习”出来的。</p>
+          </div>
+
+<h2 id="如何训练神经网络"><a href="#如何训练神经网络" class="headerlink" title="如何训练神经网络"></a>如何训练神经网络</h2><h3 id="训练目标"><a href="#训练目标" class="headerlink" title="训练目标"></a>训练目标</h3><div class="note note-danger">
+            <p>训练的本质是“拟合”，找到最优的参数，找到最符合期望的输出。</p>
+          </div>
+
+<p>给定 𝑁 个训练示例 ${\{(𝒙_{i}, 𝒚_{i})\}}$ ，其中 𝒙 和 𝒚 是 <strong>golden input and output</strong>。我们想要训练一个神经网络 $𝐹_{𝜽}(⋅)$，它将 𝒙 作为输入并预测 𝒚。合理的训练目标是</p>
+<p>$$<br>\mathop{min}\limits_{𝜽}𝐽({𝜽})&#x3D;\mathop{min}\limits_{𝜽}\frac{1}{N}\sum_{i&#x3D;1}^{N}l(𝒚_{i}-F_{𝜽}(𝒙_{i}))<br>$$</p>
+<p>其中 𝜽 是神经网络 $𝐹_{𝜽}(⋅)$ 的参数。$l(𝒚_{i}-F_{𝜽}(𝒙_{i}))$ 是<strong>损失函数（Loss Function）</strong>，用于衡量神经网络输出与黄金输出之间的差异。</p>
+<div class="note note-danger">
+            <p>有很多种损失函数的选择。</p>
+          </div>
+
+<h3 id="随机梯度下降"><a href="#随机梯度下降" class="headerlink" title="随机梯度下降"></a>随机梯度下降</h3><p><strong>函数沿梯度方向下降速度最快</strong>: $𝜽^{new}&#x3D;𝜽^{old}−𝛼∇_𝜽J(𝜽)$。</p>
+<div class="note note-primary">
+            <p>整个过程就像爬山一样：找到最陡峭的方向，然后迈出一步，找到下一个最陡峭的方向。</p>
+          </div>
+
+<div class="note note-danger">
+            <p>可能会收敛到局部最优解。当随着维度和参数的增加，现在可以找到优秀解。<br><strong>学习率</strong>表示每次训练迭代的“步进”，越小越慢，过大则不能拟合</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture2/gradient.png" srcset="/img/loading.gif" lazyload alt="Stochastic Gradient Descent"></p>
+<h3 id="梯度和反向传播"><a href="#梯度和反向传播" class="headerlink" title="梯度和反向传播"></a>梯度和反向传播</h3><p>给定一个具有一个输出和 𝑁 个输入的函数：</p>
+<p>$$F(x) &#x3D; F(x_1,x_2…x_N)$$</p>
+<p>其梯度是一个偏导数向量：</p>
+<p>$$\frac{𝜕F}{𝜕x}&#x3D;[\frac{𝜕F}{𝜕x_1},\frac{𝜕F}{𝜕x_2}…\frac{𝜕F}{𝜕x_N}]$$</p>
+<p><strong>反向传播是基于链式法则计算梯度的过程</strong>，现有的深度学习框架（TensorFlow、PyTorch 等）经常使用这种算法。</p>
+<div class="note note-danger">
+            <p>神经网络中每一步都需要可导的，因此<strong>阶跃激活函数</strong>比较麻烦。激活函数需要平滑</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture2/backpropagation1.png" srcset="/img/loading.gif" lazyload alt="Backpropagation"></p>
+<p>将神经网络方程表示为计算图，源节点表示输入，内部节点表示操作，边传递各种操作的结果。</p>
+<p><img src="/img/ai/openbmb/lecture2/backpropagation2.png" srcset="/img/loading.gif" lazyload alt="计算图"></p>
+<p>可以通过沿着计算图的路径以相反的方向传递来获得梯度。</p>
+<p><img src="/img/ai/openbmb/lecture2/backpropagation3.png" srcset="/img/loading.gif" lazyload alt="反向传播"></p>
+<div class="note note-danger">
+            <p>梯度下降效率比较低，现在有只寻找方向的收敛方法，以提高训练效率。</p>
+          </div>
+
+<h2 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h2><div class="note note-primary">
+            <p><strong>RNN: Recurrent Neural Networks 循环神经网络</strong></p>
+          </div>
+
+<div class="note note-danger">
+            <p>需要解决的问题：将离散的语言转为数值计算。语言的信息密度大，所以先诞生的是大语言模型，逐步发展为多模态大模型</p>
+          </div>
+
+<h3 id="语言模型"><a href="#语言模型" class="headerlink" title="语言模型"></a>语言模型</h3><p>语言建模是预测即将出现的单词的任务。即将出现的单词 $𝑤_{n}$ 的条件概率由 $𝑃(𝑤_{n}|𝑤_{1},𝑤_{2},…,𝑤_{n-1})$ 计算</p>
+<p><img src="/img/ai/openbmb/lecture2/language_model.png" srcset="/img/loading.gif" lazyload alt="预测下一个单词"></p>
+<p>假设：即将出现的单词的概率仅由其前面的所有单词决定，例如：</p>
+<p>$$<br>\begin{equation}\begin{split}<br>𝑃(𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒,𝑡𝑜,𝑙𝑒𝑎𝑟𝑛)&#x3D;&amp;𝑃(𝑁𝑒𝑣𝑒𝑟)×\\&amp;𝑃(𝑡𝑜𝑜|𝑁𝑒𝑣𝑒𝑟)×\\&amp;𝑃(𝑙𝑎𝑡𝑒|𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜)×\\&amp;𝑃(𝑡𝑜|𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒)×\\&amp;𝑃(𝑙𝑒𝑎𝑟𝑛|𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒,𝑡𝑜)\\<br>\\<br>𝑃(𝑙𝑒𝑎𝑟𝑛|𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒,𝑡𝑜)&#x3D;&amp;\frac{𝑃(𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒,𝑡𝑜,𝑙𝑒𝑎𝑟𝑛)}{𝑃(𝑁𝑒𝑣𝑒𝑟,𝑡𝑜𝑜,𝑙𝑎𝑡𝑒,𝑡𝑜)}\\<br>\\<br>P(w_{1},w_{2},…,w_{n})&#x3D;&amp;\prod_{i}P(w_{i}|w_{1},w_{2},\dots,w_{i-1})<br>\end{split}\end{equation}<br>$$</p>
+<ul>
+<li><strong>RNN 的关键概念</strong>：处理序列数据时的<strong>顺序记忆</strong></li>
+</ul>
+<div class="note note-primary">
+            <p>人脑顺序说26个字母，简单；倒序说26个字母，困难</p>
+          </div>
+
+<div class="note note-danger">
+            <p>语言模式是包含序列化的，不是随机概率分布</p>
+          </div>
+
+<ul>
+<li><strong>RNN 的核心思想</strong>：一种使其能够识别序列模式的机制。</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture2/rnn1.png" srcset="/img/loading.gif" lazyload alt="RNN 以递归方式更新序列记忆，以对序列数据进行建模"></p>
+<div class="note note-danger">
+            <p>输入层按时间（序列）输入数据，中间层不断更新参数，实现对序列的建模。神经元包括输入向量 $ x_{i} $，乘以可以学习的权重 $W_{x}$ 加上上一步计算的结果 $h_{i-1}$，和偏置，再进行激活。最后计算出输出 $y_{i}$。</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture2/rnn2.png" srcset="/img/loading.gif" lazyload alt="tanh"></p>
+<p>典型的RNN扩展：<strong>RNN、LSTM、GRU</strong>。</p>
+<div class="note note-danger">
+            <p>RNN需要较大的内存，以储存之前的序列记忆，从而有更加精准的输出。扩展围绕在RNN其中加入一些开关。目前这些模型已经逐步被淘汰。因为反向传播太慢，所以RNN训练很慢。</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture2/rnn3.png" srcset="/img/loading.gif" lazyload alt="RNN extensions"></p>
+<h3 id="用于语言建模的循环神经网络"><a href="#用于语言建模的循环神经网络" class="headerlink" title="用于语言建模的循环神经网络"></a>用于语言建模的循环神经网络</h3><p><img src="/img/ai/openbmb/lecture2/rnn4.png" srcset="/img/loading.gif" lazyload alt="用于语言建模的循环神经网络"></p>
+<div class="note note-primary">
+            <p><strong>RNN 神经元</strong>如何工作？RNN 神经元采用当前 RNN 状态和词向量，并生成对迄今为止的句子进行编码的后续 RNN 状态。学习到的权重表示如何结合<strong>过去的信息</strong> $𝒉_{t-1}$ 和<strong>当前的信息</strong> $𝒙_{t}$。</p>
+          </div>
+
+<p>$$<br>𝒉_{t}&#x3D;tanh(𝑾_{𝒙}𝒙_{t}+𝑾_{h}𝒉_{t-1}+𝒃_{1})<br>$$</p>
+<div class="note note-primary">
+            <p>输出功能如何运作？$𝒚_{4}$ 是根据 RNN 记忆和变换 $(𝑼,𝒃_{2})$ 构建的词汇的概率分布。<strong>softmax</strong> 函数将<strong>分数</strong>转换为<strong>概率分布</strong>。</p>
+          </div>
+
+<div class="note note-danger">
+            <p>𝑼 也是可学习的权重。实际的输出结果不是 one-hot 的，因为有很多种可能性。</p>
+          </div>
+
+<h2 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h2><div class="note note-danger">
+            <p>由于内存的限制，语言模型不能全序列去计算当下的下一个输出，所以 RNN ”退化“ 为一个处理局部状态的神经网络。当序列数量 n 足够大时，仍然是全序列语言模型。</p>
+          </div>
+
+<div class="note note-primary">
+            <p><strong>CNN: Convolutional Neural Networks 卷积神经网络</strong></p><p>CNNs are good at extracting <strong>local and position-invariant patterns</strong>, by computing the representations for all possible <strong>N-gram phrases</strong> in a sentence.</p><p>Sentence: The plane is taking off.<br>Possible n-gram phrases:</p><ul><li>Bigram: The plane, plane is, is taking, taking off</li><li>Trigram: The plane is, plane is taking, is taking off</li><li>N-gram: …</li></ul>
+          </div>
+
+<div class="note note-danger">
+            <p>将序列拆分出不同长度的窗格，以关注局部的序列状态。由于 RNN 反向传播路径太长，局部的 CNN 计算可以加快训练速度。</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture2/cnn1.png" srcset="/img/loading.gif" lazyload alt="Convolutional Neural Networks"></p>
+<ul>
+<li>输入层：通过词嵌入将单词转换为输入表示 $𝐱∈R^{m×d}$，其中 <strong>𝑚</strong> 是句子的长度，<strong>𝑑</strong> 是词嵌入的维数。</li>
+<li>卷积层：通过滑动卷积滤波器从输入表示中提取特征表示<ul>
+<li>输入表示<br>$$𝐱∈R^{m×d}$$</li>
+<li>$(j+1)-gram$ 表示，$𝐱_{i},𝐱_{i+1},…,𝐱_{i+j}$ 的连接<br>$$𝐱_{i:i+j}∈R^{(j+1)d}$$</li>
+<li>卷积滤波器，b 是偏差项（h 是窗口大小）<br>$$𝐰∈R^{h×d}$$</li>
+<li>卷积特征表示<br>$$𝐟∈R^{n-h+1}$$</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture2/cnn2.png" srcset="/img/loading.gif" lazyload alt="Convolution Layer"></p>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>用于 NLP 的神经网络模型对比：</p>
+<ul>
+<li>CNNs<ul>
+<li>优点：提取局部和位置不变特征</li>
+<li>参数：少量参数</li>
+<li>并行化：句内并行化效果更好</li>
+</ul>
+</li>
+<li>RNNs<ul>
+<li>优点：建模长区间上下文依赖性</li>
+<li>参数：更多参数（需要更多内存）</li>
+<li>并行化：句子内无法并行化</li>
+</ul>
+</li>
+</ul>
+<h2 id="seq2seq-和-transformer"><a href="#seq2seq-和-transformer" class="headerlink" title="seq2seq 和 transformer"></a>seq2seq 和 transformer</h2><div class="note note-danger">
+            <p>Transformer 一开始是 Google 为了解决机器翻译的问题，训练速度和性能都比 RNN 好。机器翻译任务更关注长序列。</p>
+          </div>
+
+<h3 id="机器翻译中的-seq2seq"><a href="#机器翻译中的-seq2seq" class="headerlink" title="机器翻译中的 seq2seq"></a>机器翻译中的 seq2seq</h3><p>机器翻译（Machine Translation，MT）：将文本从源语言翻译成目标语言的任务。回想一下序列到序列模型，它使用两个 RNN：</p>
+<ul>
+<li>Encoder RNN：生成源句子的表示</li>
+<li>Decoder RNN：基于编码生成目标句子的语言模型</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture2/seq2seq.png" srcset="/img/loading.gif" lazyload alt="Seq2Seq in MT"></p>
+<h3 id="transformer"><a href="#transformer" class="headerlink" title="transformer"></a>transformer</h3><div class="note note-danger">
+            <p>Transformer 替换了 RNN 处理序列的机制。使用 attention 的方法。RNN 处理变长序列，可以看到之前的所有输入，缺点是因为串行处理，导致计算很慢，而且 RNN 的记忆序列长度是固定的（由隐藏状态参数数量决定）。</p><p>Attention 对于一个向量，映射到三个矩阵运算，Query，Key，Value，$ QK^T$ 内积计算距离，乘以缩放系数 $\frac{1}{\sqrt{d_k}}$，避免计算值过大，再通过 $softmax()$ 计算概率分布，再乘以 $V$ 得到最后的序列。</p><p>Attention 的优势：</p><ul><li>矩阵计算轻量化且固定，反向传播快</li><li>可以处理足够大的输入</li><li>不像 RNN 一样固定的序列记忆数量<ul><li>RNN 的序列记忆数量取决于隐藏状态参数数量大小</li><li>Transformer 在计算时，会“看到”前面计算的所有隐藏状态参数，输入越长，则记忆力越好，保证信息不会丢失</li></ul></li><li>Transformer 在剔除了RNN的序列处理逻辑后，加入了 feedforward 等结构，叠加形成了多层模型</li></ul>
+          </div>
+
+<p>$$ \bbox[,5px,border:2px solid red]<br>{<br>  Attention(Q,K,V)&#x3D;softmax(\frac{1}{\sqrt{d_k}}QK^T)V<br>}<br>$$</p>
+<p><img src="/img/ai/openbmb/lecture2/attention.png" srcset="/img/loading.gif" lazyload alt="Transformer"></p>
+<p><img src="/img/ai/openbmb/lecture2/transformer.png" srcset="/img/loading.gif" lazyload alt="（左）缩放版的点积attention（右）Multi-Head Attention，由多个并行运行的attention层组成"></p>
+<h3 id="decoder-only-和-encoder-decoder"><a href="#decoder-only-和-encoder-decoder" class="headerlink" title="decoder-only 和 encoder-decoder"></a>decoder-only 和 encoder-decoder</h3><p><img src="/img/ai/openbmb/lecture2/decenc.png" srcset="/img/loading.gif" lazyload alt="仅解码或编解码"></p>
+<div class="note note-danger">
+            <p>左图：目前主流是 Decoder-only，使得所有任务都变成生成任务<br>右图：</p><ul><li>深色的线表示 Attention 的概率大</li><li>Attention 机制看到的是一个 token 的上下文联系，不仅仅是某个 token。</li></ul>
+          </div>
+
+<h1 id="3-大语言模型基础知识"><a href="#3-大语言模型基础知识" class="headerlink" title="3 大语言模型基础知识"></a>3 大语言模型基础知识</h1><ul>
+<li>迁移学习</li>
+<li>自监督学习、预训练</li>
+<li>语言建模预训练</li>
+<li>预训练模型和大语言模型</li>
+</ul>
+<h2 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h2><p>深度学习是各类自然语言处理任务的主流框架，但它仍然面临着一些挑战：<strong>缺乏大规模监督数据、模型深度有限、泛化性能差</strong>。</p>
+<div class="note note-danger">
+            <ul><li>带有人工标注的数据，为有监督数据，作为训练集，然后用测试数据作为输入，完成特定的输出任务。</li><li>有监督数据集成本高，模型上限低。</li><li>在输入数据集以外的数据，能否正常处理，表现了模型的泛化能力。即举一反三的能力。</li><li>预训练使模型具有通用能力，再“迁移”到具体任务上，可迁移到任务一般具备相似性。</li></ul>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture3/1.png" srcset="/img/loading.gif" lazyload alt="特定任务的监督数据"></p>
+<div class="note note-primary">
+            <p>PTMs (<strong>Pre-Trained Models 预训练模型</strong>) are proposed, which are pre-trained on large-scale unlabeled data, and then be finetuned on downstream tasks, showing strong performance on various downstream tasks.</p>
+          </div>
+
+<p><img src="/img/ai/openbmb/lecture3/2.png" srcset="/img/loading.gif" lazyload alt="large-scale unlabeled data"></p>
+<p><strong>预训练-微调范式（Pretraining-Finetuning paradigm）</strong>是<strong>迁移学习（Transfer Learning）</strong>的一种形式，之前学到的能力可以迁移到新任务中。</p>
+<p><img src="/img/ai/openbmb/lecture3/3.png" srcset="/img/loading.gif" lazyload alt="迁移学习（Transfer Learning）"></p>
+<p>迁移学习：知识获取 &#x3D;&gt; 知识迁移，包括<strong>基于特征的迁移和基于参数的迁移</strong>。</p>
+<p><img src="/img/ai/openbmb/lecture3/4.png" srcset="/img/loading.gif" lazyload alt="基于特征的迁移和基于参数的迁移"></p>
+<p>计算机视觉任务中的早期迁移学习工作：</p>
+<ul>
+<li>在人工标记的 ImageNet 上对模型进行预训练</li>
+<li>然后在下游任务上对模型进行微调</li>
+<li>基于 CNN（例如 <a href="https://github.com/huaweicloud/ModelArts-Lab/wiki/ResNet%E6%A8%A1%E5%9E%8B%E8%A7%A3%E6%9E%90">残差神经网络 ResNet</a>）构建模型</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture3/5.png" srcset="/img/loading.gif" lazyload alt="VGG"></p>
+<p>是否可以使用未标记数据预训练模型？</p>
+<ul>
+<li><strong>自监督学习</strong>：从未标记数据中挖掘内部信息来训练模型</li>
+<li><strong>对比学习</strong>：最大化正例和反例之间的距离</li>
+</ul>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture3/6.png" srcset="/img/loading.gif" lazyload alt="利用卷积神经网络进行判别式无监督特征学习"></div><div class="group-image-wrap"><img src="/img/ai/openbmb/lecture3/7.png" srcset="/img/loading.gif" lazyload alt="无监督视觉表征学习的动量对比，利用动量对比学习改进基线"></div></div></div>
+
+<h2 id="语言建模的预训练"><a href="#语言建模的预训练" class="headerlink" title="语言建模的预训练"></a>语言建模的预训练</h2><p>如何衡量文本的概率？</p>
+<p>$$<br>Pr(I like deep learning) &gt; Pr(I hate deep learning)<br>$$</p>
+<h3 id="word2vec"><a href="#word2vec" class="headerlink" title="word2vec"></a>word2vec</h3><p>Word2vec 使用浅层神经网络将单词与分布式表示关联起来。它可以捕捉许多语言规律，例如：</p>
+<p><img src="/img/ai/openbmb/lecture3/8.png" srcset="/img/loading.gif" lazyload alt="Efficient Estimation of Word Representations in Vector Space"></p>
+<p>Word2vec 可以利用两种架构来生成单词的分布式表示，</p>
+<ul>
+<li>连续词袋 (CBOW)</li>
+<li>连续 Skip-Gram<br><img src="/img/ai/openbmb/lecture3/9.png" srcset="/img/loading.gif" lazyload alt="向量空间中词语表征的有效估计"></li>
+</ul>
+<p>Word2Vec 的挑战</p>
+<ul>
+<li>歧义：<ul>
+<li>我去银行（bank）存钱。</li>
+<li>我去岸边（bank）钓鱼。</li>
+</ul>
+</li>
+<li>反义词：<ul>
+<li>我喜欢这部电影，这部电影太糟糕了。</li>
+<li>我不喜欢这部电影，这部电影太好了。</li>
+</ul>
+</li>
+</ul>
+<h3 id="上下文相关的词语表示"><a href="#上下文相关的词语表示" class="headerlink" title="上下文相关的词语表示"></a>上下文相关的词语表示</h3><p>在<strong>海量文本数据</strong>上对 RNN 进行预训练。RNN 模型模拟自然语言概率。此功能可以很好地迁移到下游自然语言处理任务。</p>
+<p><img src="/img/ai/openbmb/lecture3/10.png" srcset="/img/loading.gif" lazyload alt="下游自然语言处理"></p>
+<p>上下文相关的词语表示:</p>
+<p><img src="/img/ai/openbmb/lecture3/11.png" srcset="/img/loading.gif" lazyload alt="Context-sensitive word representations"></p>
+<h2 id="预训练模型和大语言模型"><a href="#预训练模型和大语言模型" class="headerlink" title="预训练模型和大语言模型"></a>预训练模型和大语言模型</h2><p>2018年，以 ELMo、BERT 为代表的预训练模型给NLP领域带来了一场革命。基于预训练模型的工作在几乎所有的 NLP 任务上都取得了巨大的突破，各类 benchmark 的结果也得到了显著的提升。</p>
+<p><img src="/img/ai/openbmb/lecture3/12.png" srcset="/img/loading.gif" lazyload alt="预训练模型"></p>
+<h3 id="预训练模型"><a href="#预训练模型" class="headerlink" title="预训练模型"></a>预训练模型</h3><p>GLUE 上的预训练模型的结果超越了人类的水平，体现了它们的语言理解能力。</p>
+<p><img src="/img/ai/openbmb/lecture3/13.png" srcset="/img/loading.gif" lazyload alt="GLUE Benchmark"></p>
+<h3 id="大语言模型-1"><a href="#大语言模型-1" class="headerlink" title="大语言模型"></a>大语言模型</h3><p>过去两年，预训练模型的规模每年增长约10倍，数据量也随之增长，计算成本也越来越昂贵。<br><img src="/img/ai/openbmb/lecture3/14.png" srcset="/img/loading.gif" lazyload alt="大语言模型"></p>
+<p>一个非常有代表性的模型是拥有1700亿（170B）个参数的GPT-3。</p>
+<p><img src="/img/ai/openbmb/lecture3/15.png" srcset="/img/loading.gif" lazyload alt="GPT3"></p>
+<p>GPT-3具有一定的知识，可以进行一定的逻辑推理。</p>
+<p><img src="/img/ai/openbmb/lecture3/16.png" srcset="/img/loading.gif" lazyload alt="GPT3 问答"></p>
+<p>此外，GPT-3 具有强大的零次&#x2F;小样本学习能力，可以执行许多任务。</p>
+<p><img src="/img/ai/openbmb/lecture3/17.png" srcset="/img/loading.gif" lazyload alt="GPT3 的学习"></p>
+<h3 id="语言模型的特性和功能"><a href="#语言模型的特性和功能" class="headerlink" title="语言模型的特性和功能"></a>语言模型的特性和功能</h3><p>大型语言模型使用下一个 token 预测任务来对大数据进行建模。学习大数据需要大量参数，<strong>训练大模型需要大量计算能力。更多的 FLOP 带来更多的功能，智能逐渐出现。</strong></p>
+<p><img src="/img/ai/openbmb/lecture3/18.png" srcset="/img/loading.gif" lazyload alt="将大数据转换成统一序列化格式的过程；更多的 FLOP 带来更多的功能"></p>
+<h1 id="4-大语言模型的训练方法"><a href="#4-大语言模型的训练方法" class="headerlink" title="4 大语言模型的训练方法"></a>4 大语言模型的训练方法</h1><p><img src="/img/ai/openbmb/lecture4/1.png" srcset="/img/loading.gif" lazyload alt="如何训练这些模型"></p>
+<ul>
+<li>Pre-training 预训练<ul>
+<li>Language Modeling 语言建模</li>
+<li>Development of Pre-trained Language Models 预训练语言模型的开发</li>
+</ul>
+</li>
+<li>Post-training 后训练<ul>
+<li>Conventional Fine-Tuning 常规微调</li>
+<li>Advanced Adaptation 高级自适应</li>
+<li>Alignment &amp; SuperAlignment 对齐和超对齐</li>
+</ul>
+</li>
+</ul>
+<h2 id="大模型的普及"><a href="#大模型的普及" class="headerlink" title="大模型的普及"></a>大模型的普及</h2><ul>
+<li>一切都可以 <strong>tokenized</strong> —— 文本、代码、图像、DNA……</li>
+<li>每个 Token 都可以被学习（和推广）</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture4/2.png" srcset="/img/loading.gif" lazyload alt="tokenize"></p>
+<h3 id="tokenization"><a href="#tokenization" class="headerlink" title="tokenization"></a>tokenization</h3><p>标记化将文本（或其他信息）分解为子单词（标记）</p>
+<ul>
+<li>有多种方法来标记文本</li>
+<li>标记可以通过嵌入（Embedding）进一步表示</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture4/3.png" srcset="/img/loading.gif" lazyload alt="单词化"></p>
+<p><img src="/img/ai/openbmb/lecture4/4.png" srcset="/img/loading.gif" lazyload alt="BPE标记化训练过程"></p>
+<h3 id="过去的预训练嵌入"><a href="#过去的预训练嵌入" class="headerlink" title="过去的预训练嵌入"></a>过去的预训练嵌入</h3><ul>
+<li>词嵌入以上下文无关的方式应用</li>
+<li>训练神经语言模型，根据句子中的前几个单词来预测下一个单词，并将其内部表示用作词向量</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture4/5.png" srcset="/img/loading.gif" lazyload alt="如何表示一个单词的不同含义？"></p>
+<div class="note note-primary">
+            <p>ELMo：情境化预训练从这里开始</p><ul><li>架构：堆叠式 Bi-LSTM，基于 1B Word Benchmark。</li><li>将每层的隐藏状态组合在一起作为上下文词嵌入。</li><li>语境化：每个单词的表示取决于其使用的整个上下文。</li><li>深度：单词表示结合了深度预训练神经网络的所有层</li></ul><p><img src="/img/ai/openbmb/lecture4/6.png" srcset="/img/loading.gif" lazyload alt="ELMo：深度上下文词嵌入"></p>
+          </div>
+
+<h2 id="transformer-1"><a href="#transformer-1" class="headerlink" title="transformer"></a>transformer</h2><p><img src="/img/ai/openbmb/lecture4/7.png" srcset="/img/loading.gif" lazyload alt="Encoder Decoder"></p>
+<p><img src="/img/ai/openbmb/lecture4/8.png" srcset="/img/loading.gif" lazyload alt="BERT &amp; GPT"></p>
+<h3 id="gpt"><a href="#gpt" class="headerlink" title="gpt"></a>gpt</h3><ul>
+<li>受到 Transformer 在不同 NLP 任务中成功的启发，GPT 是<strong>第一个基于 Transformer 预训练 PLM 的工作</strong></li>
+<li>Transformer + 从左到右的 LM；对下游任务进行了微调。</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture4/9.png" srcset="/img/loading.gif" lazyload alt="GPT"></p>
+<ul>
+<li>训练 Transformer 是高效的：我们实际上可以在一次前向传递中计算出序列中所有标记的语言建模概率。</li>
+<li>注意掩码可控制哪些上下文标记在注意力计算中可见。</li>
+</ul>
+<p><img src="/img/ai/openbmb/lecture4/10.png" srcset="/img/loading.gif" lazyload alt="Training"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://cloud.tencent.com/developer/article/2330592">GPT太「奢侈」，平替大汇总来了，再也不用担心部署大难题</a></li>
+<li><a href="https://ar5iv.labs.arxiv.org/html/2308.14149">Examining User-Friendly and Open-Sourced Large GPT Models: A Survey on Language, Multimodal, and Scientific GPT Models</a></li>
+<li><a href="https://blog.csdn.net/u010945683/article/details/46757757">MathJax基本的使用方式</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/19/amdgpu-kmd/" title="AMD GPU KMD 代码分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AMD GPU KMD 代码分析</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/07/AI/TTS/" title="ChatTTS">
+                        <span class="hidden-mobile">ChatTTS</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

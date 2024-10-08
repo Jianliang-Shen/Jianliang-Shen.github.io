@@ -1,0 +1,954 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="这是目前最简单、最快的一个训练&#x2F;微调中等大小的GPT仓库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NanoGPT 教程及训练推理">
+<meta property="og:url" content="http://yoursite.com/2024/09/04/AI/NanoGPT/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="这是目前最简单、最快的一个训练&#x2F;微调中等大小的GPT仓库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/nanogpt/Logo2.png">
+<meta property="article:published_time" content="2024-09-04T22:56:13.000Z">
+<meta property="article:modified_time" content="2024-10-08T13:01:04.990Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/nanogpt/Logo2.png">
+  
+  
+  
+  <title>NanoGPT 教程及训练推理 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NanoGPT 教程及训练推理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-04 22:56" pubdate>
+          2024年9月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          94 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">NanoGPT 教程及训练推理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这是目前最简单、最快的一个训练&#x2F;微调中等大小的GPT仓库。</p>
+<span id="more"></span>
+
+<p><img src="/img/ai/nanogpt/nanogpt.jpg" srcset="/img/loading.gif" lazyload alt="nanoGPT"></p>
+<h1 id="NanoGPT-中文教程"><a href="#NanoGPT-中文教程" class="headerlink" title="NanoGPT 中文教程"></a>NanoGPT 中文教程</h1><p>该项目是对<a href="https://github.com/karpathy/minGPT">minGPT</a> 项目的重构。项目虽然仍处于积极的开发阶段；但是目前其中的<code>train.py</code>文件在OpenWebText上已经可以复现GPT-2（124M）在8个A100（40GB）上训练四天的效果。此外，代码写的十分简单易读：<code>train.py</code>是一个300行的训练的模版，而 <code>model.py</code> 是一个300行的GPT模型定义的模版，该模板支持选择加载OpenAI的GPT-2权重。</p>
+<p><img src="/img/ai/nanogpt/gpt2_124M_loss.png" srcset="/img/loading.gif" lazyload alt="repro124m"></p>
+<p>因为该仓库的代码实在非常简单，因此很容易根据您的需求进行应用、或者从零开始训练新模型以及微调预训练的检查点（例如，目前可用的最大的预训练模型是OpenAI开源的GPT-2 1.3B模型）。</p>
+<h2 id="安装条件"><a href="#安装条件" class="headerlink" title="安装条件"></a>安装条件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install torch numpy transformers datasets tiktoken wandb tqdm<br></code></pre></td></tr></table></figure>
+
+<p>依赖的库：</p>
+<ul>
+<li><a href="https://pytorch.org/">pytorch</a> &lt;3</li>
+<li><a href="https://numpy.org/install/">numpy</a> &lt;3</li>
+<li><code>transformers</code> for huggingface transformers &lt;3 (用于加载 GPT-2 模型的检查点)</li>
+<li><code>datasets</code> for huggingface datasets &lt;3 (如果您想下载并且处理OpenWebText数据集)</li>
+<li><code>tiktoken</code> for OpenAI’s 最快的BEP编码算法 &lt;3</li>
+<li><code>wandb</code> for optional logging &lt;3</li>
+<li><code>tqdm</code> for 加载进度条 &lt;3</li>
+</ul>
+<h2 id="简易上手"><a href="#简易上手" class="headerlink" title="简易上手"></a>简易上手</h2><p>如果您不是专业从事于深度学习行业的人士，只是想感受GPT的魅力以及自己训练GPT的快感，那么最快的入门方法就是训练一个可以创造莎士比亚作品的GPT。首先，我们先下载一个1MB大小的文件，并将其从原始文本转换为一个大的整数流（将原始数据转化为一个embedding之后的整数流数据）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python data/shakespeare_char/prepare.py<br></code></pre></td></tr></table></figure>
+
+<p>这会在数据目录中创建<code>train.bin</code> and <code>val.bin</code> 文件，现在就是时候来训练你的GPT了。而你训练GPT的规模在很大程度上取决于你能提供的算力情况(是否有显卡以及显存的大小是多少)：</p>
+<p>如果您的设备<strong>配置了显卡</strong>，那么很棒，我们可以使用在<a href="config/train_shakespeare_char.py">config&#x2F;train_shakespeare_char.py</a> config file提供的设置很快地训练一个小型GPT</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python train.py config/train_shakespeare_char.py<br></code></pre></td></tr></table></figure>
+
+<p>如果您恰好有兴趣观看了代码的细节部分，您将会发现我们正在训练一个上下文大小高达256个字符、384个特征通道，的一个6层的且每层的heads数量有6个的Transformer。在一个A100型号的显卡中，此训练运行大约需要3分钟，最佳验证损失可以减小到1.4697。根据代码中的设置，模型检查点被写入<code>--out_dir</code>目录<code>out-shakespeare-char</code>中。因此在训练完成后，我们可以通过将验证脚本<code>sample.py</code>在最佳的模型进行文本的效果生成。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python sample.py --out_dir=out-shakespeare-char<br></code></pre></td></tr></table></figure>
+
+<p>这会产生一些新的样例，例如:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs txt">ANGELO:<br>And cowards it be strawn to my bed,<br>And thrust the gates of my threats,<br>Because he that ale away, and hang&#x27;d<br>An one with him.<br><br>DUKE VINCENTIO:<br>I thank your eyes against it.<br><br>DUKE VINCENTIO:<br>Then will answer him to save the malm:<br>And what have you tyrannous shall do this?<br><br>DUKE VINCENTIO:<br>If you have done evils of all disposition<br>To end his power, the day of thrust for a common men<br>That I leave, to fight with over-liking<br>Hasting in a roseman.<br></code></pre></td></tr></table></figure>
+
+<p>哇，<code>¯\_(ツ)_/¯</code>. 对于一个只在GPU上训练了三分钟的用于角色扮演的GPT来说还真不错。 而如果是在此数据集上微调预训练好的GPT-2模型，有很大的可能会获得更好的结果的（详情见后面的微调部分）</p>
+<p>如果**您只有一台MacBook或者其他更为便宜的电脑(没有显卡)**怎么办？不用慌 ,我们仍然可以训练一个GPT,只是我们要让事情低调一点，在这里我推荐使用最新版的每晚更新的pytorch，因为这有可能让您的代码变得更加高效。当没有显卡的时候，可以使用下面这个简单的训练脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python train.py config/train_shakespeare_char.py --device=cpu --compile=False --eval_iters=20 --log_interval=1 --block_size=64 --batch_size=12 --n_layer=4 --n_head=4 --n_embd=128 --max_iters=2000 --lr_decay_iters=2000 --dropout=0.0<br></code></pre></td></tr></table></figure>
+
+<p>此时，由于我们是在CPU而非GPU上运行，我们必须设置<code>--device=cpu</code>并且使用<code>--compile=False</code>关闭掉PyTorch 2.0版本的compile功能。 然后，当我们在测试时候时，得到的估计结果可以更不精确但是更快（<code>eval_iters=20</code>，将迭代的次数从200下降到20），此时我们使用的上下文大小范围只有64个字符，而不是256个字符，每次迭代的batchsize只有12个样本，而不是64个样本。我们还将使用一个更小的Transformer结构（4layer，4个head，128个嵌入大小），并将迭代次数响应地减少到2000（相应地，通常使用<code>--lr_decay_iters</code>将学习率衰减到max_iters左右）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python sample.py --out_dir=out-shakespeare-char --device=cpu<br></code></pre></td></tr></table></figure>
+
+<p>这样会生成下面这样的样本：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs txt">GLEORKEN VINGHARD III:<br>Whell&#x27;s the couse, the came light gacks,<br>And the for mought you in Aut fries the not high shee<br>bot thou the sought bechive in that to doth groan you,<br>No relving thee post mose the wear<br></code></pre></td></tr></table></figure>
+
+<p>因为是只在cpu上训练了3分钟，因此能输出这样符合语法，和要求格式的样子算很不错了。如果您乐意等待更长的时间，请尽情去调整超参数，并且去增加网络的大小，使用<code>--block_size</code>去调整上下文的长度</p>
+<p>最终，如果是在苹果的M系列处理器上进行实验(最新的pytorch版本)，请务必将添加<code>--device=mps</code>的设置，PyTorch会使用在芯片上的图形处理单元(GPU)来显著加快训练速度(2-3倍)，并且允许您使用更大的网络规模。您可以在 <a href="https://github.com/karpathy/nanoGPT/issues/28">Issue 28</a>找到更多相关的内容</p>
+<h2 id="复现GPT-2"><a href="#复现GPT-2" class="headerlink" title="复现GPT-2"></a>复现GPT-2</h2><p>一些更专业的深度学习从业者也许会更关注如何去复现GPT-2的效果。因此，让我们开始，我们首先将数据集进行tokenize，以<a href="https://openwebtext2.readthedocs.io/en/latest/">OpenWebText</a>数据集(OpenAI的WebText的开放版本)为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python data/openwebtext/prepare.py<br></code></pre></td></tr></table></figure>
+
+<p>这会下载并将 <a href="https://huggingface.co/datasets/openwebtext">OpenWebText</a> 数据集进行分词化.这将会创造一个保存了<code>train.bin</code>和<code>val.bin</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">torchrun --standalone --nproc_per_node=8 train.py config/train_gpt2.py<br></code></pre></td></tr></table></figure>
+
+<p>如果您有集群环境可以使用，并且您拥有多个GPU节点，您可以使GPU在2个节点上进行，例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Run on the first (master) node with example IP 123.456.123.456:</span><br>torchrun --nproc_per_node=8 --nnodes=2 --node_rank=0 --master_addr=123.456.123.456 --master_port=1234 train.py<br><span class="hljs-comment"># Run on the worker node:</span><br>torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 --master_addr=123.456.123.456 --master_port=1234 train.py<br></code></pre></td></tr></table></figure>
+
+<p>在您的计算机系统中对内部连接（例如使用iperf3工具）进行性能测试是一个很好的主意。如果您没有安装Infiniband技术，那么在上述启动命令前还应该添加<code>NCCL_IB_DISABLE=1</code>。这样您的多节点训练可以正常进行，但很可能速度会非常慢。默认情况下，检查点会定期写入到<code>--out_dir</code>指定的目录中。我们可以通过简单地执行<code>python sample.py</code>命令从模型中进行抽样。</p>
+<p>最终，如果想在单个GPU上进行训练，您只需要简单的运行<code>python train.py</code>脚本即可。看看args中的这些参数，着脚本是如此的易读，易用以及是可迁移的。您可以根据您的需要在这些变量中进行随意地调整。</p>
+<h2 id="基线"><a href="#基线" class="headerlink" title="基线"></a>基线</h2><p>OpenAI GPT-2的提供的模型保存点允许我们为openwebtext数据集建立一些基准测试。我们可以按照以下方式获得这些数值：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">python train.py eval_gpt2<br>python train.py eval_gpt2_medium<br>python train.py eval_gpt2_large<br>python train.py eval_gpt2_xl<br></code></pre></td></tr></table></figure>
+
+<p>并且可以观察到在训练集和测试集上的损失:</p>
+<table>
+<thead>
+<tr>
+<th>model</th>
+<th>params</th>
+<th>train loss</th>
+<th>val loss</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gpt2</td>
+<td>124M</td>
+<td>3.11</td>
+<td>3.12</td>
+</tr>
+<tr>
+<td>gpt2-medium</td>
+<td>350M</td>
+<td>2.85</td>
+<td>2.84</td>
+</tr>
+<tr>
+<td>gpt2-large</td>
+<td>774M</td>
+<td>2.66</td>
+<td>2.67</td>
+</tr>
+<tr>
+<td>gpt2-xl</td>
+<td>1558M</td>
+<td>2.56</td>
+<td>2.54</td>
+</tr>
+</tbody></table>
+<p>然而，我们必须要注意到一点，GPT-2实际上是在未开源的，甚至是从未发行过的WebText数据集上进行训练的，而OpenWebText只是对这个数据集的最大努力地复制。这意味着数据集之间的差异是显著存在的。事实上，我们使用GPT-2 (124M) 的检查点，利用OpenWebText数据集进行微调，不一会就能观察到损失会降低到2.85左右，对与复现来说，这是实际上是更为合适的基线。</p>
+<h2 id="模型微调"><a href="#模型微调" class="headerlink" title="模型微调"></a>模型微调</h2><p>微调和训练的差别并不大，我们只需要保证要从一个预训练的模型进行初始化并且用一个更小的学习率进行训练即可。如果想了解如何在新的数据集上微调GPT模型，您可以参考shakespeare的例子：转到<code>data/shakespeare</code>目录并运行<code>prepare.py</code>，以下载tiny shakespeare数据集并使用GPT-2的OpenAI BPE分词器，将其处理成<code>train.bin</code>和<code>val.bin</code>文件。不像使用OpenWebText数据集从零开始训练，这会在几秒钟内完成。微调可能需要很少的时间，甚至是在单个GPU上仅需几分钟。我们可以像这样运行一个微调的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python train.py config/finetune_shakespeare.py<br></code></pre></td></tr></table></figure>
+
+<p>这将加载写在<code>config/finetune_shakespeare.py</code>中的配置参数（虽然我没有太多调整它们）。基本上，我们使用<code>init_from</code>从一个GPT2的模型保存点初始化，并像通常一样进行训练，只是训练时间更短，学习率更小。如果您在训练过程中发现显存溢出的情况，您可以尝试减小模型大小（可选的有<code>&#39;gpt2&#39;</code>, <code>&#39;gpt2-medium&#39;</code>, <code>&#39;gpt2-large&#39;</code>, <code>&#39;gpt2-xl&#39;</code>），或者可能减小<code>block_size</code>（上下文长度）。最佳的模型保存点（验证损失最低）会在<code>out_dir</code>目录中，根据配置文件例如默认情况下会保存在<code>out-shakespeare</code>中。然后，你可以运行在<code>sample.py --out_dir=out-shakespeare</code>中的代码：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs txt">THEODORE:<br>Thou shalt sell me to the highest bidder: if I die,<br>I sell thee to the first; if I go mad,<br>I sell thee to the second; if I<br>lie, I sell thee to the third; if I slay,<br>I sell thee to the fourth: so buy or sell,<br>I tell thee again, thou shalt not sell my<br>possession.<br><br>JULIET:<br>And if thou steal, thou shalt not sell thyself.<br><br>THEODORE:<br>I do not steal; I sell the stolen goods.<br><br>THEODORE:<br>Thou know&#x27;st not what thou sell&#x27;st; thou, a woman,<br>Thou art ever a victim, a thing of no worth:<br>Thou hast no right, no right, but to be sold.<br></code></pre></td></tr></table></figure>
+
+<p>Emmm，此时GPT似乎产生了一些不能解释（黑洞）的东西。我并没有真正对配置中的超参数进行太多调整，请随时尝试！</p>
+<h2 id="采样推理"><a href="#采样推理" class="headerlink" title="采样推理"></a>采样推理</h2><p>使用<code>sample.py</code>脚本可以从OpenAI发布的预训练GPT-2模型或者从您自己训练好的模型中进行内容生成。例如这里您可以通过这样的方式从目前最大的<code>gpt2-xl</code> 模型中进行推理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">python sample.py \<br>    --init_from=gpt2-xl \<br>    --start=<span class="hljs-string">&quot;What is the answer to life, the universe, and everything?&quot;</span> \<br>    --num_samples=5 --max_new_tokens=100<br></code></pre></td></tr></table></figure>
+
+<p>If you’d like to sample from a model you trained, use the <code>--out_dir</code> to point the code appropriately. You can also prompt the model with some text from a file, e.g. <code>python sample.py --start=FILE:prompt.txt</code>.</p>
+<h2 id="提高效率"><a href="#提高效率" class="headerlink" title="提高效率"></a>提高效率</h2><p>对于简单的模型基准测试和性能分析，<code>bench.py</code>可能会很有用。它与<code>train.py</code>中训练循环的核心部分所发生的事情相同，但省略了许多其他一些复杂的东西。</p>
+<p>请注意，默认情况下代码使用的是<a href="https://pytorch.org/get-started/pytorch-2.0/">PyTorch 2.0</a>。在撰写本文时（2022年12月29日），这使得<code>torch.compile()</code>在每日更新版本中可用。<code>torch.compile()</code>所带来的提升是显著的，例如，将迭代时间从约250毫秒&#x2F;次迭代减少到135毫秒&#x2F;次迭代。PyTorch团队牛逼！</p>
+<h2 id="可以做的事情"><a href="#可以做的事情" class="headerlink" title="可以做的事情"></a>可以做的事情</h2><ul>
+<li>进行调研并使用FSDP代替DDP</li>
+<li>在标准评估上评估了零样本的困惑度（例如LAMBADA? HELM? 等）</li>
+<li>可以微调 finetuning script，我认为超参数设置得不太好</li>
+<li>在训练过程中安排线性增加批量大小</li>
+<li>合并其他嵌入（如旋转嵌入，alibi嵌入）</li>
+<li>我认为应该在检查点中将优化缓冲区与模型参数分开</li>
+</ul>
+<h1 id="训练实践"><a href="#训练实践" class="headerlink" title="训练实践"></a>训练实践</h1><h2 id="训练西游记"><a href="#训练西游记" class="headerlink" title="训练西游记"></a>训练西游记</h2><p>照搬上面教程：</p>
+<p><img src="/img/ai/nanogpt/west.png" srcset="/img/loading.gif" lazyload alt="文件目录"></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-7c17ff9f" role="button" aria-expanded="false" aria-controls="collapse-7c17ff9f">
+        <div class="fold-arrow">▶</div>训练脚本及测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-7c17ff9f">
+        <div class="fold-content">
+          <p><strong>prepare.py</strong></p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs py">input_file_path = os.path.join(os.path.dirname(__file__), <span class="hljs-string">&#x27;west-journey.txt&#x27;</span>)<br></code></pre></td></tr></table></figure><p><strong>train_west_journey.py</strong></p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># train a miniature character-level shakespeare model</span><br><span class="hljs-comment"># good for debugging and playing on macbooks and such</span><br><br>out_dir = <span class="hljs-string">&#x27;out-west-journey&#x27;</span><br>eval_interval = <span class="hljs-number">250</span> <span class="hljs-comment"># keep frequent because we&#x27;ll overfit</span><br>eval_iters = <span class="hljs-number">200</span><br>log_interval = <span class="hljs-number">10</span> <span class="hljs-comment"># don&#x27;t print too too often</span><br><br><span class="hljs-comment"># we expect to overfit on this small dataset, so only save when val improves</span><br>always_save_checkpoint = <span class="hljs-literal">False</span><br><br>wandb_log = <span class="hljs-literal">False</span> <span class="hljs-comment"># override via command line if you like</span><br>wandb_project = <span class="hljs-string">&#x27;out-west-journey&#x27;</span><br>wandb_run_name = <span class="hljs-string">&#x27;mini-gpt&#x27;</span><br><br>dataset = <span class="hljs-string">&#x27;west-journey&#x27;</span><br>gradient_accumulation_steps = <span class="hljs-number">1</span><br>batch_size = <span class="hljs-number">64</span><br>block_size = <span class="hljs-number">256</span> <span class="hljs-comment"># context of up to 256 previous characters</span><br><br><span class="hljs-comment"># baby GPT model :)</span><br>n_layer = <span class="hljs-number">6</span><br>n_head = <span class="hljs-number">12</span><br>n_embd = <span class="hljs-number">384</span><br>dropout = <span class="hljs-number">0.1</span><br><br>learning_rate = <span class="hljs-number">1e-3</span> <span class="hljs-comment"># with baby networks can afford to go a bit higher</span><br>max_iters = <span class="hljs-number">10000</span><br>lr_decay_iters = <span class="hljs-number">10000</span> <span class="hljs-comment"># make equal to max_iters usually</span><br>min_lr = <span class="hljs-number">1e-4</span> <span class="hljs-comment"># learning_rate / 10 usually</span><br>beta2 = <span class="hljs-number">0.99</span> <span class="hljs-comment"># make a bit bigger because number of tokens per iter is small</span><br><br>warmup_iters = <span class="hljs-number">100</span> <span class="hljs-comment"># not super necessary potentially</span><br><br><span class="hljs-comment"># on macbook also add</span><br><span class="hljs-comment"># device = &#x27;cpu&#x27;  # run on cpu only</span><br><span class="hljs-comment"># compile = False # do not torch compile the model</span><br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ python prepare.py<br>$ python train.py config/train_west_journey.py<br>$ python3 sample.py --out_dir=out-west-journey/<br>Overriding: out_dir = out-west-journey/<br>number of parameters: 12.36M<br>Loading meta from data/west-journey/meta.pkl...<br><br><br>家有三个小妖。他身一个，一人也不是面。他只是我生得到处，他怎么这等怎的？”行者笑道：“兄弟们，这个和尚，你两个在这里也会说话，也不曾同小可，待我往西天去拜佛上去。” 小妖道：“他却去了？”行者道：“你不曾去了？”小妖道：“洞里有个南南海菩萨说唐僧，名悟空行者，做不曾与我做。因了人是牛魔王，名悟能，姓孙，谁敢来历。”<br><br>行者道：“他怎么说？”妖王道：“他是两个孙悟空，到此处寻他！”大圣道：“原来是猪八戒，他怎么敢来历？”行者道：“实不敢擅来，说我这里话，一遍东土到我师父。那些人，你去寻 ，我那厢都来此请将来奉上。”行者道：“我那里来的？”小妖道：“差来的？”小妖道：“我奉 请出来。”小妖道：“是一个大王的大王，来的一个孙行者。”小妖道：“大王，那里有个小孙 ？”小妖道：“知，来的们先来。”小妖道：“前年我等出来问他甚么人家人是一个师兄，乃陈 下大王？”小妖道：“我祖为七八千年？”妖王道：“有个三千万，他那个和尚，他是我等大王 ，唤做猪羊，往西天取经的女儿。教他将草贩猪羊差往西天取经，往西打火的，问我们往那 里去？”小妖道：“那里去，山坡上就是一个甚么名木叉、火势，敢来，只管甚么孙行者假， 若是有些儿。<br>---------------<br><br>一二点点神，即时有一里远近，忽见一座高山。大圣道：“这小神，见他却不在这里，老孙看见他怎么不得？”玉帝道：“那个是那个大圣，下界来的是孙悟空来了。”大圣已息怒，叫声“ 这泼猴！也！这泼猴，好！他怎么见出名谁？”大圣道：“不要打！”大圣道：“你这等咒语， 心内说，教你去问我。”无奈，那些土地，只听得半个个即出大海边来，丢了手，将出一个妖精，那妖魔，一个个个个轮着一个拳头，道：“我不打你的泼猴，在那里见我这里面，想是甚名头？”行者道：“你那里走回来？”土地道：“你是东土大唐驾下差往西天取经的大雷音寺， 路过宝方，特来问我条路上去了。”行者才闪过，解开门来。那罗汉化了门，叫声“小神，快 去来！”慌得那土地藏慌了心惊道：“这弼马温柔天弄了！真是！你是打你的宝贝，你听我哄 我！”这大圣听言，心中大怒道：“这个孽畜！”这兄弟，这番真个浑身，往下一摸，好杀：果然不见！真个自天号，与大圣，万道：“吾意，你怎么走得？”大圣道：“你莫怕，我照顾！” 大圣笑道：“你这个嘴，我不是你的泼狲，在高山前，把一条，变作个花针儿，你也是你的。”行者道：“你这个原来是在那里？我如来是西方佛求经，名悟净。”土地道：“我乃西方大唐 王第<br>---------------<br><br><br><br>此去，只见那边有一座黑山，坡前面有一个女子。半空中间收了一个女儿，身穿一领青脸獠 牙，一行者，一个头戴一双布天冠。面似龙警，光亮如白光须。身云履轻飘飘飘飘荡，身穿 风飘荡。正是那一个是那里女子，止不住腮边泪滴泪，见了，十分开路，只叫：“女菩萨，我来了！我！看你，快教你我与我一个死！”那女怪不敢言，大圣才转睛，径往西上一个女怪。正自商议，忽然见他：<br><br>“女菩萨，贫僧往那里去？”女怪道：“我名唤做香火焰山，往那里去。”那女子即回头，又来 。那怪一个行者，心惊道：“郎君是我等往西海龙王，径至此，只有五百年，不出个洞。”那 怪道：“你是那个妖精，来的？”行者道：“我自何来？”龙王道：“他怎么是他？”行者道：“是他的，我的？”行者道：“你看是个妖精。”妖精道：“他有多年纪，每年吃了，不曾延年吃了 一个肉，就吃得吃了两个，也不得五做了几个，也吃了；又不用的吃了，只是吃了他一饭。 不知是死去降临，在此受他一同，他怎么就算计。今日他都是大徒弟，他怎么不教他驮，把 你这驮将来。”行者道：“若是我驮着他，我与你上去。”那怪道：“你是他，你就是了去得。”行者道：“莫怪，他有应了，我是问你。”八戒道：“你是甚么么妖精的<br>---------------<br><br><br>那条条经十回　正正行处，忽见一阵狂风滚，滚狂风出。行者道：“师父不济！这个是那里怪物？”八戒道：“这钯！这般一千般，比丘王，想是一个黑熊山中。”行者道：“师父，又有此 间乃齐天大圣，小弟子，你怎么认得？”八戒道：“想是天大圣，已成的一个胜神，我是遗下 降怪。那妖精，有此间乃海之精，乃于此山之中之处，想是月洞。<br>他知那时间乃是九年前宫仙。所以五月之辈，唤做妖精。今年前，原来是天仙，有降魔，知 道不知那个甚么妖精。”行者道：“在此镇元始初分，灵。”道：“我是一个元子，是天仙，一 所以为之形，乃是玉帝，曾与天之分，有此仙宫仙，做了五百年，二个小子，但一帝，，未 未曾降临凡胎，在天产后，又能知子？此乃凡间，他还有此有。”行者道：“不敢相瞒，我也 有一个女子，是老孙。他是他的仙的根，一根甘露结，止俗熟的名了，他也不论个。”仙女道：“我是你这宝贝，这般有此宝品，只有我的。”行者道：“既没有这一个宝贝，也不须之物。”众道：“想是不是了。”<br><br>仙童道：“是上仙果子，有甚么宝贝，不敢叫？”行者道：“”。”仙童道：“真个是。”玉帝看了，那仙童道：“，不敢看动，才叫做“仙童，若论了。”即忙取了我的一柄一下，拿了一根毫<br>---------------<br><br>唐僧等八戒，还起身来，各吃了一座黑松林，前面蓬莱山，忽见一座城池。长老见他，急脱 了三个女官进，便下树林内更不看，只见那：锦衣秀丽，千山头奇花丛。白鹤唳嫩，何多松 ；四片片片青。这石，深俗桃香，绿藻地铺；峭壁，五凤悬崖，一齐鸣。一座峰，树上有石 碣，每见众仙，“是那方是花果山住处，只是那里路的。”一个大字，却是一丈六丈二尺，抬 火眼，到当中间，又来到上细拿出一个个人。那大圣将身一个个女子，就变作一个青脸，锦 衣巾，腰间系着一领青毛，头的穿的来，敛衣衣出一领芭蕉，穿了褊衫，身穿的象，身穿一 领锦直裰，锦衣领金睛，穿一领领长衣。一行者笑道：“这个是个大徒弟，他倒是我的。”行 者笑道：“这和尚不知是。”道：“莫怪，他要打，待我过去。”，一齐上前相迎，走下手相见 ，那仙童子上前走出来。行者笑道：“不敢！再不敢不敢称问讯，问一声：“我不是那个甚么 来的？”道士陪笑道：<br><br>“你是那里来的？”行者道：“我乃东土大唐僧，往西天去的唐差往西天拜佛求经的徒弟，上有东土大唐驾下雷音，欲开路，特来问天尊仙公。”仙翁道：“你自幼修行，大胆少西天拜佛求 经，无个西方佛求经者。西方佛祖。大仙，特来奏上西天经，请上。”行者笑道：“这和尚<br>---------------<br><br><br>一时天宫阙天宫，天兵更不得见罪。一闻报玉帝传旨，封封天兵曹都天兵，封海水帘将。玉 帝传旨因齐天大天大圣，斗星牌，帅领着五岳天兵灵霄宝殿，无兵，天下界复赴会，称上方 生圣。<br><br>日前领时，天兵，迎至那妖猴王，那星君欣然，即对天王道：“何来？”星道：“在上，此见玉帝差。”水德星道：“有无兵，不受，今日到此。天王，不以报。”玉帝道：“那时是初时之时 ，乃齐天大圣二郎与哪吒，有四元帅奏。今蒙大圣有罪。”玉帝即敛云部、张天师会同兄都、五刚、四曜星、十神俱、四元帅，各宫后来，都拜此。不敢久，齐天大圣，下降妖，合掌奏 道：“今日差天兵，到此查勘。”又问：“那妖猴儿不少了。”行者道：“这厮乃凡人生之种，乃是天下界’，三个都称为何？”哪吒道：“也试学！”天师道：“‘我神通，只是混沌后之辈，封 为天，封天生小！”才驾筋斗云，径至宝山界洞外。有五百年三十个妖，都在那四宿星辰，早到了本宫门，照依然又到灵霄宝殿下，忽见那个白玉帝，宝象因也养马，叫天王，他叫做无 根，教他送与他怎生旨意助，上下雨的神神兵。”却说行者道：“你且不来你请我们来。”大圣吩咐八戒、沙僧，向前观看，忽见那白鹦哥的一个老君，坐在那里，口中有一个女子，一个<br>---------------<br><br>老孙自大圣，情除齐天大圣，那魔神土神。有神兵。”玉帝道：“言之物，天罗地亦不能，须 要调雨。奈我出云全。”玉帝教帅臣领旨，着悟空道：“此何？”天王道：“不正是。”大圣道：“那了云，没有些不会子，不伏老君放火哩。”玉帝道：“既是官差了。”天王道：“还差天兵，有兵，那个个‘胜神通之’，也不能助助力，须是大圣四雷电。”行者道：“那时子相我奉玉帝 旨，宣下界同，径至此。”行者笑道：“不须敢变化为这个自第四字，就有多少能。”<br><br>玉帝道：“此是须要吃一块火，如今如今三参佛，万寿，也不能取经，把老孙打打便弄。”天 王道：“你那个不认得？”行者道：“你知。我是玉帝，只说的不是何类者。因是玉帝差。”四 帝道：“我不知，内有多少差。西天门下界中有一个雷将，唤做“齐天大圣，请天兵，来此来 与我同入。”这星官儿相见道：“这泼猴！不是错了！人也不是！常时实说，善能降火焰山， 善能与你们处安同天尊之中，众神，众神，都是弟兄弟。<br><br>我有诚为证，比丘之二尊，同妻二将，老孙与他同去擒魔。”天王道：“既是上界，知此一则 神通也。”天王道：“怎敢敢擅住？”行者道：“终则帅领兵器，将明日辰收伏，二来此有二来 ，如何不可？”天王道：“令致令郎<br>---------------<br><br>“师兄，你生得道，我也拜你晓得。”八戒道：“他只知我看看见。”行者道：“哥，你莫胡说，再不会说！常时间，不会说语，你人言道，不知道，你又惹那里来。等我跑走出去看。”<br><br>行者道：“你睡在，等我再莫哭，等这里睡觉，不是看是这般变，等吓破人哩，你也弄风，只怕师父。他怎么说说？”八戒道：“我驮着，驮着你去。”行者道：“又不知一个，等我驮着你 ，你打出去。”八戒道：“你怎的？”行者道：“你打个钻风儿去了。”八戒道：“不打倒打诳语 。”樵子道：“我只在这里，看那个风儿没有，变生打样就是个。你再莫想。”行者道：“你曾 问甚么？”樵子道：“我只管不晓得，那里与你见！”行者道：“我吃你换关文儿，吃了罢。”樵子道：“委是你的吃的？”行者道：“我这一言语，连少了我也罢。”行者道：“有个本事！”那 樵夫低了一听说：“大王，不曾敢怎么不与我？”行者道：“你也晓得，你再惹我？”樵子道：“我虽是在家去了。”长老道：“我虽是是自家。我乃是我舍下次在此，有几个故人也。我常言 道，不知道，你说我这一则是我辈之意，故此不知之子，故名为不尽，二则是天延寿。”樵子笑道：“你这个猴子！常言道，十分终不阴阳，我也不是个大之意。”樵子道：“你<br>---------------<br><br><br><br>我等与三年前两个，在那妖精赌斗，他三十分胜。若那猴子十合，十分胜负。依我等三昧， 辨明。你师父，只做弟兄弟三十一会，二一日出洞，一夜，不得他怎么保师父？”八戒道：“ 我去，你与你回去请去。”行者道：“师父在那里？”八戒道：“哥哥，不曾会降妖。我的马哩 。”行者道：“也罢。”那呆子一见唐僧，都上前扯住。八戒道：<br><br>“徒弟呀，这等待我去看。”行者道：“是，这等是一定是那里儿？”八戒道：“那厮不曾成的，只管你去得，等我出来。”八戒道：“也罢了，你快快拿来。”行者道：“我驮下一路。”长老道：“我驮！”八戒道：“呆子！想是跌了。”行者道：“你八戒么？”八戒道：“不曾道：“你会会 不曾会，只是驮着。”师父道：“这个夯货未曾，你想是个。”行者道：“实是猪八戒、沙僧、 沙和尚，怎敢不肯跟我？”八戒道：“我待往西天去，看是！”八戒道：“哥哥啊，他那里是个 大唐僧？”行者道：“他就是这等惫懒，怎么得到此处？”八戒道：“你还不认人哩？”行者道：“你这些夯货，我们是弼马温，岂不会我么？我知道他的志心，教你赶我，交付与你一库去。这个风字，去与你令弟，你与我与我下去。”行者道：“你不知道，怎么说他怎的？”行者道：“我不打<br>---------------<br><br>这一向后，又有两个小孩儿，俱在后边下，取出来，在那里要怎的？只管说甚么人？是个家 人，我与他个。他可认得你，你却不得我家子一个！看看他是个长，说是个徒弟的。”正说间，只见他：“你不知道，说甚么甚么人相他？”行者道：“我是甚么人，甚与你去？”老者道：“是不曾值年了。”三藏道：“弟子乃牛魔王与他说与我识与他交战。他见，他怎么不能助力？”行者笑道：“你既是个大徒弟，不曾吩咐，曾与你去问他：‘三个，他怎么说他见？”三藏道：“贫僧乃西方，名悟空的仙，不曾吃他。”行者道：“有甚么不曾？”道：“他说我等在那里不曾惹动，他不曾问了？”老者道：“东土大唐僧乃东土大土路，特来请启宣召来的。”老者道：“ 有甚么话，不曾答甚事？”道：“有甚么人？”三藏道：“贫僧乃东土大唐差往西天拜佛求经者 ，上有一处，名凤仙郡。我师徒弟孙唤做孙悟空，唤做三藏。”那老者道：“他有三个徒弟， 那里有甚事？”行者道：“我不敢招了。”老者道：“我岂不教家是我们的。”三藏道：“你不来 的是？”老者道：“我们是东土大唐驾下差往西天取经的大雷音寺拜佛求经者。”行者道：“我 这一路间有一个雷音院，你倒是他老孙的？”三藏道：“不消说，我弟子，不曾与你做理<br>---------------<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h2 id="训练凡人修仙传"><a href="#训练凡人修仙传" class="headerlink" title="训练凡人修仙传"></a>训练凡人修仙传</h2><p>1000次，12层，效果如下：</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-54fa9200" role="button" aria-expanded="false" aria-controls="collapse-54fa9200">
+        <div class="fold-arrow">▶</div>训练脚本及测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-54fa9200">
+        <div class="fold-content">
+          <div class="note note-primary">            <p>Overriding: out_dir &#x3D; out-human&#x2F;<br>number of parameters: 22.81M<br>Loading meta from data&#x2F;human&#x2F;meta.pkl…</p><p>“元磁神光！”<br>韩立只听了一声，就脸色一变的失声出口，同时心中法决一催。<br>顿时金色电光只是一闪，又一根金色电丝从指尖处激射而出，一闪即逝下，就没入韩立 身躯之中，不见了踪影。<br>下一刻，韩立面色一白之下，一声低喝，单手虚空一抓，一座尺许高的黑色山峰，从其 身躯中一飞而出，并一个闪动的在手中一迎而出。<br>黑色山峰毫不客气的往下一模糊的一扎。<br>一声接一声闷响！<br>黑色山峰、紫色符文手臂一模糊下，竟在狠狠一投而出，并立刻在金光闪过处，化为了 一座黑色山峰，狠狠的往高处一砸而去。<br>一声闷响！<br>黑色山峰一下寸寸的爆裂而开，并瞬间的爆裂而开。<br>一团乌光从乌光中激射而出，一下化为一个直径数十丈的黑色山峰，散发着惊人黑芒的 将整座山峰全都笼罩在了其中。</p><p>第十一卷 真仙降世 第两千一百一十七章 金光界</p><p>“你真想伤我，想不到可以直接打开此山？”女子也在此威能之下，发出了一声惊怒的尖 叫，仿佛下一刻，一下活过的样子。<br>而那只金色拳头一个闪动下，就一下一下到了女子手中，并狠狠一拳击在了黑色山峰上 。</p><hr><p>虽然韩立的修为不说，但除了这只魔兽外，其他人和十几名弟子，清秀的看到一个宽广 的圆形空间。在其中一处，则有一个男子站在那里，正有六七名修士，正在陪着一名面色冰 冷的姓中年修士，也一副神态恭敬的盯着他们。<br>“大哥，这是……”这名老者一到白家弟子面前，忽然一个淡淡的声音传出，似乎带有一丝 微弱之意，仿佛进入到了什么地方。<br>“不错。你们两个修士，正在闭关之中呢。”<br>“哼！这话是什么意思？看来我们二人都已经动了手脚了，竟然还等候大哥的样子。”白 芸馨面无表情的回了一句。<br>两名老者听到白家弟子这般一说，也不禁露出一丝苦笑，几步走了过去。<br>“两个弟子，我要你们两个，是不是将这些弟子全都灭杀，等大家不到千万为密，我们过去看看还不是什么遗憾之事。好了，我给两人带路！”白芸馨毫不犹豫的回道。<br>“这位是哪位前辈到此的，不过是听说这些弟子的消息，那位前辈是来自圣界的两名弟子了。”另外两名老者也一口同意了下来，急忙的赔罪道，同时脸上满是狡黠之色。<br>“那我等还是先离开这里，再说一下吧。”白芸馨点点头，并未再接口什么。<br>于是三人再商量了几句后，当即就</p><hr><p>此女一见韩立带队离去，口中一声轻咦，目光神通一下变得小心异常起来。<br>“哼，找死。我要不是你另有矛盾，我一人就可以偷袭了。”女子冷哼一声，脸上现出一 丝狡诈之色，随即一只玉手一抬，反手蓦然多出一只碧绿色的储物袋。<br>袋口一阵扭曲，顿时一股黑气从中一喷而出，并一个翻滚下，一只只紫色大手浮现而出 。<br>此手掌看似普通之极，但是一抓下，竟然平静异常，并被一摄而起的一把捞进了手中。<br>这时，韩立却仔细打量了手中的黑色山峰两眼。<br>这黑气翻滚不定，仿佛什么东西的凝聚而成，竟然正是成熟体的。<br>韩立面上露出了沉吟之色，但是手中长袖却一抖，一团银色火焰从中一飞而出，一凝之 后，竟化为一只银色火鸟。正是噬灵火鸟！<br>在此鸟上空，韩立先将此鸟一把抓到了手中，然后用一只大手轻轻一拍。<br>银色火鸟从其身上一涌而出，一个盘旋后就化为了丈许般巨大，然后一个盘旋，化为一 只银色火鸟，双翅一展的直奔韩立激射而来。<br>此火鸟大惊之下，双翅一展，一下扎进了韩立身体中。<br>韩立顿时只觉身形一震，身躯就一下被吸入了其中，身形一沉，接着在一股奇香中，同 样直接倒地不动</p><hr><p>韩立面无表情的不再理会艳丽女子，反而轻笑一声后，身上五色光霞一涨之下，竟向女 子徐徐飘去，丝毫不给男修发现一丝喘息之机。<br>这时，韩立已经在原地等候着，目光闪动不已，凝望着对面女子的遁去。<br>若是没有人去接近此女，自然只能看到美女将自己幻化收取走的那一刻，才诡异的停在 原地不动了。<br>不过看她的举动，显然是被戏耍了。<br>一旁的白瑶怡听得清楚，明明那蓝色光头大汉一言不发，但是目光略一扫下，却落在了 韩立身后数丈远处。<br>此女双眸苍白异常，头发如花，眸中闪过一丝怪异。<br>“怎么，你认得我！”韩立眼中蓝芒一闪，盯着此女面孔不禁一下轻咦了一声。<br>“怎么，这位是……”一看清楚此人面容后，白瑶怡一下失声起来，声音顿时从白光中清楚 楚动人的传来。<br>“嘿嘿，你不是在感应之下，还是我本体亲自出来吧。”韩立轻笑一声，竟一口将自己受 到扎根打算的事情说出口来。<br>“前辈莫非忘了晚辈姓名，还是晚辈的确……”白瑶怡轻描淡写的回道，显得颇为的难以置 信，明显不肯答应韩立的真正修为。<br>“现在起来吧。”韩立嘴角一翘，随即镇定的说道。<br>“我是因为她身</p><hr><p>只见在那边另有一名中年人，正将手中的一口银色断剑，一口咬住了马车上的绿衫女子 ，而那圆钵则仍然被一切而开，似乎被人轻易的毁坏了一个大伤。<br>“启禀前辈爷爷，那里是……”黄衫女子一见银月，双目蓝芒一闪的问道。<br>“银月，你……”黄衫女子毫不迟疑的答应一声，一扬手，一团银光激射而出。<br>银月闻言，毫不犹豫的化为一道银虹，没入了身下的雾海之中。<br>“多谢前辈出手相助。”黄衫女子心中有些欣喜，低首恭敬的说道。<br>“银月，你这是什么意思？”韩立眉头一皱的问道。<br>“前辈不用过虑。我已经打算回黄枫谷，只在附近寻找一些东西，并不太精神。但是现在嘛，我是不是太吃亏了。”黄衫女子思量了一下，急忙回道。<br>韩立愣了一下，但并未追问什么。而是招呼圭灵一声，应对了过去。<br>倒是黄衫女子一见韩立，目光一瞥之下，重新打量了韩立两眼，才面露为难的表情，但 马上想起了什么，神色一下平静了下来。<br>“不瞒前辈，晚辈是不是说得另一个说不清楚，更不敢打扰前辈的。只是前辈在傀儡兽身上释放了不知名灵石，那晚辈也是第一次听说过此名字的。”韩立摸了摸下巴，若有所思的说道。</p><hr><p>就在这时，下方突然一阵低沉的鸣叫声传来，大片血丝一下从下方激射而出，往回一卷 ，竟然正好击在了那名身穿血红战甲的戎族人身上，两只手臂只是一晃，就被一股无形之力 一弹而开，将戎族人身形彻底淹没在了其中。<br>此异族大惊，但不敢再怠慢，口中一声低喝，十指蓦然一弹。<br>五色大手闪电般的一下在身前浮现而出，五指一张之下，就要将此异族一下摄离的血傀 儡直接抓到青年本体上。<br>青年见此情形，脸色微微一变，手中法诀却忽然一催，一团青色光球从中一飞而出，一 个闪动下就到了其身前处。<br>青甲大汉一声冷哼，身形一动，就一下没入二者身躯中。<br>一股强烈之极的力量从巨人身上一卷而出，同时一股可怕力量从青甲大汉肉身中一涌而 出，从巨人口中一卷而出，将二者身形一下包裹进了其中。<br>“我是什么联手之人。竟敢在我面前动手，就此灭杀你了。”青甲大汉听到这话，目中凶 光一闪，厉声的喝道。<br>“虚天鼎！”青年脸色变得苍白无血了，当即冷哼一声的单手一掐诀，一团青光从其头颅 内一飞而出，一个闪动下就化为了数十丈高的一个青色巨鼎。<br>青袍青年也不甘示弱的单手一掐诀，一张口，冲青年一喷而出。</p><hr><p>“阁下是何人？”韩立心中一凛，但口中自然说出了这样的话来。<br>“晚辈是圣王长老，原来是和血魂前辈有过一面之缘，原来前辈就是附近数万年来的道友。在下从未听说过，前辈只是当时和晚辈交情一二罢了。”白璧双目一亮，一字字的说道。<br>这次，韩立已经问过此事了，其他人自然一同告辞了。<br>“既然前辈没有意见，那晚辈就不再犹豫什么了，前辈若是只是出手，晚辈一定不肯出手的。”韩立心中一松的回道，并随之遁光一闪，化为一道青虹激射而走。<br>一小会儿工夫后，韩立终于出现在了一片蔚蓝无云的无边湖泊边上，远远看见无边的一 片小湖，一前一后，向湖面望去。<br>在那里，有一座二十余丈的巨大湖泊，上面隐隐有一个人影，但又有一条条淡青色的怪 异舟队。<br>在那里，一名白裙女子，端坐在那里，而在一旁，则正和韩立面前两名女子交谈着什么 。<br>“咦，道友是……”韩立目光一闪，落在了那名貌美如花的女子身上。<br>“道友原来是冰魄道友！”女子吃惊起来，但还是谨慎的问道。<br>“放心，道友尽管拿我等几个去处理一下吧。”韩立哑然一笑，并未说什么。<br>女子见此，也同样露出一丝笑意，也</p><hr><p>韩立眉头微微一皱，一只手掌蓦然冲远处一招。<br>顿时一股黑气从指间滚滚而出，一个闪动下，就化为一只亩许大的黑色山峰，并排一排 。<br>这些黑气一个个模糊不清，并往中心处滚滚的一聚，竟凝成一只体积数亩大小的漆黑魔 兽。<br>这些魔兽通体乌黑，但通体遍布灰白魔纹，并散发出一种诡异的怪异气息，竟有好几分 酷似的妖异模样。<br>“这为何疯狂。不过这种损伤恐怖的魔兽不是普通魔兽可以轻易侵入的，否则当初只不过是一时的事情。”韩立又在洞府中一一的说道。<br>“恐怕有些麻烦了！韩兄，你没事吧。这些魔兽又是如何出现在此地的。它们不过是一些普通魔兽，又怎能不知道密密麻麻的。”银月忍不住的想问一句。<br>“哼，如此说来，我倒也看看能否找出那些魔族有关其他魔兽的踪迹，再寻到这些魔兽了。”韩立嘴角抽搐一下后，不客气的说道。<br>“这倒不是。我虽然已经和银月月许久的。但是紫言鼎的本命之火，可和其对此只是同一只魔兽，威能之大可想而知了。”<br>“你若没有猜错的话，那些魔兽若是有圣祖级别的魔兽存在，自然是无用的。这些魔兽虽然有一定的神通，但一旦被我等发现，又有谁能奈何了我等，立刻逃之</p><hr><p>“嘿嘿！你们的天狐之体，竟然是自由之身！”男子冷笑一声，不客气的反讥道。<br>“什么，难道你们天狐族还真是是族中的第一人。”<br>“我是那个是在外边修炼的第三道……”<br>竟然是宋姓女子“咯咯”一阵轻笑，似乎有些不太相信自己的预感，黛眉一皱。<br>“我是从不开口说话的。至于第三层，我若没有什么后手，却有自信和道友说起来。这一次的试炼，所有人都可以参加此次天狐之王，但是若是身处此地，我们也不会对族内什么人 之争。你们虽然成为合体修士，但可能都是一对双修之手的。”银衫女子竟有些恍然了。<br>“倒是黛儿姐姐不妨再多禀一声道友，先前的神通不一定非同小可的。”白瑶怡一笑起来 。<br>“就算在下同样的不敢出手，那人也感应到远处天狐云笼的一缕神念之力，我等还是能做到的。”女子双目一眯的说道。<br>“哼，以你这般境界，想来又不是不能接下我们的进入。”银衫女子却轻哼一声的说道。<br>“如此说来，倒的确有些麻烦的。不过，这个人不是天狐之身，我等也不想就这般死撑到此地的。若是此人真要了，等他们回去将他们毁去再说。回去后，她们再找另一个人联手， 再寻那人身上的。”银衫女子阴沉</p><hr><p>“这倒是。”<br>而玉佩中的一脸的踌躇之色，显然还不知道韩立如何发现的。<br>就在这时，突然从雾海中飞射出来两道人影，一个盘旋的到了韩立身前处，两手一挥下 ，两口绿色飞剑一下暂时没入了雾海之中，随即“噗”的一声，化为一口尺许长的碧绿竹尺， 冲韩立狠狠一斩而去。<br>绿尺方一接触，就一下化为尺许长的飞剑，并在一声轰鸣声中自行爆裂开来，化为一道 绿色光柱从空中激射而出，一闪即逝的没入了雾海中。<br>韩立见此情形，并不迟疑，身形一晃，就到了雾海边缘处。<br>只是略一用法力就蓦然从雾海中射出，只是几个闪动，就到了韩立身前处，光芒闪动， 一下没入下方雾海中不见了踪影。<br>一声闷响后，雾海一分，雾海再次现出了原形，并不太轻，大半雾海都被卷入雾海之中 ，并随着雾海扩散消失，这个雾海竟然变得如同小山的样子。<br>等他一口气钻进了那片雾海中，才发现里面竟有数座尺许大小的巨型迷你小山，但滴溜 溜一转后，就一下自行的腾空飞来，直奔下方的雾海激射而去。在雾海边缘处，一个遍布大 半雾海的半空中，出现了一座无边无际的漆黑山峰。<br>此山峰除了留下一颗黑乎乎的不知名山石外，韩立竟无法看出</p><hr>          </div>
+        </div>
+      </div>
+    </div>
+
+<h2 id="训练唐诗"><a href="#训练唐诗" class="headerlink" title="训练唐诗"></a>训练唐诗</h2><p>下载<a href="https://github.com/chinese-poetry/chinese-poetry">诗词数据集</a>，数据清洗，生成tang_poet.txt。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-0d82c2c6" role="button" aria-expanded="false" aria-controls="collapse-0d82c2c6">
+        <div class="fold-arrow">▶</div>训练脚本及测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-0d82c2c6">
+        <div class="fold-content">
+          <p>format_data.py</p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><span class="hljs-keyword">import</span> glob<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> os<br>datas_json=glob.glob(<span class="hljs-string">&quot;./poetry/全唐诗/poet*.json&quot;</span>) <span class="hljs-comment">#1匹配所有唐诗json文件</span><br><br><span class="hljs-keyword">for</span> data_json <span class="hljs-keyword">in</span> datas_json[:]: <span class="hljs-comment">#2处理匹配的每一个文件</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(data_json,<span class="hljs-string">&quot;r&quot;</span>,encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        ts_data =json.load(f)<br>        <span class="hljs-keyword">for</span> each_ts <span class="hljs-keyword">in</span> ts_data[:]: <span class="hljs-comment">#3处理文件中每段数据，只要五言诗和2句的</span><br>            paragraphs_list =each_ts[<span class="hljs-string">&quot;paragraphs&quot;</span>]<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(paragraphs_list) == <span class="hljs-number">2</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(paragraphs_list[<span class="hljs-number">0</span>])==<span class="hljs-number">12</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(paragraphs_list[<span class="hljs-number">1</span>]) == <span class="hljs-number">12</span>:<br>                <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;tang_poet.txt&quot;</span>,<span class="hljs-string">&quot;a&quot;</span>,encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f2:<br>                    f2.write(<span class="hljs-string">&quot;&quot;</span>.join(paragraphs_list))<br>                    f2.write(<span class="hljs-string">&quot;\n&quot;</span>)<br><br>f =<span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;tang_poet.txt&quot;</span>,<span class="hljs-string">&quot;r&quot;</span>,encoding=<span class="hljs-string">&quot;utf-8&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(f.readlines()))<br></code></pre></td></tr></table></figure><p>prepare.py</p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> tiktoken<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br> <br><span class="hljs-comment"># download the tiny shakespeare dataset</span><br>input_file_path = os.path.join(os.path.dirname(__file__), <span class="hljs-string">&#x27;tang_poet.txt&#x27;</span>)<br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(input_file_path, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    data = f.read()<br>n = <span class="hljs-built_in">len</span>(data)<br>train_data = data[:<span class="hljs-built_in">int</span>(n*<span class="hljs-number">0.9</span>)]<br>val_data = data[<span class="hljs-built_in">int</span>(n*<span class="hljs-number">0.9</span>):]<br> <br><span class="hljs-comment"># encode with tiktoken gpt2 bpe</span><br>enc = tiktoken.get_encoding(<span class="hljs-string">&quot;gpt2&quot;</span>)<br>train_ids = enc.encode_ordinary(train_data)<br>val_ids = enc.encode_ordinary(val_data)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;train has <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(train_ids):,&#125;</span> tokens&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;val has <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(val_ids):,&#125;</span> tokens&quot;</span>)<br> <br><span class="hljs-comment"># export to bin files</span><br>train_ids = np.array(train_ids, dtype=np.uint16)<br>val_ids = np.array(val_ids, dtype=np.uint16)<br>train_ids.tofile(os.path.join(os.path.dirname(__file__), <span class="hljs-string">&#x27;train.bin&#x27;</span>))<br>val_ids.tofile(os.path.join(os.path.dirname(__file__), <span class="hljs-string">&#x27;val.bin&#x27;</span>))<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p><img src="/img/ai/nanogpt/train.png" srcset="/img/loading.gif" lazyload alt="训练"></p>
+<h1 id="资料补充"><a href="#资料补充" class="headerlink" title="资料补充"></a>资料补充</h1><ul>
+<li><a href="https://github.com/cfcys/nanoGPT-Tutorial-CN"><strong>nanoGPT 中文教程和讲座</strong></a></li>
+</ul>
+<h2 id="中文预训练数据集"><a href="#中文预训练数据集" class="headerlink" title="中文预训练数据集"></a>中文预训练数据集</h2><p>这里会搜集一些小型的，适合于nanoGPT进行训练的中文数据集的仓库 其大多是常用的NLP训练语料，但我给出整理数据以适应nanoGPT的要求</p>
+<p>目前已有：</p>
+<ul>
+<li><a href="https://github.com/chinese-poetry/chinese-poetry">chinese-poetry&#x2F;chinese-poetry: 最全中华古诗词数据库</a></li>
+<li><a href="https://github.com/garychowcmu/daizhigev20">garychowcmu&#x2F;daizhigev20: 殆知阁古代文献</a></li>
+<li><a href="https://www.qishuta.org/Shtml5132.html">《西游记》全集,txt全集下载,电子书-奇书网</a></li>
+</ul>
+<h2 id="对话能力实现"><a href="#对话能力实现" class="headerlink" title="对话能力实现"></a>对话能力实现</h2><p>主要参考<a href="https://github.com/VatsaDev/nanoChatGPT">VatsaDev&#x2F;nanoChatGPT: nanogpt turned into a chat model</a></p>
+<h2 id="目前已有的nanoGPT资料收集"><a href="#目前已有的nanoGPT资料收集" class="headerlink" title="目前已有的nanoGPT资料收集"></a>目前已有的nanoGPT资料收集</h2><h3 id="视频资料"><a href="#视频资料" class="headerlink" title="视频资料"></a>视频资料</h3><ul>
+<li><a href="https://www.youtube.com/watch?v=kCc8FmEb1nY&t=5828s">(30) Let’s build GPT: from scratch, in code, spelled out. - YouTube</a></li>
+<li><a href="https://www.bilibili.com/video/BV1hr42147xc/?spm_id_from=333.337.search-card.all.click&vd_source=32f9de072b771f1cd307ca15ecf84087">从零开始手搓一个LLM（一）把参数缩减到足够单卡训练的NanoGPT_哔哩哔哩_bilibili</a></li>
+<li><a href="https://www.bilibili.com/video/BV1QY4y1o7ur/?vd_source=e1ce38727d77aa0b8bdfa4293878d29f">【自制中英字幕】【Andrej Karpathy】让我们从头开始，在代码中构建GPT_哔哩哔哩_bilibili</a></li>
+</ul>
+<h3 id="博客资料"><a href="#博客资料" class="headerlink" title="博客资料"></a>博客资料</h3><ul>
+<li><a href="https://riguz.com/NanoGPT_Tutorial">NanoGPT Tutorial - WHY42 (riguz.com)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/682466360"><strong>Andrej Karpathy 的 nanoGPT lecture demo 详解</strong></a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/635483902"><strong>迷你版ChatGPT开源，教你怎么用nanoGPT训练一个写小说的AI机器人！</strong></a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/611191403">NanoGPT的Pytorch2.0版本实现及分析</a></li>
+</ul>
+<h3 id="开源仓库"><a href="#开源仓库" class="headerlink" title="开源仓库"></a>开源仓库</h3><ul>
+<li><a href="https://github.com/karpathy/nanoGPT">karpathy&#x2F;nanoGPT: The simplest, fastest repository for training&#x2F;finetuning medium-sized GPTs.</a></li>
+<li><a href="https://github.com/HuZixia/nanoGPT-lecture">HuZixia&#x2F;nanoGPT-lecture: This nanoGPT-lecture code git, including Andrej Karpathy’s nanoGPT, ng-vedio-lecture, gpt_dev.ipynb and my learning notes. Welcome to like and follow</a></li>
+<li><a href="https://github.com/VatsaDev/nanoChatGPT">VatsaDev&#x2F;nanoChatGPT: nanogpt turned into a chat model</a></li>
+<li><a href="https://github.com/Andrei-Aksionov/nanoGPTplus">Andrei-Aksionov&#x2F;nanoGPTplus</a></li>
+<li><a href="https://github.com/sanjeevanahilan/nanoChatGPT">https://github.com/sanjeevanahilan/nanoChatGPT</a></li>
+<li><a href="https://blog.csdn.net/zwqjoy/article/details/134971216"><strong>nanoGPT训练一个写唐诗的GPT</strong></a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/06/AI/Transformer-Explainer/" title="Transformer Explainer 中文">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Transformer Explainer 中文</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/02/AI/ollama-easy-usage/" title="简单部署私域大模型">
+                        <span class="hidden-mobile">简单部署私域大模型</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>
