@@ -1,0 +1,978 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Note about assembles.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Open Duck Mini V2">
+<meta property="og:url" content="http://yoursite.com/2025/05/27/AI/duck/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Note about assembles.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/duck/index.png">
+<meta property="article:published_time" content="2025-05-27T15:03:15.000Z">
+<meta property="article:modified_time" content="2025-07-31T02:42:23.388Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Robot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/duck/index.png">
+  
+  
+  
+  <title>Open Duck Mini V2 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_2.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Open Duck Mini V2"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-27 15:03" pubdate>
+          2025年5月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Open Duck Mini V2</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Note about assembles.</p>
+<span id="more"></span>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E8%B5%84%E6%96%99%E5%AF%BC%E8%88%AA">资料导航</a></li>
+<li><a href="#%E7%A1%AC%E4%BB%B6%E7%BB%84%E8%A3%85">硬件组装</a><ul>
+<li><a href="#%E7%94%B5%E6%9C%BA%E9%85%8D%E7%BD%AE">电机配置</a></li>
+<li><a href="#%E7%94%B5%E8%B7%AF%E8%BF%9E%E6%8E%A5">电路连接</a></li>
+</ul>
+</li>
+<li><a href="#%E8%B0%83%E8%AF%95">调试</a><ul>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%97%B6">运行时</a></li>
+</ul>
+</li>
+<li><a href="#sim2real">sim2real</a></li>
+</ul>
+<h2 id="资料导航"><a href="#资料导航" class="headerlink" title="资料导航"></a>资料导航</h2><ul>
+<li><a href="https://zihao-ai.feishu.cn/wiki/ORNcwljRViHIlOk0iKgchqfKnLh">OpenDuckMini V2开源资料</a></li>
+<li><a href="https://la.disneyresearch.com/publication/design-and-control-of-a-bipedal-robotic-character">迪士尼原版机器人</a></li>
+<li><a href="https://github.com/apirrone/Open_Duck_Mini">官方Github仓库</a></li>
+<li><a href="https://docs.google.com/spreadsheets/d/1gq4iWWHEJVgAA_eemkTEsshXqrYlFxXAPwO515KpCJc/edit?usp=sharing">官方物料清单BOM</a></li>
+<li><a href="https://zihao-ai.feishu.cn/wiki/AfAtw69vRigXaRk5UkbcrAiLnJw?from=from_copylink">同济子豪兄和小王吐血整理的淘宝物料清单 - 淘宝物料清单BOM</a></li>
+<li><a href="https://github.com/apirrone/Open_Duck_Mini_Runtime">运行强化学习策略Runtime代码</a></li>
+</ul>
+<h2 id="硬件组装"><a href="#硬件组装" class="headerlink" title="硬件组装"></a>硬件组装</h2><ul>
+<li><a href="https://github.com/apirrone/Open_Duck_Mini/blob/v2/docs/assembly_guide.md">组装说明（官方原版）</a></li>
+<li><a href="https://zihao-ai.feishu.cn/wiki/KIFDwVNdbitny1kgRdLcbIPbnDg?from=from_copylink">组装说明（小王翻译）：组装指南</a></li>
+</ul>
+<h3 id="电机配置"><a href="#电机配置" class="headerlink" title="电机配置"></a>电机配置</h3><p>电机驱动板供电，并且 Type-C 连接电脑或树莓派。Windows 电脑可以使用 FT 上位机修改 ID。电机设置参考：<a href="https://zihao-ai.feishu.cn/wiki/DZDvw7Gg6iZkBdkxbcpcGSmkn4b">舵机配置</a></p>
+<p><img src="/img/ai/duck/motors_id.png" srcset="/img/loading.gif" lazyload alt="关节和ID对应关系"></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-7792c729" role="button" aria-expanded="false" aria-controls="collapse-7792c729">
+        <div class="fold-arrow">▶</div>Windows FT
+      </div>
+      <div class="fold-collapse collapse" id="collapse-7792c729">
+        <div class="fold-content">
+          <p>软件下载：<a href="https://www.feetechrc.com/software.html">https://www.feetechrc.com/software.html</a></p><p><img src="/img/ai/duck/FT.png" srcset="/img/loading.gif" lazyload alt="飞特上位机设置"></p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-87cfb376" role="button" aria-expanded="false" aria-controls="collapse-87cfb376">
+        <div class="fold-arrow">▶</div>Python 脚本设置内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-87cfb376">
+        <div class="fold-content">
+          <p>这里的脚本 <a href="https://github.com/apirrone/Open_Duck_Mini_Runtime/blob/v2/scripts/configure_motor.py">scripts&#x2F;configure_motor.py</a> 会设置电机的 ID，PID，和位置，新电机默认检测 ID 1，然后修改至输入 ID，如果电机之前已经配置好 ID，则需要注释行 <code>io.change_id({current_id: int(args.id)})</code>：</p><blockquote><p><strong>注意，校准后的位置为中位，在 FT 上查看是 2048</strong><br>参考后续用串口设置 2048 更安全。<br>切勿直接使用 FT 设置为 0，有个问题是到达 4095 需要绕一整圈。装配好后，肯定是无法做到的，会发生堵转。</p></blockquote><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># 运行</span><br><span class="hljs-comment"># python scripts/configure_motor.py --port &lt;COM port&gt; --id &lt;id&gt;</span><br><br>kp = io.get_P_coefficient([current_id])<br>ki = io.get_I_coefficient([current_id])<br>kd = io.get_D_coefficient([current_id])<br>max_acceleration = io.get_maximum_acceleration([current_id])<br>acceleration = io.get_acceleration([current_id])<br>mode = io.get_mode([current_id])<br><br><span class="hljs-comment"># print(f&quot;PID : &#123;kp&#125;, &#123;ki&#125;, &#123;kd&#125;&quot;)</span><br><span class="hljs-comment"># print(f&quot;max_acceleration: &#123;max_acceleration&#125;&quot;)</span><br><span class="hljs-comment"># print(f&quot;acceleration: &#123;acceleration&#125;&quot;)</span><br><span class="hljs-comment"># print(f&quot;mode: &#123;mode&#125;&quot;)</span><br><br>io.set_lock(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.set_mode(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.set_maximum_acceleration(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.set_acceleration(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.set_P_coefficient(&#123;current_id: <span class="hljs-number">32</span>&#125;)<br>io.set_I_coefficient(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.set_D_coefficient(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br>io.change_id(&#123;current_id: <span class="hljs-built_in">int</span>(args.<span class="hljs-built_in">id</span>)&#125;)  <span class="hljs-comment"># 如果电机 ID 已经配置，而查看其他信息，注释这行</span><br><br>current_id = <span class="hljs-built_in">int</span>(args.<span class="hljs-built_in">id</span>)<br><br>time.sleep(<span class="hljs-number">1</span>)<br><br>io.set_goal_position(&#123;current_id: <span class="hljs-number">0</span>&#125;)<br><br>time.sleep(<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-248c5458" role="button" aria-expanded="false" aria-controls="collapse-248c5458">
+        <div class="fold-arrow">▶</div>使用串口设置中位
+      </div>
+      <div class="fold-collapse collapse" id="collapse-248c5458">
+        <div class="fold-content">
+          <ul><li><a href="/downloads/%E8%88%B5%E6%9C%BA%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E6%8C%87%E5%8A%A9%E6%89%8B.zip">舵机十六进制指助手</a><ul><li>波特率 1000000</li><li>十六进制发送</li></ul></li><li><a href="/downloads/%E7%A3%81%E7%BC%96%E7%A0%81SMS08.xlsx">磁编码SMS08.xlsx</a></li></ul><p>在表格中，修改这里的 ID 号和自定义位置，这样电机就会设置当前位置，改为2048。</p><p><img src="/img/ai/duck/motor_2048.png" srcset="/img/loading.gif" lazyload alt="自定义指令生成"></p><table><thead><tr><th>名称</th><th>ID</th><th>当前位置 0</th><th>当前位置 2048</th></tr></thead><tbody><tr><td>right_hip_yaw</td><td>10</td><td>FF FF 0A 04 0B 00 00 E6</td><td>FF FF 0A 04 0B 00 08 DE</td></tr><tr><td>right_hip_roll</td><td>11</td><td>FF FF 0B 04 0B 00 00 E5</td><td>FF FF 0B 04 0B 00 08 DD</td></tr><tr><td>right_hip_pitch</td><td>12</td><td>FF FF 0C 04 0B 00 00 E4</td><td>FF FF 0C 04 0B 00 08 DC</td></tr><tr><td>right_knee</td><td>13</td><td>FF FF 0D 04 0B 00 00 E3</td><td>FF FF 0D 04 0B 00 08 DB</td></tr><tr><td>right_ankle</td><td>14</td><td>FF FF 0E 04 0B 00 00 E2</td><td>FF FF 0E 04 0B 00 08 DA</td></tr><tr><td>left_hip_yaw</td><td>20</td><td>FF FF 14 04 0B 00 00 DC</td><td>FF FF 14 04 0B 00 08 D4</td></tr><tr><td>left_hip_roll</td><td>21</td><td>FF FF 15 04 0B 00 00 DB</td><td>FF FF 15 04 0B 00 08 D3</td></tr><tr><td>left_hip_pitch</td><td>22</td><td>FF FF 16 04 0B 00 00 DA</td><td>FF FF 16 04 0B 00 08 D2</td></tr><tr><td>left_knee</td><td>23</td><td>FF FF 17 04 0B 00 00 D9</td><td>FF FF 17 04 0B 00 08 D1</td></tr><tr><td>left_ankle</td><td>24</td><td>FF FF 18 04 0B 00 00 D8</td><td>FF FF 18 04 0B 00 08 D0</td></tr><tr><td>neck_pitch</td><td>30</td><td>FF FF 1E 04 0B 00 00 D2</td><td>FF FF 1E 04 0B 00 08 CA</td></tr><tr><td>head_pitch</td><td>31</td><td>FF FF 1F 04 0B 00 00 D1</td><td>FF FF 1F 04 0B 00 08 C9</td></tr><tr><td>head_yaw</td><td>32</td><td>FF FF 20 04 0B 00 00 D0</td><td>FF FF 20 04 0B 00 08 C8</td></tr><tr><td>head_roll</td><td>33</td><td>FF FF 21 04 0B 00 00 CF</td><td>FF FF 21 04 0B 00 08 C7</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-277d022a" role="button" aria-expanded="false" aria-controls="collapse-277d022a">
+        <div class="fold-arrow">▶</div>欧拉角Pitch、Roll、Yaw说明
+      </div>
+      <div class="fold-collapse collapse" id="collapse-277d022a">
+        <div class="fold-content">
+          <ul><li>roll，x 轴，垂直纸面</li><li>pitch，y 轴，水平</li><li>yaw，z 轴，竖直</li></ul><p>参考：<a href="https://blog.csdn.net/daidi1989/article/details/95167676">欧拉角Pitch、Roll、Yaw介绍</a></p><p><img src="/img/ai/duck/roll_pitch_yaw.jpg" srcset="/img/loading.gif" lazyload alt="欧拉角"></p>
+        </div>
+      </div>
+    </div>
+
+<h3 id="电路连接"><a href="#电路连接" class="headerlink" title="电路连接"></a>电路连接</h3><p><img src="/img/ai/duck/link.png" srcset="/img/loading.gif" lazyload alt="模块连接示意图"></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-74d26ddc" role="button" aria-expanded="false" aria-controls="collapse-74d26ddc">
+        <div class="fold-arrow">▶</div>原理图
+      </div>
+      <div class="fold-collapse collapse" id="collapse-74d26ddc">
+        <div class="fold-content">
+          <p><img src="/img/ai/duck/sch.png" srcset="/img/loading.gif" lazyload alt="模块连接示意图"></p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-3685ba2e" role="button" aria-expanded="false" aria-controls="collapse-3685ba2e">
+        <div class="fold-arrow">▶</div>电源接线连接
+      </div>
+      <div class="fold-collapse collapse" id="collapse-3685ba2e">
+        <div class="fold-content">
+          <blockquote><p><strong>为了安全起见，请确保在将电池放入电池座之前，所有电池单元已充电至相同的电压。</strong></p></blockquote><p>电源连接示意图：</p><ul><li>注意充放电保护板 BMS 直接输出的 8.4V 给电机驱动板和稳压板 UBEC 供电</li><li>稳压板的 EN 短接帽要拿掉。红灯亮时表示有输出</li><li>UBEC 输出 5V 给头部各模块供电</li></ul><p><img src="/img/ai/duck/battery.png" srcset="/img/loading.gif" lazyload></p><p>保护电路连接示意图：</p><p><img src="/img/ai/duck/rev.png" srcset="/img/loading.gif" lazyload></p><p>充电电路示意图：</p><ul><li>充满时，红灯亮，绿灯也亮</li><li>电池电量不足充电时，红灯亮，绿灯不亮</li></ul><p><img src="/img/ai/duck/charger.png" srcset="/img/loading.gif" lazyload></p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-147c470e" role="button" aria-expanded="false" aria-controls="collapse-147c470e">
+        <div class="fold-arrow">▶</div>脚部接触开关连接
+      </div>
+      <div class="fold-collapse collapse" id="collapse-147c470e">
+        <div class="fold-content">
+          <p><img src="/img/ai/duck/foot.png" srcset="/img/loading.gif" lazyload alt="脚部接触开关连接"></p>
+        </div>
+      </div>
+    </div>
+
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>Runtime 设置文档：</p>
+<ul>
+<li>官方：<a href="https://github.com/apirrone/Open_Duck_Mini_Runtime">Open Duck Mini Runtime</a></li>
+<li>翻译版：<a href="https://zihao-ai.feishu.cn/wiki/FWVowyqpEifR9ykY3ULcNQIKnme">Open Duck Mini 运行时</a></li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>TODO: 自用树莓派模块简易测试脚本
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div>
+
+<h3 id="运行时"><a href="#运行时" class="headerlink" title="运行时"></a>运行时</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/apirrone/Open_Duck_Mini_Runtime<br><span class="hljs-built_in">cd</span> Open_Duck_Mini_Runtime<br>git checkout v2<br>pip install -e .<br></code></pre></td></tr></table></figure>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-9a6837a6" role="button" aria-expanded="false" aria-controls="collapse-9a6837a6">
+        <div class="fold-arrow">▶</div>陀螺校准
+      </div>
+      <div class="fold-collapse collapse" id="collapse-9a6837a6">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash">python scripts/calibrate_imu.py<br>Calibrated :  False<br>Calibration status:  (3, 0, 3, 3)<br>Calibrated :  False<br>Calibration status:  (3, 0, 3, 3)<br>Calibrated :  False<br>Calibration status:  (3, 0, 3, 3)<br>Calibrated :  False<br>Calibration status:  (3, 0, 3, 3)<br>Calibrated :  False<br>Calibration status:  (3, 3, 3, 3)<br>Calibrated :  True<br>CALIBRATION DONE<br>offsets_accelerometer (-57, -23, -12)<br>offsets_gyroscope (3, -4, 1)<br>offsets_magnetometer (-1354, 274, 368)<br>Saved imu_calib_data.pkl<br><br>python3 mini_bdx_runtime/mini_bdx_runtime/raw_imu.py<br></code></pre></td></tr></table></figure><table><thead><tr><th>分量</th><th>含义</th><th>范围</th><th>说明</th></tr></thead><tbody><tr><td>sys</td><td>系统整体校准状态</td><td>0–3</td><td>依赖于 gyro&#x2F;accel&#x2F;mag 的状态</td></tr><tr><td>gyro</td><td>陀螺仪校准状态</td><td>0–3</td><td>静止即可自动完成</td></tr><tr><td>accel</td><td>加速度计校准状态</td><td>0–3</td><td>多方向移动以完成</td></tr><tr><td>mag</td><td>磁力计校准状态</td><td>0–3</td><td>环境干净下旋转设备可完成</td></tr></tbody></table><p>各模块校准条件说明</p><p>🌀 Gyro（陀螺仪）：</p><ul><li>只需要 静止几秒 即可完成。</li><li>如果你一直在晃动设备，它可能永远达不到 3。</li></ul><p>🧭 Magnetometer（磁力计）：</p><ul><li>需要在远离金属、磁场干扰的环境中，多角度旋转设备。</li><li>室内环境常常干扰大，很难校准到 3。</li></ul><p>📐 Accelerometer（加速度计）：</p><ul><li>需要你在多个方向上轻轻移动或旋转设备。</li><li>不用剧烈甩动，类似于「画圈、倾斜」。</li></ul><p>🧠 System（系统）：</p><ul><li>综合其他三个分量，取决于它们的校准状态。</li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>TODO: 手柄连接
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div>
+
+<h2 id="sim2real"><a href="#sim2real" class="headerlink" title="sim2real"></a>sim2real</h2>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-e9b70960" role="button" aria-expanded="false" aria-controls="collapse-e9b70960">
+        <div class="fold-arrow">▶</div>动手生成 Onshape Mujoco
+      </div>
+      <div class="fold-collapse collapse" id="collapse-e9b70960">
+        <div class="fold-content">
+          <ul><li><a href="https://onshape-to-robot.readthedocs.io/en/latest/getting_started.html">Onshape Getting started</a></li><li><a href="https://zihao-ai.feishu.cn/wiki/MuYWwD3udiQgvskwTiXc8qmPnqg">在MuJoCo中仿真机器人的准备</a></li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install onshape-to-robot<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/home/sjl/.local/bin<br><br><span class="hljs-comment"># .bashrc</span><br><span class="hljs-comment"># Obtained at https://dev-portal.onshape.com/keys</span><br><span class="hljs-built_in">export</span> ONSHAPE_API=https://cad.onshape.com<br><span class="hljs-built_in">export</span> ONSHAPE_ACCESS_KEY=<span class="hljs-string">&quot;ewGlcCa0TIIDRLd48DpxgwBA&quot;</span><br><span class="hljs-built_in">export</span> ONSHAPE_SECRET_KEY=<span class="hljs-string">&quot;SneSiDla3DpJX0fjCf0VXPyVWWiEZmNW6n46In6FGxm2H9ID&quot;</span><br><br><span class="hljs-variable">$env</span>:ONSHAPE_API = <span class="hljs-string">&quot;https://cad.onshape.com&quot;</span><br><span class="hljs-variable">$env</span>:ONSHAPE_ACCESS_KEY = <span class="hljs-string">&quot;ewGlcCa0TIIDRLd48DpxgwBA&quot;</span><br><span class="hljs-variable">$env</span>:ONSHAPE_SECRET_KEY = <span class="hljs-string">&quot;SneSiDla3DpJX0fjCf0VXPyVWWiEZmNW6n46In6FGxm2H9ID&quot;</span><br><br><span class="hljs-built_in">mkdir</span> duck<br></code></pre></td></tr></table></figure><p>duck&#x2F;config.json:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">&#123;<br>    // Onshape URL of the assembly<br>    <span class="hljs-string">&quot;url&quot;</span>: <span class="hljs-string">&quot;https://cad.onshape.com/documents/64074dfcfa379b37d8a47762/w/3650ab4221e215a4f65eb7fe/e/0505c262d882183a25049d05&quot;</span>,<br>    // Output format<br>    <span class="hljs-string">&quot;output_format&quot;</span>: <span class="hljs-string">&quot;urdf&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">onshape-to-robot duck<br></code></pre></td></tr></table></figure><p><img src="/img/ai/duck/urdf.png" srcset="/img/loading.gif" lazyload><br><img src="/img/ai/duck/onshape.png" srcset="/img/loading.gif" lazyload></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://github.com/google-deepmind/mujoco/releases/download/3.3.2/mujoco-3.3.2-linux-x86_64.tar.gz<br>tar xvf mujoco-3.3.2-linux-x86_64.tar.gz<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/opt/mujoco-3.3.2/bin<br><br><span class="hljs-built_in">cd</span> duck<br><span class="hljs-built_in">mv</span> assets/* . &amp;&amp; <span class="hljs-built_in">rm</span> -rf assets<br>compile robot.urdf scene.xml<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>WARNING: Geom with duplicate name <span class="hljs-string">&#x27;&#x27;</span> encountered <span class="hljs-keyword">in</span> URDF, creating an unnamed geom.<br>Done.<br>First compile: 0.7649s<br>Second compile: 0.18s<br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 -m mujoco.viewer --mjcf=duck/scene.xml<br><br><span class="hljs-comment"># 或者上一级目录</span><br>onshape-to-robot-mujoco duck<br></code></pre></td></tr></table></figure><p><img src="/img/ai/duck/mujoco.png" srcset="/img/loading.gif" lazyload></p>
+        </div>
+      </div>
+    </div>
+
+<ul>
+<li><a href="https://github.com/apirrone/Open_Duck_Playground/tree/main">Open Duck Project’s Mujoco playground RL environments</a></li>
+<li><a href="https://zihao-ai.feishu.cn/wiki/H5p7wofQSisbNeknKI9cVxMzn2d">策略（sim2real）</a></li>
+<li><a href="https://cad.onshape.com/documents/64074dfcfa379b37d8a47762/w/3650ab4221e215a4f65eb7fe/e/0505c262d882183a25049d05">Onshape 模型文件</a></li>
+<li><a href="https://github.com/apirrone/Open_Duck_Playground/blob/main/playground/open_duck_mini_v2/xmls/config.json">模型config文件</a></li>
+<li><a href="https://github.com/apirrone/Open_Duck_Playground/blob/main/playground/open_duck_mini_v2/xmls/open_duck_mini_v2.xml">MJCF 文件</a></li>
+</ul>
+<p>安装 uv</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -LsSf https://astral.sh/uv/install.sh | sh<br><br><span class="hljs-comment"># 网络不好时，使用pipx</span><br><span class="hljs-built_in">sudo</span> apt-get install pipx<br>pipx install uv<br></code></pre></td></tr></table></figure>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-c0b64250" role="button" aria-expanded="false" aria-controls="collapse-c0b64250">
+        <div class="fold-arrow">▶</div>open_duck_reference_motion_generator
+      </div>
+      <div class="fold-collapse collapse" id="collapse-c0b64250">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 git-lfs，不然无法 clone 大文件</span><br><span class="hljs-built_in">sudo</span> apt install git-lfs<br>git <span class="hljs-built_in">clone</span> https://github.com/apirrone/Open_Duck_reference_motion_generator.git<br><br><span class="hljs-comment"># uv 换源</span><br><span class="hljs-built_in">export</span> UV_DEFAULT_INDEX=<span class="hljs-string">&quot;https://mirrors.aliyun.com/pypi/simple&quot;</span><br><br><span class="hljs-comment"># 打开网页版仿真环境</span><br>uv run open_duck_reference_motion_generator/gait_playground.py --duck open_duck_mini_v2<br><br><span class="hljs-comment"># 生成动作</span><br>uv run scripts/auto_waddle.py -j8 --duck open_duck_mini_v2 --sweep<br><br><span class="hljs-comment"># 这将生成 polynomial_coefficients.pkl</span><br>uv run scripts/fit_poly.py --ref_motion recordings/<br><br><span class="hljs-comment"># 绘制</span><br>uv run scripts/plot_poly_fit.py --coefficients polynomial_coefficients.pkl<br><br><span class="hljs-comment"># 重放</span><br>uv run scripts/replay_motion.py -f recordings/&lt;file&gt;.json<br></code></pre></td></tr></table></figure><p><img src="/img/ai/duck/placo.png" srcset="/img/loading.gif" lazyload></p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-06b49090" role="button" aria-expanded="false" aria-controls="collapse-06b49090">
+        <div class="fold-arrow">▶</div>参考动作发生器代码分析
+      </div>
+      <div class="fold-collapse collapse" id="collapse-06b49090">
+        <div class="fold-content">
+          <p>机器鸭资源文件：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> Open_Duck_reference_motion_generator/open_duck_reference_motion_generator/robots/open_duck_mini_v2<br><br>.<br>├── assets<br>│   ├── antenna.part<br>│   ├── antenna.stl<br>│   ├── ... <span class="hljs-comment"># 模型文件</span><br>│   ├── wj-wk00-0124bottomcase_45.part<br>│   └── wj-wk00-0124bottomcase_45.stl<br>├── auto_gait.json  <span class="hljs-comment"># 步态文件</span><br>├── open_duck_mini_v2.urdf<br>├── placo_defaults.json  <span class="hljs-comment"># 仿真默认值</span><br>└── placo_presets<br>    ├── fast.json<br>    └── medium.json <span class="hljs-comment"># 预设，auto_waddle.py 采用  </span><br></code></pre></td></tr></table></figure><p><strong>第一步，加载 auto_gait.json 中的参数：</strong></p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-comment">// 1. 速度档位定义</span><br>  <span class="hljs-attr">&quot;slow&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.05</span><span class="hljs-punctuation">,</span>                       <span class="hljs-comment">// 慢速模式</span><br>  <span class="hljs-attr">&quot;medium&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.1</span><span class="hljs-punctuation">,</span>                      <span class="hljs-comment">// 中速模式</span><br>  <span class="hljs-attr">&quot;fast&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.15</span><span class="hljs-punctuation">,</span>                       <span class="hljs-comment">// 快速模式</span><br><br>  <span class="hljs-comment">// 2. 运动范围限制</span><br>  <span class="hljs-comment">// 限制机器鸭的 最大运动速度，防止因速度过快导致失稳。</span><br>  <span class="hljs-attr">&quot;dx_max&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-number">0.05</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>                <span class="hljs-comment">// X 方向（前进/后退）速度范围（m/s）</span><br>  <span class="hljs-attr">&quot;dy_max&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-number">0.05</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>                <span class="hljs-comment">// Y 方向（侧向）速度范围（m/s）</span><br>  <span class="hljs-attr">&quot;dtheta_max&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-number">0.25</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>            <span class="hljs-comment">// 旋转角速度范围（rad/s）</span><br><br>  <span class="hljs-comment">// 3. 参数扫描范围（Sweep Range）</span><br>  <span class="hljs-comment">// 3.1  足端轨迹扫描范围</span><br>  <span class="hljs-comment">// 调整 脚掌落地点位置</span><br>  <span class="hljs-attr">&quot;min_sweep_x&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-0.04</span><span class="hljs-punctuation">,</span>               <span class="hljs-comment">// 足端 X 方向最小偏移（m，负值表示向后）</span><br>  <span class="hljs-attr">&quot;max_sweep_x&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.06</span><span class="hljs-punctuation">,</span>                <span class="hljs-comment">// 足端 X 方向最大偏移（m，正值表示向前）</span><br>  <span class="hljs-attr">&quot;min_sweep_y&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-0.03</span><span class="hljs-punctuation">,</span>               <span class="hljs-comment">// 足端 Y 方向最小偏移（m，负值表示向左）</span><br>  <span class="hljs-attr">&quot;max_sweep_y&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.03</span><span class="hljs-punctuation">,</span>                <span class="hljs-comment">// 足端 Y 方向最大偏移（m，正值表示向右）</span><br>  <span class="hljs-attr">&quot;min_sweep_theta&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-0.3</span><span class="hljs-punctuation">,</span>            <span class="hljs-comment">// 足端最小旋转角度（rad，负值表示逆时针）</span><br>  <span class="hljs-attr">&quot;max_sweep_theta&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.3</span><span class="hljs-punctuation">,</span>             <span class="hljs-comment">// 足端最大旋转角度（rad，正值表示顺时针）</span><br><br>  <span class="hljs-comment">// 3.2 扫描粒度（Granularity）</span><br>  <span class="hljs-comment">// 控制参数扫描的 精细程度，值越小优化越精细，但计算量越大。</span><br>  <span class="hljs-attr">&quot;sweep_xy_granularity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.02</span><span class="hljs-punctuation">,</span>       <span class="hljs-comment">// XY 方向扫描步长（m）</span><br>  <span class="hljs-attr">&quot;sweep_theta_granularity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.07</span>     <span class="hljs-comment">// 旋转角度扫描步长（rad）</span><br><span class="hljs-punctuation">&#125;</span><br><br>足端运动范围（俯视图）：<br>       +Y（左）<br>        |<br>-X（后）---+---+X（前）<br>        |<br>       -Y（右）<br><br>X 方向扫描：<span class="hljs-number">-0.04</span>m（后） → <span class="hljs-number">0.06</span>m（前）  <br>Y 方向扫描：<span class="hljs-number">-0.03</span>m（左） → <span class="hljs-number">0.03</span>m（右）  <br>θ 旋转扫描：<span class="hljs-number">-0.3</span>rad（逆时针） → <span class="hljs-number">0.3</span>rad（顺时针）<br></code></pre></td></tr></table></figure><p>调整建议:</p><ul><li>若机器人行走不稳：<ul><li>减小 dx_max 或 dtheta_max，降低运动速度。</li><li>增大 double_support_ratio（需在另一个配置文件中调整）。</li></ul></li><li>若步态不自然：<ul><li>调整 sweep_x&#x2F;y 范围，限制脚掌移动幅度。</li><li>减小 sweep_xy_granularity，使优化更精细。</li></ul></li><li>若优化耗时过长：<ul><li>增大 sweep_theta_granularity，减少旋转角度的尝试次数。</li></ul></li></ul><p><strong>定义机器鸭典型步态运动模式 gait_motions ：（没有用到）</strong></p><ol><li>standing</li><li>forward 直线前进</li><li>backward 直线后退</li><li>left</li><li>right</li><li>ang_left 逆时针旋转</li><li>ang_right 顺时针旋转</li><li>dia_forward 沿对角线方向前进（如 X+Y 方向组合）</li><li>dia_backward 沿对角线方向后退（如 -X+Y 方向组合）。</li></ol><p>动作生成：</p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># ---------------------------------------------------------------</span><br><span class="hljs-comment"># 3. Generate random presets (n times)</span><br><span class="hljs-comment">#    &quot;medium&quot; and &quot;fast&quot; as example base speeds</span><br><span class="hljs-comment"># ---------------------------------------------------------------</span><br><span class="hljs-comment"># 预设速度档位（当前仅使用&quot;medium&quot;，&quot;fast&quot;被注释）</span><br>preset_speeds = [<span class="hljs-string">&quot;medium&quot;</span>]  <span class="hljs-comment"># , &quot;fast&quot;]</span><br><br><span class="hljs-comment"># 判断是否启用参数扫描模式（--sweep参数）</span><br><span class="hljs-keyword">if</span> args.sweep:<br>    <span class="hljs-comment"># 生成X方向（前后）的扫描范围数组，步长为sweep_xy_granularity</span><br>    dxs = np.arange(min_sweep_x, max_sweep_x + sweep_xy_granularity, sweep_xy_granularity)<br>    <span class="hljs-comment"># 生成Y方向（左右）的扫描范围数组</span><br>    dys = np.arange(min_sweep_y, max_sweep_y + sweep_xy_granularity, sweep_xy_granularity)<br>    <span class="hljs-comment"># 生成旋转角度（theta）的扫描范围数组，步长为sweep_theta_granularity</span><br>    dthetas = np.arange(min_sweep_theta, max_sweep_theta + sweep_theta_granularity, sweep_theta_granularity)<br>    <span class="hljs-comment"># 计算总参数组合数 = X方向点数 * Y方向点数 * 角度点数</span><br>    all_n = <span class="hljs-built_in">len</span>(dxs) * <span class="hljs-built_in">len</span>(dys) * <span class="hljs-built_in">len</span>(dthetas)<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-comment"># 非扫描模式时，使用命令行指定的生成数量（--num参数）</span><br>    all_n = args.num<br><br><span class="hljs-comment"># 打印生成动作数量的提示信息</span><br>nb_moves_message = <span class="hljs-string">f&quot;=== GENERATING <span class="hljs-subst">&#123;all_n&#125;</span> MOVES ===&quot;</span><br>spacer = <span class="hljs-string">&quot;=&quot;</span> * <span class="hljs-built_in">len</span>(nb_moves_message)<br><span class="hljs-built_in">print</span>(spacer)<br><span class="hljs-built_in">print</span>(nb_moves_message)<br><span class="hljs-built_in">print</span>(spacer)<br><br><span class="hljs-comment"># 存储所有生成的命令</span><br>commands = []<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(all_n):<br>    <span class="hljs-comment"># 随机选择一个基准速度（当前只有&quot;medium&quot;可选）</span><br>    selected_speed = np.random.choice(preset_speeds)<br>    <span class="hljs-comment"># 构建对应速度预设文件的路径</span><br>    preset_file = os.path.join(presets_dir, <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;selected_speed&#125;</span>.json&quot;</span>)<br>    <br>    <span class="hljs-comment"># 检查预设文件是否存在</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.isfile(preset_file):<br>        <span class="hljs-keyword">raise</span> FileNotFoundError(<span class="hljs-string">f&quot;Preset file not found: <span class="hljs-subst">&#123;preset_file&#125;</span>&quot;</span>)<br><br>    <span class="hljs-comment"># 加载预设文件内容</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(preset_file, <span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> file:<br>        data = json.load(file)<br><br>    <span class="hljs-comment"># 参数扫描模式处理</span><br>    <span class="hljs-keyword">if</span> args.sweep:<br>        <span class="hljs-comment"># 计算当前迭代对应的参数索引：</span><br>        <span class="hljs-comment"># dx_idx: 取模保证在X方向范围内循环</span><br>        dx_idx = i % <span class="hljs-built_in">len</span>(dxs)<br>        <span class="hljs-comment"># dy_idx: 整除X方向长度后取模</span><br>        dy_idx = (i // <span class="hljs-built_in">len</span>(dxs)) % <span class="hljs-built_in">len</span>(dys)<br>        <span class="hljs-comment"># dtheta_idx: 整除(X*Y方向长度)后取模</span><br>        dtheta_idx = (i // (<span class="hljs-built_in">len</span>(dxs) * <span class="hljs-built_in">len</span>(dys))) % <span class="hljs-built_in">len</span>(dthetas)<br><br>        <span class="hljs-comment"># 更新运动参数（保留2位小数）</span><br>        data[<span class="hljs-string">&quot;dx&quot;</span>] = <span class="hljs-built_in">round</span>(dxs[dx_idx], <span class="hljs-number">2</span>)  <span class="hljs-comment"># X方向位移</span><br>        data[<span class="hljs-string">&quot;dy&quot;</span>] = <span class="hljs-built_in">round</span>(dys[dy_idx], <span class="hljs-number">2</span>)  <span class="hljs-comment"># Y方向位移</span><br>        data[<span class="hljs-string">&quot;dtheta&quot;</span>] = <span class="hljs-built_in">round</span>(dthetas[dtheta_idx], <span class="hljs-number">2</span>)  <span class="hljs-comment"># 旋转角度</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-comment"># 随机模式处理：在最大范围内随机生成参数</span><br>        data[<span class="hljs-string">&quot;dx&quot;</span>] = <span class="hljs-built_in">round</span>(<br>            np.random.uniform(dx_max[<span class="hljs-number">0</span>], dx_max[<span class="hljs-number">1</span>]) * np.random.choice([-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]), <span class="hljs-number">2</span>  <span class="hljs-comment"># 随机正负方向</span><br>        )<br>        data[<span class="hljs-string">&quot;dy&quot;</span>] = <span class="hljs-built_in">round</span>(<br>            np.random.uniform(dy_max[<span class="hljs-number">0</span>], dy_max[<span class="hljs-number">1</span>]) * np.random.choice([-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]), <span class="hljs-number">2</span><br>        )<br>        data[<span class="hljs-string">&quot;dtheta&quot;</span>] = <span class="hljs-built_in">round</span>(<br>            np.random.uniform(dtheta_max[<span class="hljs-number">0</span>], dtheta_max[<span class="hljs-number">1</span>]) * np.random.choice([-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]),<br>            <span class="hljs-number">2</span>,<br>        )<br><br>    <span class="hljs-comment"># 将修改后的预设保存到临时文件</span><br>    tmp_preset = os.path.join(tmp_dir, <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;i&#125;</span>_<span class="hljs-subst">&#123;selected_speed&#125;</span>.json&quot;</span>)<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(tmp_preset, <span class="hljs-string">&quot;w&quot;</span>) <span class="hljs-keyword">as</span> out_file:<br>        json.dump(data, out_file, indent=<span class="hljs-number">4</span>)<br><br>    <span class="hljs-comment"># 构建调用gait_generator.py的命令</span><br>    cmd = [<br>        <span class="hljs-string">&quot;python&quot;</span>,<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;SCRIPT_PATH&#125;</span>/../open_duck_reference_motion_generator/gait_generator.py&quot;</span>,<br>        <span class="hljs-string">&quot;--duck&quot;</span>, args.duck,          <span class="hljs-comment"># 指定机器人类型</span><br>        <span class="hljs-string">&quot;--preset&quot;</span>, tmp_preset,       <span class="hljs-comment"># 使用临时预设文件</span><br>        <span class="hljs-string">&quot;--name&quot;</span>, <span class="hljs-built_in">str</span>(i),             <span class="hljs-comment"># 用序号作为动作名称</span><br>        <span class="hljs-string">&quot;--output_dir&quot;</span>, args.output_dir,  <span class="hljs-comment"># 指定输出目录</span><br>    ]<br>    <span class="hljs-comment"># 若非详细模式，则将日志输出到文件</span><br>    log_file = <span class="hljs-literal">None</span> <span class="hljs-keyword">if</span> args.verbose <span class="hljs-keyword">else</span> os.path.join(log_dir, <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;i&#125;</span>.log&quot;</span>)<br>    <span class="hljs-comment"># 将命令和日志路径存入列表</span><br>    commands.append((cmd, log_file))<br></code></pre></td></tr></table></figure><p>所有的生成基于 <code>open_duck_reference_motion_generator/robots/go_bdx/placo_presets/medium.json</code> 的预设：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;dx&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>                            <span class="hljs-comment">// 机器鸭在 X 轴（前进方向） 的目标速度（单位：m/s）</span><br>  <span class="hljs-attr">&quot;dy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>                            <span class="hljs-comment">// 机器鸭在 Y 轴（侧向） 的目标速度（单位：m/s）。</span><br>  <span class="hljs-attr">&quot;dtheta&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>                        <span class="hljs-comment">// 机器鸭的 目标旋转角速度（单位：rad/s）</span><br>  <span class="hljs-attr">&quot;duration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span>                        <span class="hljs-comment">// 步态规划的总持续时间（单位：秒）</span><br>  <span class="hljs-attr">&quot;hardware&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>                     <span class="hljs-comment">// 表示使用 真实硬件（如实际机器人）</span><br>  <span class="hljs-attr">&quot;trunk_mode&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;double_support_ratio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.2</span><span class="hljs-punctuation">,</span>          <span class="hljs-comment">// 双足支撑阶段 占整个步态周期的比例（20%）</span><br>  <span class="hljs-attr">&quot;startend_double_support_ratio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.5</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 起始和结束阶段的双足支撑时间延长比例（1.5 倍）。</span><br>  <span class="hljs-attr">&quot;planned_timesteps&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">48</span><span class="hljs-punctuation">,</span>              <span class="hljs-comment">// 步态规划的总时间步数（影响运动平滑度）。</span><br>  <span class="hljs-attr">&quot;replan_timesteps&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span>               <span class="hljs-comment">// 每隔多少时间步 重新规划一次步态（动态调整）。</span><br>  <span class="hljs-attr">&quot;walk_com_height&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.27</span><span class="hljs-punctuation">,</span>              <span class="hljs-comment">// 质心（COM）高度（单位：米），影响机器人平衡。</span><br>  <span class="hljs-attr">&quot;walk_foot_height&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.025</span><span class="hljs-punctuation">,</span>            <span class="hljs-comment">// 抬脚高度（单位：米），影响步态流畅性。</span><br>  <span class="hljs-attr">&quot;walk_trunk_pitch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-2</span><span class="hljs-punctuation">,</span>               <span class="hljs-comment">// 躯干俯仰角（单位：度），负值表示轻微前倾。</span><br>  <span class="hljs-attr">&quot;walk_foot_rise_ratio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.1</span><span class="hljs-punctuation">,</span>          <span class="hljs-comment">// 抬脚阶段的占比（20% 用于抬脚，80% 用于摆动）。</span><br>  <span class="hljs-attr">&quot;single_support_duration&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.30</span><span class="hljs-punctuation">,</span>      <span class="hljs-comment">// 单足支撑阶段持续时间（单位：秒）</span><br>  <span class="hljs-attr">&quot;single_support_timesteps&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span>       <span class="hljs-comment">// 单足支撑阶段的时间步数</span><br>  <span class="hljs-attr">&quot;foot_length&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.16</span><span class="hljs-punctuation">,</span>                  <span class="hljs-comment">// 脚掌长度（单位：米），影响 ZMP（零力矩点）计算。</span><br>  <span class="hljs-attr">&quot;feet_spacing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.19</span><span class="hljs-punctuation">,</span>                 <span class="hljs-comment">// 两脚之间的横向间距（单位：米）。</span><br>  <span class="hljs-attr">&quot;zmp_margin&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>                    <span class="hljs-comment">// ZMP 安全裕度（防止机器人因重心偏移而摔倒）。</span><br>  <span class="hljs-attr">&quot;foot_zmp_target_x&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.0</span><span class="hljs-punctuation">,</span>             <span class="hljs-comment">// ZMP 目标位置（通常设置在脚掌中心）。</span><br>  <span class="hljs-attr">&quot;foot_zmp_target_y&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-0.04</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;walk_max_dtheta&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.0</span><span class="hljs-punctuation">,</span>               <span class="hljs-comment">// 最大旋转角速度（单位：rad/s）</span><br>  <span class="hljs-attr">&quot;walk_max_dy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.1</span><span class="hljs-punctuation">,</span>                   <span class="hljs-comment">// 最大侧向速度（单位：m/s）。</span><br>  <span class="hljs-attr">&quot;walk_max_dx_forward&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.1</span><span class="hljs-punctuation">,</span>           <span class="hljs-comment">// 最大前进速度（单位：m/s）</span><br>  <span class="hljs-attr">&quot;walk_max_dx_backward&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.1</span><span class="hljs-punctuation">,</span>          <span class="hljs-comment">// 最大后退速度（单位：m/s）</span><br>  <span class="hljs-attr">&quot;joints&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;left_hip_yaw&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;left_hip_roll&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;left_hip_pitch&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;left_knee&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;left_ankle&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;neck_pitch&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;head_pitch&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;head_yaw&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;head_roll&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;left_antenna&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_antenna&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_hip_yaw&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_hip_roll&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_hip_pitch&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_knee&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;right_ankle&quot;</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;joint_angles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;head_pitch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>        <span class="hljs-comment">// 头部俯仰角</span><br>    <span class="hljs-attr">&quot;head_yaw&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>          <span class="hljs-comment">// 头部偏航角</span><br>    <span class="hljs-attr">&quot;head_roll&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;neck_pitch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>        <span class="hljs-comment">// 颈部俯仰角</span><br>    <span class="hljs-attr">&quot;left_antenna&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;right_antenna&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure><p>以下是对 <code>open_duck_reference_motion_generator/gait_generator.py</code> 代码的详细注释和功能分析：</p><p><strong>1. 核心功能概述</strong><br>这段代码实现了一个基于 <strong>Flask Web框架</strong> 的 <strong>机器鸭步态生成与可视化系统</strong>，主要功能包括：</p><ul><li>通过Web界面实时调整步态参数（速度、步长、支撑时间等）</li><li>可视化机器鸭的运动状态（三维模型+足部轨迹）</li><li>支持多种机器鸭模型（go_bdx&#x2F;open_duck_mini等）</li><li>生成可保存的运动轨迹数据</li></ul><p><strong>2. 关键模块分析</strong></p><p><strong>(1) 参数解析与初始化</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用argparse解析命令行参数</span><br>parser = argparse.ArgumentParser()<br>parser.add_argument(<span class="hljs-string">&quot;--dx&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">float</span>, default=<span class="hljs-number">0</span>)  <span class="hljs-comment"># X方向速度</span><br>parser.add_argument(<span class="hljs-string">&quot;--dy&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">float</span>, default=<span class="hljs-number">0</span>)  <span class="hljs-comment"># Y方向速度</span><br>parser.add_argument(<span class="hljs-string">&quot;--dtheta&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">float</span>, default=<span class="hljs-number">0</span>)  <span class="hljs-comment"># 旋转速度</span><br><span class="hljs-comment"># ...（其他30+步态参数，如支撑时间、质心高度等）</span><br>args = parser.parse_args()<br><br><span class="hljs-comment"># 创建Flask应用</span><br>app = Flask(__name__)<br></code></pre></td></tr></table></figure><p><strong>(2) 步态参数管理类 <code>GaitParameters</code></strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">GaitParameters</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 根据机器人类型加载对应URDF模型路径</span><br>        <span class="hljs-keyword">if</span> args.duck == <span class="hljs-string">&quot;open_duck_mini&quot;</span>:<br>            <span class="hljs-variable language_">self</span>.robot_urdf = <span class="hljs-string">&quot;open_duck_mini.urdf&quot;</span><br>            <span class="hljs-variable language_">self</span>.asset_path = <span class="hljs-string">&quot;.../open_duck_mini/&quot;</span><br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">reset</span>(<span class="hljs-params">self, pwe</span>):<br>        <span class="hljs-comment"># 将参数应用到PlacoWalkEngine</span><br>        pwe.parameters.double_support_ratio = <span class="hljs-variable language_">self</span>.double_support_ratio<br>        <span class="hljs-comment"># ...（同步所有参数）</span><br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_pwe</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 创建Placo步行引擎实例</span><br>        <span class="hljs-keyword">return</span> PlacoWalkEngine(<span class="hljs-variable language_">self</span>.asset_path, <span class="hljs-variable language_">self</span>.robot_urdf)<br></code></pre></td></tr></table></figure><p><strong>(3) Web接口路由</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/run&#x27;</span>, methods=[<span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>():<br>    <span class="hljs-comment"># 从表单获取参数并更新到gait对象</span><br>    gait.dx = <span class="hljs-built_in">float</span>(request.form[<span class="hljs-string">&#x27;dx&#x27;</span>])<br>    gait.dy = <span class="hljs-built_in">float</span>(request.form[<span class="hljs-string">&#x27;dy&#x27;</span>])<br>    <span class="hljs-comment"># ...（更新其他参数）</span><br>    <span class="hljs-comment"># 通知步态生成线程开始运行</span><br>    <span class="hljs-keyword">global</span> dorun<br>    dorun = <span class="hljs-literal">True</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/stop&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">stop</span>():<br>    <span class="hljs-comment"># 停止运动生成</span><br>    <span class="hljs-keyword">global</span> run_loop<br>    run_loop = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure><p><strong>(4) 步态生成线程</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">gait_generator_thread</span>():<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        <span class="hljs-keyword">if</span> doreset:  <span class="hljs-comment"># 重置机器人</span><br>            pwe = gait.create_pwe()<br>            viz.display(pwe.robot.state.q)<br>        <br>        <span class="hljs-keyword">if</span> dorun:    <span class="hljs-comment"># 开始生成步态</span><br>            pwe.set_traj(gait.dx, gait.dy, gait.dtheta)<br>            <span class="hljs-keyword">while</span> run_loop:<br>                pwe.tick(DT)  <span class="hljs-comment"># 推进物理仿真</span><br>                <span class="hljs-comment"># 记录关键帧数据（位置/速度/接触状态）</span><br>                <span class="hljs-keyword">if</span> need_record_frame:<br>                    episode[<span class="hljs-string">&quot;Frames&quot;</span>].append(root_position + joints_positions + ...)<br>                <span class="hljs-comment"># 更新三维可视化</span><br>                viz.display(pwe.robot.state.q)<br></code></pre></td></tr></table></figure><p><strong>3. 关键技术点</strong></p><p><strong>(1) 参数覆盖逻辑</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 优先级：命令行参数 &gt; 预设文件 &gt; 默认值</span><br><span class="hljs-keyword">if</span> args.double_support_ratio <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>    gait_parameters[<span class="hljs-string">&#x27;double_support_ratio&#x27;</span>] = args.double_support_ratio<br><span class="hljs-keyword">elif</span> <span class="hljs-string">&#x27;double_support_ratio&#x27;</span> <span class="hljs-keyword">in</span> gait_parameters:<br>    <span class="hljs-keyword">pass</span>  <span class="hljs-comment"># 使用预设文件值</span><br><span class="hljs-keyword">else</span>:<br>    gait.double_support_ratio = <span class="hljs-number">0.18</span>  <span class="hljs-comment"># 默认值</span><br></code></pre></td></tr></table></figure><p><strong>(2) 实时数据记录</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 记录每帧数据包含：</span><br>[<br>    root_position,       <span class="hljs-comment"># 机身位置(x,y,z)</span><br>    root_orientation,    <span class="hljs-comment"># 四元数姿态</span><br>    joints_positions,    <span class="hljs-comment"># 所有关节角度</span><br>    left_toe_pos,        <span class="hljs-comment"># 左脚位置(相对机身)</span><br>    right_toe_pos,       <span class="hljs-comment"># 右脚位置</span><br>    world_linear_vel,    <span class="hljs-comment"># 机身线速度</span><br>    world_angular_vel,   <span class="hljs-comment"># 机身角速度</span><br>    joints_vel,          <span class="hljs-comment"># 关节速度</span><br>    foot_contacts        <span class="hljs-comment"># 足部接触状态(0/1)</span><br>]<br></code></pre></td></tr></table></figure><p><strong>(3) 可视化系统</strong></p><ul><li><strong>三维模型</strong>：通过<code>robot_viz</code>显示URDF模型</li><li><strong>足部轨迹</strong>：<code>footsteps_viz</code>绘制支撑多边形</li><li><strong>坐标系</strong>：<code>robot_frame_viz</code>显示机身&#x2F;足部局部坐标系</li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-a3a2ed82" role="button" aria-expanded="false" aria-controls="collapse-a3a2ed82">
+        <div class="fold-arrow">▶</div>Open_Duck_Playground
+      </div>
+      <div class="fold-collapse collapse" id="collapse-a3a2ed82">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:apirrone/Open_Duck_Playground.git<br><br><span class="hljs-comment"># 查看 mujoco, mujoco 配置参考上面</span><br><span class="hljs-built_in">cd</span> Open_Duck_Playground/playground/open_duck_mini_v2/xmls<br>python3 -m mujoco.viewer --mjcf=open_duck_mini_v2.xml<br></code></pre></td></tr></table></figure><p>训练：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> Open_Duck_Playground<br><br><span class="hljs-comment"># 将参考动作发生器的data拷贝过来</span><br><span class="hljs-built_in">cp</span> &lt;path-to-polynomial_coefficients.pkl-in-open_duck_reference_motion_generator&gt; \<br>   playground/open_duck_mini_v2/data/polynomial_coefficients.pkl<br><br><span class="hljs-comment"># 遇到问题按照下面的提示解决</span><br>uv run playground/open_duck_mini_v2/runner.py<br><br><span class="hljs-comment"># 运行中下载 mujoco_menagerie 太久，可以先手动 clone</span><br>git <span class="hljs-built_in">clone</span> git@github.com:google-deepmind/mujoco_menagerie.git<br><span class="hljs-built_in">mv</span> mujoco_menagerie ~/Open_Duck_Playground/.venv/lib/python3.10/site-packages/mujoco_playground/external_deps<br></code></pre></td></tr></table></figure><p>训练遇到的问题：</p><ul><li><p>cuSolver internal error<br>参考 <a href="https://github.com/jax-ml/jax/issues/29042#issuecomment-2916978884">https://github.com/jax-ml/jax/issues/29042#issuecomment-2916978884</a><br>使用 <code>uv pip list | grep nvidia</code> 查看 NV 库版本<br>如果是 0.6.1 jax 把 <code>nvidia-cublas-cu12==12.8.4.1</code> 手动升级到 <code>12.9.0.13</code>，然后不要直接 <code>uv run</code>，会刷新环境重置刚刚升级的版本，直接 <code>source .venv/bin/activate</code>，然后 <code>python playground/open_duck_mini_v2/runner.py</code></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">uv pip install nvidia-cublas-cu12==12.9.0.13<br>uv pip list | grep nvidia<br>nvidia-cublas-cu12       12.9.0.13  <span class="hljs-comment"># 这个要升级</span><br>nvidia-cuda-cupti-cu12   12.9.19<br>nvidia-cuda-nvcc-cu12    12.9.41<br>nvidia-cuda-runtime-cu12 12.9.37<br>nvidia-cudnn-cu12        9.10.1.4<br>nvidia-cufft-cu12        11.4.0.6<br>nvidia-cusolver-cu12     11.7.4.40<br>nvidia-cusparse-cu12     12.5.9.5<br>nvidia-nccl-cu12         2.26.5<br>nvidia-nvjitlink-cu12    12.9.41<br>nvidia-nvshmem-cu12      3.2.5<br></code></pre></td></tr></table></figure></li><li><p>AttributeError: ‘dict’ object has no attribute ‘policy’<br>参考：<a href="https://github.com/apirrone/Open_Duck_Playground/issues/8">https://github.com/apirrone/Open_Duck_Playground/issues/8</a><br>将：<code>export_onnex.py</code> 中的</p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs py">transfer_weights(params[<span class="hljs-number">1</span>].policy[<span class="hljs-string">&quot;params&quot;</span>], tf_policy_network)<br></code></pre></td></tr></table></figure><p>改为</p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs py">transfer_weights(params[<span class="hljs-number">1</span>][<span class="hljs-string">&quot;params&quot;</span>], tf_policy_network)<br></code></pre></td></tr></table></figure><p>然后参考 <a href="https://github.com/onnx/tensorflow-onnx/issues/2373">https://github.com/onnx/tensorflow-onnx/issues/2373</a><br><a href="https://github.com/onnx/tensorflow-onnx/pull/2378/commits/2e752714669d1d4e0a93fc9a575f33189d02916e">https://github.com/onnx/tensorflow-onnx/pull/2378/commits/2e752714669d1d4e0a93fc9a575f33189d02916e</a><br>更改 .venv 中的 <code>tfonnx.py</code></p></li></ul><p>现在可以愉快训练了：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ python playground/open_duck_mini_v2/runner.py<br><br>Every 0.1s: nvidia-smi                           DESKTOP-9DSK0U4: Sat May 31 13:57:08 2025<br>Sat May 31 13:57:08 2025<br>+-----------------------------------------------------------------------------------------+<br>| NVIDIA-SMI 575.57.04              Driver Version: 576.52         CUDA Version: 12.9     |<br>|-----------------------------------------+------------------------+----------------------+<br>| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |<br>| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |<br>|                                         |                        |               MIG M. |<br>|=========================================+========================+======================|<br>|   0  NVIDIA GeForce RTX 4070 ...    On  |   00000000:01:00.0  On |                  N/A |<br>| 35%   62C    P2            171W /  220W |   11627MiB /  12282MiB |    100%      Default |<br>|                                         |                        |                  N/A |<br>+-----------------------------------------+------------------------+----------------------+<br><br>+-----------------------------------------------------------------------------------------+<br>| Processes:                                                                              |<br>|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |<br>|        ID   ID                                                               Usage      |<br>|=========================================================================================|<br>|    0   N/A  N/A           33660      C   /python3.12                           N/A      |<br>+-----------------------------------------------------------------------------------------+<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Robot/" class="category-chain-item">Robot</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/Robot/" class="print-no-link">#Robot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/15/AI/lerobot/" title="Lerobot SO101 robot arm">
+                        <span class="hidden-mobile">Lerobot SO101 robot arm</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

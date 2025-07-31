@@ -1,0 +1,994 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="源链接：Dummy-Robot 资料整理：不爱学习任同学（B站）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dummy-Robot">
+<meta property="og:url" content="http://yoursite.com/2025/04/01/AI/Dummy/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="源链接：Dummy-Robot 资料整理：不爱学习任同学（B站）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/dummy/index.jpg">
+<meta property="article:published_time" content="2025-04-01T09:32:26.000Z">
+<meta property="article:modified_time" content="2025-07-31T02:42:23.388Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Robot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/dummy/index.jpg">
+  
+  
+  
+  <title>Dummy-Robot - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><script src="/assets/js/DPlayer.min.js"></script></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_2.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Dummy-Robot"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-01 09:32" pubdate>
+          2025年4月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          52 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Dummy-Robot</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li>源链接：<a href="https://github.com/peng-zhihui/Dummy-Robot">Dummy-Robot</a></li>
+<li>资料整理：不爱学习任同学（B站）</li>
+</ul>
+<span id="more"></span>
+
+<div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FADFA3","loop":true,"lang":"zh-cn","screenshot":true,"hotkey":true,"preload":"auto","volume":0.9,"mutex":true,"video":{"url":"/img/ai/dummy/dummy.mp4","pic":"/img/ai/dummy/dummy.png"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+<h2 id="初始化设置"><a href="#初始化设置" class="headerlink" title="初始化设置"></a>初始化设置</h2><ul>
+<li><p>首先断电，将机械臂恢复至 Z 型位置：move_j(0, -75, 180, 0, 0, 180)</p>
+</li>
+<li><p>连接上位机，在电机未 enable 的状态下，erase J2&#x2F;J3 电机的 config</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.set_enable</span>(<span class="hljs-number">0</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.erase_configs</span>()<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.erase_configs</span>()<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>apply 电机当前的位置</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.apply_home_offset</span>()<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.apply_home_offset</span>()<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>PID 设置：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs stylus">dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.set_dce_kv</span>(<span class="hljs-number">120</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.set_dce_ki</span>(<span class="hljs-number">200</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.set_dce_kd</span>(<span class="hljs-number">300</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_2</span><span class="hljs-selector-class">.set_dce_kp</span>(<span class="hljs-number">2000</span>)<br><br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.set_dce_kv</span>(<span class="hljs-number">120</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.set_dce_ki</span>(<span class="hljs-number">200</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.set_dce_kd</span>(<span class="hljs-number">300</span>)<br>dummy0<span class="hljs-selector-class">.robot</span><span class="hljs-selector-class">.joint_3</span><span class="hljs-selector-class">.set_dce_kp</span>(<span class="hljs-number">2000</span>)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>移动到 7 字型:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">dummy0</span>.robot.set_enable(<span class="hljs-number">1</span>)<br><span class="hljs-attribute">dummy0</span>.robot.move_j(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">90</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">180</span>)<br><br><span class="hljs-comment"># 任意位置</span><br><span class="hljs-attribute">dummy0</span>.robot.move_j(-<span class="hljs-number">50</span>, <span class="hljs-number">60</span>, <span class="hljs-number">90</span>, <span class="hljs-number">70</span>, -<span class="hljs-number">20</span>, <span class="hljs-number">180</span>)<br><br><span class="hljs-comment"># 复位</span><br><span class="hljs-attribute">dummy0</span>.robot.resting()<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="机器人运动学简单入门"><a href="#机器人运动学简单入门" class="headerlink" title="机器人运动学简单入门"></a>机器人运动学简单入门</h2><h3 id="旋转矩阵和欧拉角"><a href="#旋转矩阵和欧拉角" class="headerlink" title="旋转矩阵和欧拉角"></a>旋转矩阵和欧拉角</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/45404840">三维旋转：欧拉角、四元数、旋转矩阵、轴角之间的转换</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/144032401">欧拉角和旋转矩阵之间的转换</a></li>
+</ul>
+<p>源码见： <a href="https://github.com/peng-zhihui/Dummy-Robot/blob/main/2.Firmware/Core-STM32F4-fw/Robot/algorithms/kinematic/6dof_kinematic.cpp#L32">6dof_kinematic</a></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-79ea014d" role="button" aria-expanded="false" aria-controls="collapse-79ea014d">
+        <div class="fold-arrow">▶</div>RotMatToEulerAngle and EulerAngleToRotMat
+      </div>
+      <div class="fold-collapse collapse" id="collapse-79ea014d">
+        <div class="fold-content">
+          <p><strong>函数分析：旋转矩阵和欧拉角的转换</strong></p><p>这两个函数分别实现了 <strong>旋转矩阵（Rotation Matrix）</strong> 和 <strong>欧拉角（Euler Angles）</strong> 之间的转换，适用于 <strong>3D 旋转计算</strong>，如 <strong>机械臂运动、3D 图形变换、机器人姿态计算等</strong>。</p><p><strong>1. <code>RotMatToEulerAngle()</code> - 旋转矩阵转换为欧拉角</strong><br><strong>(1) 输入输出</strong></p><ul><li><strong>输入：</strong>  <ul><li><code>_rotationM</code>：一个 <strong>3×3 旋转矩阵</strong>（列优先存储）。</li></ul></li><li><strong>输出：</strong>  <ul><li><code>_eulerAngles</code>：存储 <strong>欧拉角 （C, B, A）</strong>，即 <strong>（Yaw, Pitch, Roll）</strong>。</li></ul></li></ul><p><strong>(2) 计算逻辑</strong></p><p>这个函数从旋转矩阵 <code>_rotationM</code> 计算 <strong>ZYX 欧拉角</strong>（即绕 Z→Y→X 轴旋转）。</p><p><strong>(a) 特殊情况处理：Gimbal Lock（万向锁）</strong></p><ul><li><code>fabs(_rotationM[6]) &gt;= 1.0 - 0.0001</code> 检查是否接近 ±1，判断是否发生万向锁（Pitch &#x3D; ±90°）。</li><li>当 <code>_rotationM[6] = -1</code>（向下）：<ul><li><code>B = π/2</code></li><li><code>A = 0</code></li><li><code>C = atan2f(_rotationM[1], _rotationM[4])</code></li></ul></li><li>当 <code>_rotationM[6] = 1</code>（向上）：<ul><li><code>B = -π/2</code></li><li><code>A = 0</code></li><li><code>C = -atan2f(_rotationM[1], _rotationM[4])</code></li></ul></li></ul><p><strong>(b) 正常情况计算</strong></p><p>如果未发生万向锁：</p><ul><li><p>计算 Pitch：</p><p>$$<br>B &#x3D; \text{atan2}(-R_{32}, \sqrt{R_{11}^2 + R_{21}^2})<br>$$</p></li><li><p>计算 Roll：</p><p>$$<br>A &#x3D; \text{atan2}(R_{21} &#x2F; \cos(B), R_{11} &#x2F; \cos(B))<br>$$</p></li><li><p>计算 Yaw：</p><p>$$<br>C &#x3D; \text{atan2}(R_{32} &#x2F; \cos(B), R_{33} &#x2F; \cos(B))<br>$$</p></li></ul><p><strong>(c) 结果存储</strong></p><p>最终：</p><p>$$<br>\text{Yaw (C)} &#x3D; eulerAngles[0], \quad \text{Pitch (B)} &#x3D; eulerAngles[1], \quad \text{Roll (A)} &#x3D; eulerAngles[2]<br>$$</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">RotMatToEulerAngle</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span>* _rotationM, <span class="hljs-type">float</span>* _eulerAngles)</span><br>&#123;<br>    <span class="hljs-type">float</span> A, B, C, cb;<br><br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">fabs</span>(_rotationM[<span class="hljs-number">6</span>]) &gt;= <span class="hljs-number">1.0</span> - <span class="hljs-number">0.0001</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (_rotationM[<span class="hljs-number">6</span>] &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            A = <span class="hljs-number">0.0f</span>;<br>            B = (<span class="hljs-type">float</span>) M_PI_2;<br>            C = atan2f(_rotationM[<span class="hljs-number">1</span>], _rotationM[<span class="hljs-number">4</span>]);<br>        &#125; <span class="hljs-keyword">else</span><br>        &#123;<br>            A = <span class="hljs-number">0.0f</span>;<br>            B = -(<span class="hljs-type">float</span>) M_PI_2;<br>            C = -atan2f(_rotationM[<span class="hljs-number">1</span>], _rotationM[<span class="hljs-number">4</span>]);<br>        &#125;<br>    &#125; <span class="hljs-keyword">else</span><br>    &#123;<br>        B = atan2f(-_rotationM[<span class="hljs-number">6</span>], sqrtf(_rotationM[<span class="hljs-number">0</span>] * _rotationM[<span class="hljs-number">0</span>] + _rotationM[<span class="hljs-number">3</span>] * _rotationM[<span class="hljs-number">3</span>]));<br>        cb = cosf(B);<br>        A = atan2f(_rotationM[<span class="hljs-number">3</span>] / cb, _rotationM[<span class="hljs-number">0</span>] / cb);<br>        C = atan2f(_rotationM[<span class="hljs-number">7</span>] / cb, _rotationM[<span class="hljs-number">8</span>] / cb);<br>    &#125;<br><br>    _eulerAngles[<span class="hljs-number">0</span>] = C;<br>    _eulerAngles[<span class="hljs-number">1</span>] = B;<br>    _eulerAngles[<span class="hljs-number">2</span>] = A;<br>&#125;<br></code></pre></td></tr></table></figure><p><strong>2. <code>EulerAngleToRotMat()</code> - 欧拉角转换为旋转矩阵</strong></p><p><strong>(1) 输入输出</strong></p><ul><li><strong>输入：</strong><ul><li><code>_eulerAngles</code>：欧拉角 (C, B, A) <strong>(Yaw, Pitch, Roll)</strong></li></ul></li><li><strong>输出：</strong><ul><li><code>_rotationM</code>：3×3 旋转矩阵。</li></ul></li></ul><p><strong>(2) 计算逻辑</strong></p><p>该函数计算 <strong>ZYX 旋转矩阵</strong>：<br>$$<br>R &#x3D; R_z(C) \cdot R_y(B) \cdot R_x(A)<br>$$</p><p><strong>(a) 欧拉角计算旋转矩阵</strong></p><p>定义旋转矩阵：<br>$$<br>R_x(A) &#x3D;<br>\begin{bmatrix}<br>1 &amp; 0 &amp; 0 \\<br>0 &amp; \cos A &amp; -\sin A \\<br>0 &amp; \sin A &amp; \cos A<br>\end{bmatrix}<br>$$</p><p>$$<br>R_y(B) &#x3D;<br>\begin{bmatrix}<br>\cos B &amp; 0 &amp; \sin B \\<br>0 &amp; 1 &amp; 0 \\<br>-\sin B &amp; 0 &amp; \cos B<br>\end{bmatrix}<br>$$</p><p>$$<br>R_z(C) &#x3D;<br>\begin{bmatrix}<br>\cos C &amp; -\sin C &amp; 0 \\<br>\sin C &amp; \cos C &amp; 0 \\<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$</p><p>最终得到：<br>$$<br>R &#x3D; R_z(C) R_y(B) R_x(A)<br>$$</p><p>展开后：<br>$$<br>R &#x3D;<br>\begin{bmatrix}<br>\cos A \cos B &amp; \cos A \sin B \sin C - \sin A \cos C &amp; \cos A \sin B \cos C + \sin A \sin C \\<br>\sin A \cos B &amp; \sin A \sin B \sin C + \cos A \cos C &amp; \sin A \sin B \cos C - \cos A \sin C \\<br>-\sin B &amp; \cos B \sin C &amp; \cos B \cos C<br>\end{bmatrix}<br>$$</p><p>代码中的 <code>ca, cb, cc</code> 代表 <code>cos(A), cos(B), cos(C)</code>，<code>sa, sb, sc</code> 代表 <code>sin(A), sin(B), sin(C)</code>，然后填充到旋转矩阵 <code>_rotationM</code>。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">EulerAngleToRotMat</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span>* _eulerAngles, <span class="hljs-type">float</span>* _rotationM)</span><br>&#123;<br>    <span class="hljs-type">float</span> ca, cb, cc, sa, sb, sc;<br><br>    cc = cosf(_eulerAngles[<span class="hljs-number">0</span>]);<br>    cb = cosf(_eulerAngles[<span class="hljs-number">1</span>]);<br>    ca = cosf(_eulerAngles[<span class="hljs-number">2</span>]);<br>    sc = sinf(_eulerAngles[<span class="hljs-number">0</span>]);<br>    sb = sinf(_eulerAngles[<span class="hljs-number">1</span>]);<br>    sa = sinf(_eulerAngles[<span class="hljs-number">2</span>]);<br><br>    _rotationM[<span class="hljs-number">0</span>] = ca * cb;<br>    _rotationM[<span class="hljs-number">1</span>] = ca * sb * sc - sa * cc;<br>    _rotationM[<span class="hljs-number">2</span>] = ca * sb * cc + sa * sc;<br>    _rotationM[<span class="hljs-number">3</span>] = sa * cb;<br>    _rotationM[<span class="hljs-number">4</span>] = sa * sb * sc + ca * cc;<br>    _rotationM[<span class="hljs-number">5</span>] = sa * sb * cc - ca * sc;<br>    _rotationM[<span class="hljs-number">6</span>] = -sb;<br>    _rotationM[<span class="hljs-number">7</span>] = cb * sc;<br>    _rotationM[<span class="hljs-number">8</span>] = cb * cc;<br>&#125;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h3 id="DOF6Kinematic-类"><a href="#DOF6Kinematic-类" class="headerlink" title="DOF6Kinematic 类"></a>DOF6Kinematic 类</h3><p>这个 <code>DOF6Kinematic</code> 类是一个 <strong>六自由度（6-DOF）机械臂的运动学求解器</strong>，用于 <strong>正向运动学（FK, Forward Kinematics）</strong> 和 <strong>逆向运动学（IK, Inverse Kinematics）</strong> 计算。<br>主要应用场景：</p>
+<ul>
+<li><strong>FK（正向运动学）</strong>：已知关节角度，计算末端执行器的位姿（位置 + 姿态）。</li>
+<li><strong>IK（逆向运动学）</strong>：已知末端执行器的位姿，计算关节角度。</li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-10cfa4d9" role="button" aria-expanded="false" aria-controls="collapse-10cfa4d9">
+        <div class="fold-arrow">▶</div>详细内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-10cfa4d9">
+        <div class="fold-content">
+          <p><code>DOF6Kinematic</code> 采用 <strong>Denavit-Hartenberg（DH）参数</strong> 来表示机械臂的几何结构：</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">float</span> DH_matrix[<span class="hljs-number">6</span>][<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">0</span>&#125;; <span class="hljs-comment">// DH参数表：[关节号][home, d, a, alpha]</span><br></code></pre></td></tr></table></figure><p>DH 矩阵存储的是：</p><table><thead><tr><th>变量</th><th>说明</th></tr></thead><tbody><tr><td>$ \theta $ (home)</td><td>关节角（变量，由控制器调整）</td></tr><tr><td>$ d $</td><td>关节的偏移量</td></tr><tr><td>$ a $</td><td>关节间连杆长度</td></tr><tr><td>$ \alpha $</td><td>关节旋转轴的倾斜角</td></tr></tbody></table><p>机械臂的结构参数</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ArmConfig_t</span><br>&#123;<br>    <span class="hljs-type">float</span> L_BASE;    <span class="hljs-comment">// 基座长度</span><br>    <span class="hljs-type">float</span> D_BASE;    <span class="hljs-comment">// 基座高度偏移</span><br>    <span class="hljs-type">float</span> L_ARM;     <span class="hljs-comment">// 大臂长度</span><br>    <span class="hljs-type">float</span> L_FOREARM; <span class="hljs-comment">// 小臂长度</span><br>    <span class="hljs-type">float</span> D_ELBOW;   <span class="hljs-comment">// 肘关节偏移</span><br>    <span class="hljs-type">float</span> L_WRIST;   <span class="hljs-comment">// 腕部长度</span><br>&#125;;<br></code></pre></td></tr></table></figure><p>这些变量用于存储 <strong>机械臂各段的几何参数</strong>。</p><p>计算变量</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">float</span> l_se_2, l_se, l_ew_2, l_ew, atan_e;<br></code></pre></td></tr></table></figure><p>这些变量用于计算 <strong>肘部和手腕的几何关系</strong>，具体作用在 <strong>逆向运动学计算</strong> 中可能涉及三角函数运算。</p><p><strong>主要数据结构</strong></p><p><strong>(1) <code>Joint6D_t</code> - 六自由度关节角</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Joint6D_t</span><br>&#123;<br>    <span class="hljs-type">float</span> a[<span class="hljs-number">6</span>]; <span class="hljs-comment">// 六个关节角度（单位: 弧度）</span><br>&#125;;<br></code></pre></td></tr></table></figure><ul><li>用于存储 <strong>六个关节角度</strong>（$\theta_1, \theta_2, …, \theta_6$）。</li><li>重载 <code>operator-</code> 以支持角度差计算。</li></ul><p><strong>(2) <code>Pose6D_t</code> - 末端执行器位姿</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Pose6D_t</span><br>&#123;<br>    <span class="hljs-type">float</span> X&#123;&#125;, Y&#123;&#125;, Z&#123;&#125;;  <span class="hljs-comment">// 位置</span><br>    <span class="hljs-type">float</span> A&#123;&#125;, B&#123;&#125;, C&#123;&#125;;  <span class="hljs-comment">// 姿态 (Yaw-Pitch-Roll)</span><br>    <span class="hljs-type">float</span> R[<span class="hljs-number">9</span>]&#123;&#125;;         <span class="hljs-comment">// 旋转矩阵</span><br>    <span class="hljs-type">bool</span> hasR&#123;&#125;;          <span class="hljs-comment">// 是否已计算旋转矩阵</span><br>&#125;;<br></code></pre></td></tr></table></figure><ul><li>机器人末端执行器的 <strong>位姿</strong>（XYZ 位置 + ABC 欧拉角）。</li><li><code>hasR</code> 表示 <code>R[9]</code> 是否已计算。</li></ul><p><strong>(3) <code>IKSolves_t</code> - 逆运动学解</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">IKSolves_t</span><br>&#123;<br>    Joint6D_t config[<span class="hljs-number">8</span>];  <span class="hljs-comment">// 最多有 8 组逆解</span><br>    <span class="hljs-type">char</span> solFlag[<span class="hljs-number">8</span>][<span class="hljs-number">3</span>];   <span class="hljs-comment">// 解的标志</span><br>&#125;;<br></code></pre></td></tr></table></figure><p>由于 6 轴机器人一般有 <strong>最多 8 组逆解</strong>，因此 <code>config[8]</code> 存储了所有可能的解，并使用 <code>solFlag[8][3]</code> 记录哪些解有效。</p><p><strong>主要方法</strong></p><p><strong>(1) <code>SolveFK()</code> - 正向运动学</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">SolveFK</span><span class="hljs-params">(<span class="hljs-type">const</span> Joint6D_t &amp;_inputJoint6D, Pose6D_t &amp;_outputPose6D)</span></span>;<br></code></pre></td></tr></table></figure><p><strong>作用：</strong></p><ul><li><strong>输入</strong>：<code>_inputJoint6D</code>（六个关节角）。</li><li><strong>输出</strong>：<code>_outputPose6D</code>（计算出的末端执行器位姿）。</li><li><strong>流程：</strong><ol><li>计算 <strong>变换矩阵</strong> $ T &#x3D; T_1 \cdot T_2 \cdot … \cdot T_6 $。</li><li>提取末端的 XYZ 位置。</li><li>提取旋转矩阵，并转换为欧拉角（Yaw, Pitch, Roll）。</li></ol></li></ul><p><strong>(2) <code>SolveIK()</code> - 逆向运动学</strong></p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">SolveIK</span><span class="hljs-params">(<span class="hljs-type">const</span> Pose6D_t &amp;_inputPose6D, <span class="hljs-type">const</span> Joint6D_t &amp;_lastJoint6D, IKSolves_t &amp;_outputSolves)</span></span>;<br></code></pre></td></tr></table></figure><p><strong>作用：</strong></p><ul><li><strong>输入</strong>：<ul><li><code>_inputPose6D</code>（目标位姿）。</li><li><code>_lastJoint6D</code>（上一帧的关节角，作为参考）。</li></ul></li><li><strong>输出</strong>：<ul><li><code>_outputSolves</code>（可能的逆解）。</li></ul></li><li><strong>流程：</strong><ol><li>解析目标位姿 <code>_inputPose6D</code>，分解 <code>X, Y, Z, A, B, C</code>。</li><li>计算腕部中心点位置 <strong>W</strong>（通过末端位置反推腕部位置）。</li><li>计算前三个关节的解（主要利用 <strong>肘部的几何关系</strong>）。</li><li>计算后三个关节的解（使用旋转矩阵求解）。</li><li><strong>返回 0~8 组解</strong>，并选择最优解（与 <code>_lastJoint6D</code> 角度最接近）。</li></ol></li></ul>
+        </div>
+      </div>
+    </div>
+
+<h3 id="构造函数和-DH-参数矩阵"><a href="#构造函数和-DH-参数矩阵" class="headerlink" title="构造函数和 DH 参数矩阵"></a>构造函数和 DH 参数矩阵</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp">DOF6Kinematic::<span class="hljs-built_in">DOF6Kinematic</span>(<span class="hljs-type">float</span> L_BS, <span class="hljs-type">float</span> D_BS, <span class="hljs-type">float</span> L_AM, <span class="hljs-type">float</span> L_FA, <span class="hljs-type">float</span> D_EW, <span class="hljs-type">float</span> L_WT)<br></code></pre></td></tr></table></figure>
+
+<p>DH矩阵：</p>
+<p>这个 <code>DH_matrix</code> 是一个 <strong>6×4</strong> 的 <strong>Denavit-Hartenberg（DH）参数矩阵</strong>，表示一个 <strong>六自由度机械臂</strong> 各个关节的运动参数。转换为矩阵形式如下：  </p>
+<p>$$<br>DH_matrix &#x3D;<br>\begin{bmatrix}<br>0              &amp; L_{BASE}       &amp; D_{BASE}      &amp; -\frac{\pi}{2} \\<br>-\frac{\pi}{2} &amp; 0              &amp; L_{ARM}       &amp; 0           \\<br>\frac{\pi}{2}  &amp; D_{ELBOW}      &amp; 0             &amp; \frac{\pi}{2} \\<br>0              &amp; L_{FOREARM}    &amp; 0             &amp; -\frac{\pi}{2} \\<br>0              &amp; 0              &amp; 0             &amp; \frac{\pi}{2} \\<br>0              &amp; L_{WRIST}      &amp; 0             &amp; 0<br>\end{bmatrix}<br>$$</p>
+<p>其中：</p>
+<ul>
+<li><strong>第一列</strong>（<code>θi</code>）：关节角（home 位置，初始角度）</li>
+<li><strong>第二列</strong>（<code>di</code>）：连杆的 <strong>平移</strong> 偏移量</li>
+<li><strong>第三列</strong>（<code>ai</code>）：连杆长度</li>
+<li><strong>第四列</strong>（<code>αi</code>）：连杆的 <strong>旋转</strong> 偏移量（相邻连杆的扭转角）</li>
+</ul>
+<p>机械臂物理参数：</p>
+<ul>
+<li><code>L_BASE</code>：<strong>基座长度</strong>（Base Length）</li>
+<li><code>D_BASE</code>：<strong>基座高度偏移</strong>（Base Offset）</li>
+<li><code>L_ARM</code>：<strong>上臂长度</strong>（Arm Length）</li>
+<li><code>L_FORERM</code>：<strong>前臂长度</strong>（Forearm Length）</li>
+<li><code>D_ELBOW</code>：<strong>肘关节偏移</strong>（Elbow Offset）</li>
+<li><code>L_WRIST</code>：<strong>腕部长度</strong>（Wrist Length）</li>
+</ul>
+<h3 id="正向运动学"><a href="#正向运动学" class="headerlink" title="正向运动学"></a>正向运动学</h3><p>正运动学（Forward Kinematics，FK）是机械臂运动学中的一个重要部分，它是描述机械臂在给定的关节角度（或位置）下，末端执行器（例如，抓手或工具）的位姿（位置和姿态）的数学模型。与逆运动学相反，正运动学的目的是从已知的关节变量推导出末端执行器的位置和姿态，而逆运动学则是从目标末端执行器的位置和姿态推导出关节变量。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-50db89da" role="button" aria-expanded="false" aria-controls="collapse-50db89da">
+        <div class="fold-arrow">▶</div>FK 的作用
+      </div>
+      <div class="fold-collapse collapse" id="collapse-50db89da">
+        <div class="fold-content">
+          <ol><li><strong>关节配置与末端执行器之间的关系</strong>：<br>正运动学提供了关节角度或位置与末端执行器在空间中位置之间的映射关系。通过正运动学的计算，给定关节的角度或位置，我们可以快速得出末端执行器的位置和姿态。这在机械臂运动控制中非常重要，因为我们需要根据关节的状态来确定机械臂的末端执行器在哪里以及它如何朝向目标。</li><li><strong>运动轨迹规划</strong>：<br>在运动规划中，正运动学被用来描述机械臂从某个初始位置到达目标位置时，每个关节需要如何运动，以及对应末端执行器的运动轨迹。通过正运动学的计算，可以描述整个运动过程中的末端执行器位置变化，从而规划和调整机械臂的运动路径。</li><li><strong>姿态控制</strong>：<br>在很多应用中，机械臂不仅要到达某个目标位置，还需要具有特定的姿态（即末端执行器的方向）。正运动学能够帮助我们理解给定关节角度如何影响末端执行器的姿态，从而提供精确的姿态控制。</li><li><strong>仿真和调试</strong>：<br>正运动学是机械臂仿真和调试的基础。在设计和开发机械臂时，正运动学帮助我们预测机械臂的行为，确保关节的配置能在物理上有效地实现末端执行器的目标位置。</li></ol>
+        </div>
+      </div>
+    </div>
+
+<p>六自由度机械臂正向运动学（FK）公式推导，正向运动学（Forward Kinematics, FK）是指：<br><strong>已知</strong> 六自由度机械臂的 <strong>关节角度</strong>（Joint6D_t），<br><strong>求解</strong> 末端执行器（End-Effector）在基坐标系中的 <strong>位置和姿态</strong>（Pose6D_t）。</p>
+<p>我们使用 <strong>Denavit-Hartenberg (DH) 变换</strong> 建模机械臂运动，并推导出正向运动学公式。</p>
+<p>单个关节的 DH 变换。每个关节的变换矩阵由 <strong>Denavit-Hartenberg 公式</strong> 定义：</p>
+<p>$$<br>T_i &#x3D;<br>\begin{bmatrix}<br>\cos\theta_i &amp; -\cos\alpha_i \sin\theta_i &amp; \sin\alpha_i \sin\theta_i &amp; a_i \cos\theta_i \\<br>\sin\theta_i &amp; \cos\alpha_i \cos\theta_i &amp; -\sin\alpha_i \cos\theta_i &amp; a_i \sin\theta_i \\<br>0 &amp; \sin\alpha_i &amp; \cos\alpha_i &amp; d_i \\<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$ \theta_i $：关节变量（旋转角）</li>
+<li>$ d_i $：关节的平移偏移</li>
+<li>$ a_i $：连杆长度</li>
+<li>$ \alpha_i $：连杆扭转角</li>
+</ul>
+<p>6 自由度机械臂的<strong>总变换矩阵</strong>可以表示为：</p>
+<p>$$<br>T_{06} &#x3D; T_0^1 \cdot T_1^2 \cdot T_2^3 \cdot T_3^4 \cdot T_4^5 \cdot T_5^6<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>$ T_0^1 $ 表示从 <strong>基坐标系</strong> 到 <strong>关节 1</strong> 的变换矩阵</li>
+<li>$ T_1^2 $ 表示从 <strong>关节 1</strong> 到 <strong>关节 2</strong> 的变换矩阵</li>
+<li>……</li>
+<li>$ T_5^6 $ 表示从 <strong>关节 5</strong> 到 <strong>末端执行器</strong> 的变换矩阵</li>
+<li><strong>最终得到 $ T_{06} $ 即末端执行器相对于基坐标系的位姿矩阵</strong></li>
+</ul>
+<p><strong>变换矩阵 $ T_{06} $ 可以拆分成：</strong></p>
+<p>$$<br>T_{06} &#x3D;<br>\begin{bmatrix}<br>R_{06} &amp; P_{06} \\<br>0_{1 \times 3} &amp; 1<br>\end{bmatrix}<br>$$</p>
+<p>其中：</p>
+<ul>
+<li><strong>$ R_{06} $</strong> 是 <strong>旋转矩阵</strong>，描述 <strong>末端执行器的方向</strong></li>
+<li><strong>$ P_{06} $</strong> 是 <strong>位移向量</strong>，描述 <strong>末端执行器的位置</strong></li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-c246d749" role="button" aria-expanded="false" aria-controls="collapse-c246d749">
+        <div class="fold-arrow">▶</div>代码分析
+      </div>
+      <div class="fold-collapse collapse" id="collapse-c246d749">
+        <div class="fold-content">
+          <p><code>SolveFK</code> 函数实现了<strong>六自由度机械臂的正向运动学（Forward Kinematics, FK）计算</strong>，即从<strong>关节角度</strong>计算<strong>末端执行器的位置和方向</strong>。<br>分析如下：</p><p><strong>1. 代码核心逻辑</strong><br>该函数的主要任务是：</p><ol><li>转换输入关节角度（单位从度转为弧度，并加上 DH 参数中的 θ 偏移量）。</li><li>计算各个关节的旋转矩阵 R(i)（基于 DH 变换公式）。</li><li>逐步累乘旋转矩阵，计算从基座到末端执行器的旋转矩阵。</li><li>计算各个连杆在基坐标系下的位移（依次累加各关节的位移）。</li><li>计算最终的末端位姿（X, Y, Z, A, B, C），并存入 <code>_outputPose6D</code>。</li></ol><p>角度转换</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++)<br>    q_in[i] = _inputJoint6D.a[i] / RAD_TO_DEG;<br></code></pre></td></tr></table></figure><ul><li><code>q_in[i]</code>：从输入角度（单位：度）转换为弧度。</li></ul><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++)<br>&#123;<br>    q[i] = q_in[i] + DH_matrix[i][<span class="hljs-number">0</span>];  <span class="hljs-comment">// 加上DH参数中的θ偏移</span><br></code></pre></td></tr></table></figure><ul><li><code>q[i]</code>：加上 Denavit-Hartenberg (DH) 参数中的 θ 偏移量，得到<strong>真实关节角度</strong>。</li></ul><p>计算每个关节的旋转矩阵</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp">cosq = <span class="hljs-built_in">cosf</span>(q[i]);<br>sinq = <span class="hljs-built_in">sinf</span>(q[i]);<br>cosa = <span class="hljs-built_in">cosf</span>(DH_matrix[i][<span class="hljs-number">3</span>]);  <span class="hljs-comment">// DH参数中的alpha</span><br>sina = <span class="hljs-built_in">sinf</span>(DH_matrix[i][<span class="hljs-number">3</span>]);  <br></code></pre></td></tr></table></figure><ul><li><code>cosq, sinq</code> 计算的是关节角 <code>q[i]</code> 的余弦和正弦值。</li><li><code>cosa, sina</code> 计算的是 DH 参数中的 <strong>α（扭转角）</strong> 的余弦和正弦值。</li></ul><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp">R[i][<span class="hljs-number">0</span>] = cosq;<br>R[i][<span class="hljs-number">1</span>] = -cosa * sinq;<br>R[i][<span class="hljs-number">2</span>] = sina * sinq;<br>R[i][<span class="hljs-number">3</span>] = sinq;<br>R[i][<span class="hljs-number">4</span>] = cosa * cosq;<br>R[i][<span class="hljs-number">5</span>] = -sina * cosq;<br>R[i][<span class="hljs-number">6</span>] = <span class="hljs-number">0.0f</span>;<br>R[i][<span class="hljs-number">7</span>] = sina;<br>R[i][<span class="hljs-number">8</span>] = cosa;<br></code></pre></td></tr></table></figure><ul><li>计算每个关节的旋转矩阵 <code>R[i]</code>，用于后续矩阵相乘。</li></ul><p>计算总旋转矩阵</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">MatMultiply</span>(R[<span class="hljs-number">0</span>], R[<span class="hljs-number">1</span>], R02, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br><span class="hljs-built_in">MatMultiply</span>(R02, R[<span class="hljs-number">2</span>], R03, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br><span class="hljs-built_in">MatMultiply</span>(R03, R[<span class="hljs-number">3</span>], R04, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br><span class="hljs-built_in">MatMultiply</span>(R04, R[<span class="hljs-number">4</span>], R05, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br><span class="hljs-built_in">MatMultiply</span>(R05, R[<span class="hljs-number">5</span>], R06, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure><ul><li>依次相乘关节的旋转矩阵 <code>R[i]</code>，得到从 **基坐标系到末端执行器的旋转矩阵 <code>R06</code>**。</li></ul><p>计算各关节的位移</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">MatMultiply</span>(R[<span class="hljs-number">0</span>], L1_base, L0_bs, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br><span class="hljs-built_in">MatMultiply</span>(R02, L2_arm, L0_se, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br><span class="hljs-built_in">MatMultiply</span>(R03, L3_elbow, L0_ew, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br><span class="hljs-built_in">MatMultiply</span>(R06, L6_wrist, L0_wt, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure><ul><li>计算各个连杆的<strong>位置变换</strong>，将机械臂各部分的位移量转换到基坐标系中：<ul><li><code>L0_bs</code>：基座相对于基坐标系的偏移。</li><li><code>L0_se</code>：肩关节相对于基坐标系的偏移。</li><li><code>L0_ew</code>：肘关节相对于基坐标系的偏移。</li><li><code>L0_wt</code>：腕关节相对于基坐标系的偏移。</li></ul></li></ul><p>计算末端执行器的位置</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++)<br>    P06[i] = L0_bs[i] + L0_se[i] + L0_ew[i] + L0_wt[i];<br></code></pre></td></tr></table></figure><ul><li><code>P06[0]</code>、<code>P06[1]</code>、<code>P06[2]</code> 分别表示末端执行器在基坐标系中的 X、Y、Z 坐标。</li></ul><p>计算末端执行器的姿态</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">RotMatToEulerAngle</span>(R06, &amp;(P06[<span class="hljs-number">3</span>]));<br></code></pre></td></tr></table></figure><ul><li>通过 <code>RotMatToEulerAngle</code> 函数，把旋转矩阵 <code>R06</code> 转换为 <strong>欧拉角 (A, B, C)<strong>，表示</strong>末端的旋转角度</strong>。</li></ul><p>存储计算结果</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp">_outputPose6D.X = P06[<span class="hljs-number">0</span>];<br>_outputPose6D.Y = P06[<span class="hljs-number">1</span>];<br>_outputPose6D.Z = P06[<span class="hljs-number">2</span>];<br>_outputPose6D.A = P06[<span class="hljs-number">3</span>] * RAD_TO_DEG;<br>_outputPose6D.B = P06[<span class="hljs-number">4</span>] * RAD_TO_DEG;<br>_outputPose6D.C = P06[<span class="hljs-number">5</span>] * RAD_TO_DEG;<br><span class="hljs-built_in">memcpy</span>(_outputPose6D.R, R06, <span class="hljs-number">9</span> * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">float</span>));<br></code></pre></td></tr></table></figure><ul><li>计算的 <strong>X, Y, Z</strong> 位置赋值给 <code>_outputPose6D</code>。</li><li>计算的 <strong>A, B, C</strong> 角度转换回度数并存储。</li><li>旋转矩阵 <code>R06</code> 直接存入 <code>_outputPose6D.R</code>，可以用于更精确的姿态计算。</li></ul><p>返回计算成功</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span></span><br><span class="hljs-function"><span class="hljs-title">DOF6Kinematic::SolveFK</span><span class="hljs-params">(<span class="hljs-type">const</span> DOF6Kinematic::Joint6D_t &amp;_inputJoint6D, DOF6Kinematic::Pose6D_t &amp;_outputPose6D)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">float</span> q_in[<span class="hljs-number">6</span>];<br>    <span class="hljs-type">float</span> q[<span class="hljs-number">6</span>];<br>    <span class="hljs-type">float</span> cosq, sinq;<br>    <span class="hljs-type">float</span> cosa, sina;<br>    <span class="hljs-type">float</span> P06[<span class="hljs-number">6</span>];<br>    <span class="hljs-type">float</span> R06[<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> R[<span class="hljs-number">6</span>][<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> R02[<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> R03[<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> R04[<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> R05[<span class="hljs-number">9</span>];<br>    <span class="hljs-type">float</span> L0_bs[<span class="hljs-number">3</span>];<br>    <span class="hljs-type">float</span> L0_se[<span class="hljs-number">3</span>];<br>    <span class="hljs-type">float</span> L0_ew[<span class="hljs-number">3</span>];<br>    <span class="hljs-type">float</span> L0_wt[<span class="hljs-number">3</span>];<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++)<br>        q_in[i] = _inputJoint6D.a[i] / RAD_TO_DEG;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++)<br>    &#123;<br>        q[i] = q_in[i] + DH_matrix[i][<span class="hljs-number">0</span>];<br>        cosq = <span class="hljs-built_in">cosf</span>(q[i]);<br>        sinq = <span class="hljs-built_in">sinf</span>(q[i]);<br>        cosa = <span class="hljs-built_in">cosf</span>(DH_matrix[i][<span class="hljs-number">3</span>]);<br>        sina = <span class="hljs-built_in">sinf</span>(DH_matrix[i][<span class="hljs-number">3</span>]);<br><br>        R[i][<span class="hljs-number">0</span>] = cosq;<br>        R[i][<span class="hljs-number">1</span>] = -cosa * sinq;<br>        R[i][<span class="hljs-number">2</span>] = sina * sinq;<br>        R[i][<span class="hljs-number">3</span>] = sinq;<br>        R[i][<span class="hljs-number">4</span>] = cosa * cosq;<br>        R[i][<span class="hljs-number">5</span>] = -sina * cosq;<br>        R[i][<span class="hljs-number">6</span>] = <span class="hljs-number">0.0f</span>;<br>        R[i][<span class="hljs-number">7</span>] = sina;<br>        R[i][<span class="hljs-number">8</span>] = cosa;<br>    &#125;<br><br>    <span class="hljs-built_in">MatMultiply</span>(R[<span class="hljs-number">0</span>], R[<span class="hljs-number">1</span>], R02, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R02, R[<span class="hljs-number">2</span>], R03, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R03, R[<span class="hljs-number">3</span>], R04, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R04, R[<span class="hljs-number">4</span>], R05, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R05, R[<span class="hljs-number">5</span>], R06, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>);<br><br>    <span class="hljs-built_in">MatMultiply</span>(R[<span class="hljs-number">0</span>], L1_base, L0_bs, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R02, L2_arm, L0_se, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R03, L3_elbow, L0_ew, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br>    <span class="hljs-built_in">MatMultiply</span>(R06, L6_wrist, L0_wt, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++)<br>        P06[i] = L0_bs[i] + L0_se[i] + L0_ew[i] + L0_wt[i];<br><br>    <span class="hljs-built_in">RotMatToEulerAngle</span>(R06, &amp;(P06[<span class="hljs-number">3</span>]));<br><br>    _outputPose6D.X = P06[<span class="hljs-number">0</span>];<br>    _outputPose6D.Y = P06[<span class="hljs-number">1</span>];<br>    _outputPose6D.Z = P06[<span class="hljs-number">2</span>];<br>    _outputPose6D.A = P06[<span class="hljs-number">3</span>] * RAD_TO_DEG;<br>    _outputPose6D.B = P06[<span class="hljs-number">4</span>] * RAD_TO_DEG;<br>    _outputPose6D.C = P06[<span class="hljs-number">5</span>] * RAD_TO_DEG;<br>    <span class="hljs-built_in">memcpy</span>(_outputPose6D.R, R06, <span class="hljs-number">9</span> * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">float</span>));<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h3 id="逆向运动学"><a href="#逆向运动学" class="headerlink" title="逆向运动学"></a>逆向运动学</h3><p>代码见：<a href="https://github.com/peng-zhihui/Dummy-Robot/blob/main/2.Firmware/Core-STM32F4-fw/Robot/algorithms/kinematic/6dof_kinematic.cpp#L182">SolveIK</a></p>
+<p>逆运动学（Inverse Kinematics，IK）是机械臂控制中的一个关键问题，主要涉及如何根据机械臂末端执行器（例如，抓手、工具等）的目标位姿（位置和姿态）来计算各个关节的角度（或位置）。这种求解在机器人系统中具有非常重要的作用。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-c910a608" role="button" aria-expanded="false" aria-controls="collapse-c910a608">
+        <div class="fold-arrow">▶</div>IK 的重要性
+      </div>
+      <div class="fold-collapse collapse" id="collapse-c910a608">
+        <div class="fold-content">
+          <ul><li><strong>任务驱动控制</strong><br>机械臂的主要任务是完成各种复杂的动作和操作，如抓取物体、焊接、打磨、装配等。这些操作通常要求末端执行器到达特定的空间位置并具有特定的朝向。为了使机械臂能够完成这些任务，必须根据目标位置和姿态来计算相应的关节角度，从而实现预期的末端执行器运动。逆运动学正是解决这个问题的核心工具。通过逆运动学求解，我们可以从目标位置反推机械臂各个关节的角度，进而指引机械臂如何运动到目标点。</li><li><strong>灵活性和多样性</strong><br>机械臂通常具有多个关节，因此其工作空间（可达空间）非常复杂。逆运动学允许我们从目标点出发，探索所有可能的关节配置，从而为机器人提供多种可行的路径来实现目标。例如，对于一个三自由度的机械臂，可能存在多种不同的角度配置能够使末端执行器到达同一个位置和姿态。逆运动学的求解让机械臂能够根据不同的任务需求（如避免障碍物、优化路径、减少能耗等）选择最佳的关节配置。</li><li><strong>解决冗余自由度</strong><br>机械臂通常具有比末端执行器需求更多的自由度。例如，一个6自由度的机械臂可以到达目标点，但也可能有多种不同的关节配置可以实现这一目标。逆运动学可以帮助我们选择合适的关节角度来执行任务，而不仅仅是使末端执行器到达目标位置。通过逆运动学，我们不仅仅是在寻找一个解，而是考虑如何优化这些解，选择最适合任务的姿态。例如，避免机械臂与环境的碰撞、减少不必要的运动或者提高操作精度等。</li><li><strong>精确控制</strong><br>对于工业自动化、医疗机器人等高精度要求的应用，机械臂需要精确到达特定的目标位置和姿态。逆运动学提供了一种精确控制的方法，可以帮助系统从目标位置反向计算出精确的关节角度。在很多情况下，我们不能简单地控制每个关节的动作，而是必须通过末端执行器的精确控制来完成任务。逆运动学提供的关节角度求解对于确保任务执行的精度至关重要。</li><li><strong>机器人与环境的交互</strong><br>在复杂的环境中，机械臂不仅需要到达目标位置，还需要与环境进行交互，例如抓取物体、避开障碍物或与其他机器人协调。逆运动学求解可以帮助机械臂在考虑障碍物和环境限制的情况下找到合适的姿态和路径。例如，在机器人抓取物体时，除了目标位置外，机械臂还需要考虑物体的位置、姿态以及机器人和物体的接触方式。逆运动学在这种场景中非常重要，因为它可以提供多个可行解，从而确保机械臂能够适应不同的操作环境。</li><li><strong>简化运动规划</strong><br>逆运动学的求解是运动规划的前提。通过计算目标位姿的逆解，系统可以根据各个关节的角度来规划机械臂的运动轨迹。这样，机器人就可以从起始位置通过一系列平滑的运动（通过轨迹规划）到达目标位置。这种方法通过减少机器人操作的复杂度，帮助设计更简单且高效的运动路径。</li><li><strong>实时控制</strong><br>对于实时控制任务（如手术机器人、自动化生产线等），逆运动学是必要的。机械臂需要在有限的时间内快速响应并执行动作。通过逆运动学求解，可以在不需要依赖复杂的运动学建模和计算的情况下迅速计算出目标关节角度，达到实时控制的要求。</li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-ed118785" role="button" aria-expanded="false" aria-controls="collapse-ed118785">
+        <div class="fold-arrow">▶</div>IK 和 FK 对比
+      </div>
+      <div class="fold-collapse collapse" id="collapse-ed118785">
+        <div class="fold-content">
+          <table><thead><tr><th><strong>特性</strong></th><th><strong>正运动学 (Forward Kinematics)</strong></th><th><strong>逆运动学 (Inverse Kinematics)</strong></th></tr></thead><tbody><tr><td><strong>输入</strong></td><td>给定关节角度（或位置）</td><td>给定末端执行器的目标位置和姿态（目标位姿）</td></tr><tr><td><strong>输出</strong></td><td>计算末端执行器的位置和姿态</td><td>计算各个关节的角度（或位置），使末端执行器到达目标位置和姿态</td></tr><tr><td><strong>问题类型</strong></td><td>是一个直接问题，从已知的关节参数计算末端执行器的位置和姿态</td><td>是一个反问题，从已知的目标末端执行器位置推算出关节参数</td></tr><tr><td><strong>计算复杂度</strong></td><td>一般较为简单，计算量小，通常是通过几何或矩阵运算直接推导的</td><td>计算复杂，可能有多个解或者无解，需要考虑多种可能的配置</td></tr><tr><td><strong>解的唯一性</strong></td><td>一般有唯一解，给定关节角度，末端执行器的位姿是唯一的</td><td>可能有多个解，也可能没有解，取决于目标位置和机械臂的自由度</td></tr><tr><td><strong>适用场景</strong></td><td>适用于已知关节角度时的末端执行器定位、仿真、姿态控制等</td><td>适用于控制末端执行器到达目标位置时，计算所需的关节角度或配置</td></tr><tr><td><strong>精确度要求</strong></td><td>高精度的正运动学计算能提供精确的末端执行器位置和姿态</td><td>精确的逆运动学求解对于路径规划、避障和任务执行非常关键</td></tr><tr><td><strong>应用场景</strong></td><td>机器人控制、路径规划、姿态控制、仿真和调试</td><td>机器人任务规划、路径优化、冗余自由度求解、协作任务等</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+<p>代码分析略~</p>
+<h2 id="串口控制"><a href="#串口控制" class="headerlink" title="串口控制"></a>串口控制</h2><ul>
+<li>上位机代码见 CLiTools</li>
+<li>固件中的控制：MoveJ，MoveL 则是先求最优解再调用 MoveJ</li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-823f3cad" role="button" aria-expanded="false" aria-controls="collapse-823f3cad">
+        <div class="fold-arrow">▶</div>MoveJ / MoveL
+      </div>
+      <div class="fold-collapse collapse" id="collapse-823f3cad">
+        <div class="fold-content">
+          <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">DummyRobot::MoveJ</span><span class="hljs-params">(<span class="hljs-type">float</span> _j1, <span class="hljs-type">float</span> _j2, <span class="hljs-type">float</span> _j3, <span class="hljs-type">float</span> _j4, <span class="hljs-type">float</span> _j5, <span class="hljs-type">float</span> _j6)</span></span><br><span class="hljs-function"><span class="hljs-comment">//函数实现了控制虚拟机器人按指定关节角度移动的功能</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-function">DOF6Kinematic::Joint6D_t <span class="hljs-title">targetJointsTmp</span><span class="hljs-params">(_j1, _j2, _j3, _j4, _j5, _j6)</span></span>;<br>    <span class="hljs-type">bool</span> valid = <span class="hljs-literal">true</span>;<br>    <span class="hljs-comment">// 创建目标关节角度对象</span><br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">1</span>; j &lt;= <span class="hljs-number">6</span>; j++)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (targetJointsTmp.a[j - <span class="hljs-number">1</span>] &gt; motorJ[j]-&gt;angleLimitMax ||<br>            targetJointsTmp.a[j - <span class="hljs-number">1</span>] &lt; motorJ[j]-&gt;angleLimitMin)<br>            valid = <span class="hljs-literal">false</span>;<br>            <span class="hljs-comment">//[j - 1] 表示数组索引,将 j 转换为从0开始的索引</span><br>    &#125;<br>    <span class="hljs-comment">// 检查目标关节角度是否在限制范围内</span><br><br>    <span class="hljs-keyword">if</span> (valid)<br>    &#123;<br>        DOF6Kinematic::Joint6D_t deltaJoints = targetJointsTmp - currentJoints;<br>        <span class="hljs-type">uint8_t</span> index;<br>        <span class="hljs-type">float</span> maxAngle = <span class="hljs-built_in">AbsMaxOf6</span>(deltaJoints, index);<br>        <span class="hljs-type">float</span> time = maxAngle * (<span class="hljs-type">float</span>) (motorJ[index + <span class="hljs-number">1</span>]-&gt;reduction) / jointSpeed;<br>         <span class="hljs-comment">// 计算关节运动的角度差和最大角速度</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">1</span>; j &lt;= <span class="hljs-number">6</span>; j++)<br>        &#123;<br>            dynamicJointSpeeds.a[j - <span class="hljs-number">1</span>] =<br>                <span class="hljs-built_in">abs</span>(deltaJoints.a[j - <span class="hljs-number">1</span>] * (<span class="hljs-type">float</span>) (motorJ[j]-&gt;reduction) / time * <span class="hljs-number">0.1f</span>); <span class="hljs-comment">//0~10r/s</span><br>        &#125;<br><br>        jointsStateFlag = <span class="hljs-number">0</span>;<br>        targetJoints = targetJointsTmp;<br>        <span class="hljs-comment">// 根据角速度计算动态关节速度</span><br><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br><br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">DummyRobot::MoveL</span><span class="hljs-params">(<span class="hljs-type">float</span> _x, <span class="hljs-type">float</span> _y, <span class="hljs-type">float</span> _z, <span class="hljs-type">float</span> _a, <span class="hljs-type">float</span> _b, <span class="hljs-type">float</span> _c)</span></span><br><span class="hljs-function"><span class="hljs-comment">// 将机器人移动到指定的笛卡尔空间姿态</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-function">DOF6Kinematic::Pose6D_t <span class="hljs-title">pose6D</span><span class="hljs-params">(_x, _y, _z, _a, _b, _c)</span></span>;<br>      <span class="hljs-comment">// 步骤 1：准备目标笛卡尔姿态</span><br>    DOF6Kinematic::IKSolves_t ikSolves&#123;&#125;;<br>    DOF6Kinematic::Joint6D_t lastJoint6D&#123;&#125;;<br><br>    dof6Solver-&gt;<span class="hljs-built_in">SolveIK</span>(pose6D, lastJoint6D, ikSolves);<br>    <span class="hljs-comment">//步骤 2：计算逆运动学（IK）解</span><br><br>    <span class="hljs-type">bool</span> valid[<span class="hljs-number">8</span>];<br>    <span class="hljs-type">int</span> validCnt = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">8</span>; i++)<br>    &#123;<br>        valid[i] = <span class="hljs-literal">true</span>;<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">1</span>; j &lt;= <span class="hljs-number">6</span>; j++)<br>        &#123;<br>            <span class="hljs-keyword">if</span> (ikSolves.config[i].a[j - <span class="hljs-number">1</span>] &gt; motorJ[j]-&gt;angleLimitMax ||<br>                ikSolves.config[i].a[j - <span class="hljs-number">1</span>] &lt; motorJ[j]-&gt;angleLimitMin)<br>            &#123;<br>                valid[i] = <span class="hljs-literal">false</span>;<br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (valid[i]) validCnt++;<br>    &#125;<br>     <span class="hljs-comment">// 步骤 3：检查IK解的有效性</span><br><br>    <span class="hljs-keyword">if</span> (validCnt)<br>    &#123;<br>        <span class="hljs-type">float</span> min = <span class="hljs-number">1000</span>;<br>        <span class="hljs-type">uint8_t</span> indexConfig = <span class="hljs-number">0</span>, indexJoint = <span class="hljs-number">0</span>;<br>         <span class="hljs-comment">// 步骤 4：如果至少有一个有效的IK解，请选择最佳解并移动机器人</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">8</span>; i++)<br>        &#123;<br>            <span class="hljs-keyword">if</span> (valid[i])<br>            &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">6</span>; j++)<br>                    lastJoint6D.a[j] = ikSolves.config[i].a[j];<br>                DOF6Kinematic::Joint6D_t tmp = currentJoints - lastJoint6D;<br>                <span class="hljs-type">float</span> maxAngle = <span class="hljs-built_in">AbsMaxOf6</span>(tmp, indexJoint);<br>                <span class="hljs-keyword">if</span> (maxAngle &lt; min)<br>                &#123;<br>                    min = maxAngle;<br>                    indexConfig = i;<br>                &#125;<br>                <span class="hljs-comment">// 选择具有最小关节运动的IK解</span><br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">MoveJ</span>(ikSolves.config[indexConfig].a[<span class="hljs-number">0</span>], ikSolves.config[indexConfig].a[<span class="hljs-number">1</span>],<br>                     ikSolves.config[indexConfig].a[<span class="hljs-number">2</span>], ikSolves.config[indexConfig].a[<span class="hljs-number">3</span>],<br>                     ikSolves.config[indexConfig].a[<span class="hljs-number">4</span>], ikSolves.config[indexConfig].a[<span class="hljs-number">5</span>]);<br>    &#125;<br>     <span class="hljs-comment">// 将机器人移动到所选的IK解</span><br><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>      <span class="hljs-comment">// 未找到有效的IK解</span><br>&#125;<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<!-- 
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>详细内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>详细内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>详细内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d41d8cd9" role="button" aria-expanded="false" aria-controls="collapse-d41d8cd9">
+        <div class="fold-arrow">▶</div>详细内容
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d41d8cd9">
+        <div class="fold-content">
+          
+        </div>
+      </div>
+    </div> -->
+
+<h2 id="Mujoco-仿真"><a href="#Mujoco-仿真" class="headerlink" title="Mujoco 仿真"></a>Mujoco 仿真</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 需要安装 mujoco 可执行文件</span><br>wget https://github.com/google-deepmind/mujoco/releases/download/3.3.2/mujoco-3.3.2-linux-x86_64.tar.gz<br>tar xvf mujoco-3.3.2-linux-x86_64.tar.gz<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/opt/mujoco-3.3.2/bin<br><br>git <span class="hljs-built_in">clone</span> https://gitee.com/switchpi/dummy2.git<br><span class="hljs-built_in">cd</span> dummy2/simulation/dummy2/<br><span class="hljs-built_in">mv</span> meshes/* .<br><span class="hljs-comment"># 这里替换 dummy2.urdf 中的 ixx = 0 的那行</span><br>&lt;<span class="hljs-built_in">link</span> name=<span class="hljs-string">&quot;camera_eye_1&quot;</span>&gt;<br>    &lt;inertial&gt;<br>      &lt;origin rpy=<span class="hljs-string">&quot;0 0 0&quot;</span> xyz=<span class="hljs-string">&quot;1.02692821055822e-07 0.0009995702973704668 -4.1596486705097746e-07&quot;</span>/&gt;<br>      &lt;mass value=<span class="hljs-string">&quot;0.00124924067072073&quot;</span>/&gt;<br>      &lt;!-- &lt;inertia ixx=<span class="hljs-string">&quot;0.0&quot;</span> ixy=<span class="hljs-string">&quot;-0.0&quot;</span> ixz=<span class="hljs-string">&quot;-0.0&quot;</span> iyy=<span class="hljs-string">&quot;0.0&quot;</span> iyz=<span class="hljs-string">&quot;-0.0&quot;</span> izz=<span class="hljs-string">&quot;0.0&quot;</span>/&gt; --&gt;<br>      &lt;inertia ixx=<span class="hljs-string">&quot;1e-5&quot;</span> ixy=<span class="hljs-string">&quot;0&quot;</span> ixz=<span class="hljs-string">&quot;0&quot;</span> iyy=<span class="hljs-string">&quot;1e-5&quot;</span> iyz=<span class="hljs-string">&quot;0&quot;</span> izz=<span class="hljs-string">&quot;1e-5&quot;</span>/&gt;<br>    &lt;/inertial&gt;<br>...<br><br>compile dummy2.urdf scene.xml<br>python3 -m mujoco.viewer --mjcf=scene.xml<br></code></pre></td></tr></table></figure>
+
+<p>效果图</p>
+<p><img src="/img/ai/dummy/mujoco.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Robot/" class="category-chain-item">Robot</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/Robot/" class="print-no-link">#Robot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/22/AI/robot/" title="Jetson ROS2 组件调试">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Jetson ROS2 组件调试</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/18/AI/esp32-assistant/" title="ESP32 语音助手">
+                        <span class="hidden-mobile">ESP32 语音助手</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

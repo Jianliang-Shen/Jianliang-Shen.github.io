@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ESP32S3 Box 提供了 chatgpt 的 demo。因为访问不了的原因，打算改来做一个本地化部署的专用语音助手。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ESP32 语音助手">
+<meta property="og:url" content="http://yoursite.com/2024/09/18/AI/esp32-assistant/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="ESP32S3 Box 提供了 chatgpt 的 demo。因为访问不了的原因，打算改来做一个本地化部署的专用语音助手。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/esp32/index.jpg">
+<meta property="article:published_time" content="2024-09-18T23:02:39.000Z">
+<meta property="article:modified_time" content="2025-07-31T02:42:23.389Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="AIoT">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="TTS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/esp32/index.jpg">
+  
+  
+  
+  <title>ESP32 语音助手 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><script src="/assets/js/DPlayer.min.js"></script></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_2.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ESP32 语音助手"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-18 23:02" pubdate>
+          2024年9月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ESP32 语音助手</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>ESP32S3 Box 提供了 chatgpt 的 demo。因为访问不了的原因，打算改来做一个本地化部署的专用语音助手。</p>
+<span id="more"></span>
+
+<div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"theme":"#FADFA3","loop":true,"lang":"zh-cn","screenshot":true,"hotkey":true,"preload":"auto","volume":0.9,"mutex":true,"video":{"url":"/img/esp32/esp.mp4","pic":"/img/esp32/esp.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+<p>前置条件：</p>
+<ul>
+<li>&gt;&#x3D;12GB显存的显卡</li>
+<li>ESP32S3-Box</li>
+</ul>
+<h1 id="语音助手"><a href="#语音助手" class="headerlink" title="语音助手"></a>语音助手</h1><p><img src="/img/esp32/design.png" srcset="/img/loading.gif" lazyload alt="组成"></p>
+<p>Roadmap:</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 更改demo中的默认界面语言，并且删除与OpenAI相关的代码实现</li>
+<li><input checked="" disabled="" type="checkbox"> 更新demo的默认语音</li>
+<li><input disabled="" type="checkbox"> 更新语音唤醒的提示词</li>
+<li><input checked="" disabled="" type="checkbox"> 写一个python上位机服务器，接受ESP32的请求，处理完数据后<ul>
+<li><input checked="" disabled="" type="checkbox"> 接收ESP的音频</li>
+<li><input checked="" disabled="" type="checkbox"> 下发语音识别结果，即第一串字符</li>
+<li><input checked="" disabled="" type="checkbox"> 下发ollama生成的结果，即第二串字符</li>
+<li><input checked="" disabled="" type="checkbox"> 下发语音生成的结果，即第三段数据</li>
+<li><input checked="" disabled="" type="checkbox"> ESP继续超时等待结果，收到后，播放声音</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> 模型微调</li>
+<li><input disabled="" type="checkbox"> <a href="https://chatgptcn.readthedocs.io/zh-cn/latest/prompt/system_prompt_cn/">提示词</a></li>
+<li><input disabled="" type="checkbox"> 语音clone</li>
+<li><input disabled="" type="checkbox"> 查看B站的开源示例，寻找降低延迟的手段</li>
+</ul>
+<h2 id="调试步骤"><a href="#调试步骤" class="headerlink" title="调试步骤"></a>调试步骤</h2><ul>
+<li><p>Windows 运行 Docker Desktop</p>
+</li>
+<li><p>WSL 中打开 FunASR docker，参考：<a href="https://www.tech-odyssey.cn/2024/09/17/AI/voice-assistant/#FunASR">准备FunASR</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> bash work/funasr/funasr-runtime-deploy-online-cpu-zh.sh restart<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>Powershell 打开Ollama server，设置支持局域网模式</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">[Environment]::SetEnvironmentVariable(<span class="hljs-string">&#x27;OLLAMA_HOST&#x27;</span>, <span class="hljs-string">&#x27;0.0.0.0:11434&#x27;</span>, <span class="hljs-string">&#x27;Process&#x27;</span>)<br>[Environment]::SetEnvironmentVariable(<span class="hljs-string">&#x27;OLLAMA_ORIGINS&#x27;</span>, <span class="hljs-string">&#x27;*&#x27;</span>, <span class="hljs-string">&#x27;Process&#x27;</span>)<br>ollama serve<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>Windows 运行cosyvoice docker，在 Docker Desktop 中直接运行。参考：<a href="https://www.tech-odyssey.cn/2024/09/17/AI/voice-assistant/#Cosyvoice-Docker">Cosyvoice docker</a></p>
+</li>
+<li><p>如果是 wsl 开发的 esp，则需要管理员模式打开powershell，绑定 ESP-IDF 串口，再进行下载</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">usbipd attach --wsl --busid=1-1<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>运行 server.py 脚本</p>
+<ul>
+<li>windows 需要下载 ffmpeg，并在环境变量中添加 bin 的路径</li>
+<li>安装一些脚本需要的依赖</li>
+</ul>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install numpy websockets requests torchaudio ollama simpleaudio python-ffmpeg soundfile ffmpeg ffmpeg-python<br>python server.py<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>下载烧录，编译参考 <a href="#%E7%BC%96%E8%AF%91-esp-assistant">编译 esp assistant</a></p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># WSL下需要使能idf环境</span><br><span class="hljs-comment"># get_idf</span><br>idf.py -p /dev/ttyACM0 flash monitor<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><div class="note note-danger">
+            <ul><li><p><strong>chatgpt demo 连接不上wifi</strong>：点击进入返回出厂设置，这时候电脑显示连上了U盘，更改文件中的 wifi 设置即可</p></li><li><p><strong>进入工厂模式后无法烧写</strong>：按住boot键，松了按reset键，可以恢复烧写</p></li><li><p><strong>在WSL2中，server.py 脚本无法被ESP访问端口</strong>：通过转发端口方式，实际操作总是有问题。解决方法是把 server agent 放 windows 端，带来了下面的问题。</p></li><li><p><strong>server.py 脚本无法访问 Ollama server</strong>：把 VPN 关了。</p></li><li><p><strong>WSL2部署的 cosyvoice server 无法访问</strong>：创建 cosyvoice fastapi docker 容器，先提前下载一个镜像</p> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker pull pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime<br></code></pre></td></tr></table></figure><p> 按照官方教程编译fasapi container。</p></li><li><p><strong>cosyvoice fasapi container 无法外部访问</strong>：需要将cosyvoice fastapi docker的ip设为0.0.0.0，以让host能够访问，需要下载一个vim，然后更改 fastapi 路径下的 server.py 里的 ip</p></li><li><p><strong>cosyvoice fastapi container 运行报错</strong>，显示为：CUFFT_INTERNAL_ERROR</p><ul><li><a href="https://forums.developer.nvidia.com/t/bug-ubuntu-on-wsl2-rtx4090-related-cufft-runtime-error/230883/5">Bug: Ubuntu on WSL2 - RTX4090 related cuFFT runtime error</a></li><li><a href="https://github.com/pytorch/pytorch/issues/88038">CUFFT_INTERNAL_ERROR on RTX 4090</a></li></ul><p>解决：到 cosyvoice 给的 docker container里，卸载掉 11.7 的 pytorch cuda：</p> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip uninstall torch torchaudio<br>pip install torch==2.0.1 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118<br></code></pre></td></tr></table></figure></li><li><p><strong>Windows Server 保存音频，save 时无法保存音频</strong>。在wsl2的客户端保存音频没问题</p> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">raise RuntimeError(f<span class="hljs-string">&quot;Couldn&#x27;t find appropriate backend to handle uri &#123;uri&#125; and format &#123;format&#125;.&quot;</span>)<br>RuntimeError: Couldn<span class="hljs-string">&#x27;t find appropriate backend to handle uri tmp.wav and format None.</span><br></code></pre></td></tr></table></figure><p> 在 save 时无法保存音频。解决，安装后端，并且不要使用windows conda，导致 pip 包混乱。</p> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip3 install ffmpeg soundfile<br></code></pre></td></tr></table></figure></li><li><p><strong>生成的音频转码至 mp3 下载到内存中无法播放</strong>：改用 wav 写入spiffs文件系统中，再调用播放的接口。</p></li><li><p><strong>wav 播放诡异</strong>：采样率不对，按照代码中设置的，在host端调用ffmpeg先调整一下采样率和比特率。</p></li><li><p><strong>ESP32 只能录音一部分，后面会丢失</strong>：TODO</p></li><li><p><strong>wav 文件下载太慢，文件IO操作次数太多，文件碎片严重</strong>：将文件压缩为 mp3，统一下载到内存后，写入文件系统，再进行播放。</p></li></ul>
+          </div>
+
+<h1 id="详细记录"><a href="#详细记录" class="headerlink" title="详细记录"></a>详细记录</h1><p>推荐使用 Windows 版本的 ESP-IDF。</p>
+<h2 id="Windows-安装-ESP-IDF"><a href="#Windows-安装-ESP-IDF" class="headerlink" title="Windows 安装 ESP-IDF"></a>Windows 安装 ESP-IDF</h2><p><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/release-v5.1/esp32s3/get-started/windows-setup.html">Windows 安装教程</a>下载<a href="https://dl.espressif.cn/dl/idf-installer/esp-idf-tools-setup-offline-5.3.1.exe">release版本</a>的离线安装包就好了，然后进入powershell。Windows Terminal 也会创建 ESP-IDF 的页面。</p>
+<h3 id="编译-esp-assistant"><a href="#编译-esp-assistant" class="headerlink" title="编译 esp assistant"></a>编译 esp assistant</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:Jianliang-Shen/ESP_Assistant.git<br><br><span class="hljs-comment"># 一些通用的例程要设置目标开发板</span><br><span class="hljs-comment"># idf.py set-target esp32s3</span><br><br><span class="hljs-built_in">cd</span> ESP_Assistant/factory_nvs<br>idf.py menuconfig<br>idf.py build<br><br><span class="hljs-built_in">cd</span> ..<br>idf.py build<br><br>idf.py -p COM3 flash monitor<br></code></pre></td></tr></table></figure>
+
+<h2 id="WSL-安装-ESP-IDF"><a href="#WSL-安装-ESP-IDF" class="headerlink" title="WSL 安装 ESP-IDF"></a>WSL 安装 ESP-IDF</h2><p>不推荐使用WSL，各种大麻烦小麻烦。</p>
+<h3 id="配置-IDF"><a href="#配置-IDF" class="headerlink" title="配置 IDF"></a>配置 IDF</h3><p>在linux环境中手动安装最新版本的 ESP-IDF：</p>
+<ul>
+<li><a href="https://docs.espressif.com/projects/esp-idf/zh_CN/v5.3.1/esp32s3/get-started/linux-macos-setup.html">Linux 和 macOS 平台工具链的标准设置</a></li>
+<li><a href="https://github.com/espressif/esp-box/tree/master/examples/chatgpt_demo">ChatGPT Example</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0<br><br>git <span class="hljs-built_in">clone</span> git@github.com:espressif/esp-idf.git<br><span class="hljs-built_in">cd</span> esp-idf/<br><br><span class="hljs-built_in">export</span> IDF_GITHUB_ASSETS=<span class="hljs-string">&quot;dl.espressif.cn/github_assets&quot;</span><br>./install.sh esp32s3<br><br><span class="hljs-comment"># 完成后配置shell环境</span><br>. ./export.sh<br></code></pre></td></tr></table></figure>
+
+<div class="note note-primary">
+            <p>卡住哪个压缩包下载不下来，就到网页中手动下载，然后它会创建python虚拟环境，到idf-tool.py中找到pip下载的部分，在后面加上<code>-i https://mirrors.aliyun.com/pypi/simple/</code>以加快速度</p>
+          </div>
+
+<p>设置环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.bashrc<br><span class="hljs-built_in">alias</span> get_idf=<span class="hljs-string">&#x27;. $HOME/esp/esp-idf/export.sh&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>使用<code>get_idf</code>进入python虚拟环境</p>
+<h3 id="编译-chatgpt-demo"><a href="#编译-chatgpt-demo" class="headerlink" title="编译 chatgpt demo"></a>编译 chatgpt demo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:espressif/esp-box.git<br><span class="hljs-built_in">cd</span> examples/chatgpt_demo/factory_nvs<br>idf.py menuconfig<br></code></pre></td></tr></table></figure>
+
+<p>这里设置一下wifi和openAI密钥等信息：</p>
+<p><img src="/img/esp32/wifi.png" srcset="/img/loading.gif" lazyload alt="WIFI"></p>
+<p>OpenAI Key：<a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></p>
+<p><img src="/img/esp32/openai.png" srcset="/img/loading.gif" lazyload alt="OpenAI key"></p>
+<div class="note note-primary">
+            <p>这里它会手动为IDF-ESP下载submodule，时间比较长，尤其会卡在esp_wifi包，如果卡住了，ctrl-C后继续，它会跳过这个包的更新去继续下载，然后进入menuconfig，但是最后编译的时候会报错，因为找不到库</p><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs txt">ninja: error: &#x27;/esp-idf/components/esp_wifi/lib/esp32s3/libcore.a&#x27;, needed by &#x27;factory_nvs.elf&#x27;, missing and no known rule to make it<br>ninja failed with exit code 1, output of the command is in the work/esp-box/examples/chatgpt_demo/factory_nvs/build/log/idf_py_stderr_output_18950 and /work/esp-box/examples/chatgpt_demo/factory_nvs/build/log/idf_py_stdout_output_18950<br></code></pre></td></tr></table></figure><p>到esp-idf&#x2F;components&#x2F;esp_wifi目录下，删除里面所有文件后通过git checkout 将文件还原，可以解决上述这个问题。</p><p>也有可能是网好了给我下载下来了，总之，祈祷网是好的。</p>
+          </div>
+
+<p>完成后，开始build</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">idf.py build<br></code></pre></td></tr></table></figure>
+
+<p>编译chatgpt-demo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> examples/chatgpt_demo/<br>idf.py menuconfig<br>idf.py build<br></code></pre></td></tr></table></figure>
+
+<h3 id="串口映射"><a href="#串口映射" class="headerlink" title="串口映射"></a>串口映射</h3><p>参考：<a href="https://blog.csdn.net/weixin_42670590/article/details/137893045">wsl2中访问windows上的串口</a>。windows下载安装：<a href="https://github.com/dorssel/usbipd-win/releases/tag/v4.3.0">usbipd-win</a></p>
+<p>在WSL中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install linux-tools-5.4.0-77-generic hwdata<br><span class="hljs-built_in">sudo</span> update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20<br></code></pre></td></tr></table></figure>
+
+<p>管理员模式下打开Powershell：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ usbipd list<br>Connected:<br>BUSID  VID:PID    DEVICE                                                        STATE<br>1-1    303a:1001  USB 串行设备 (COM7), USB JTAG/serial debug unit                Not shared<br><br>Persisted:<br>GUID                                  DEVICE<br>$ usbipd <span class="hljs-built_in">bind</span> --busid 1-1<br>$ usbipd attach --wsl --busid=1-1<br>$ usbipd: info: Using WSL distribution <span class="hljs-string">&#x27;Ubuntu-20.04&#x27;</span> to attach; the device will be available <span class="hljs-keyword">in</span> all WSL 2 distributions.<br>usbipd: info: Using IP address 172.18.128.1 to reach the host.<br></code></pre></td></tr></table></figure>
+
+<p>WSL中，找到TTY：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">ls</span> /dev/tty*<br>/dev/ttyACM0<br></code></pre></td></tr></table></figure>
+
+<h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">idf.py -p /dev/ttyACM0 flash<br></code></pre></td></tr></table></figure>
+
+<p>烧写不进去，按住BOOT，再按reset，等待串口烧录。找不到串口时，在powershell重复上述的操作。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/AIoT/" class="print-no-link">#AIoT</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/TTS/" class="print-no-link">#TTS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/01/AI/Dummy/" title="Dummy-Robot">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Dummy-Robot</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/17/AI/voice-assistant/" title="A Local AI Assistant like Siri">
+                        <span class="hidden-mobile">A Local AI Assistant like Siri</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,1000 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Yanjing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="记录在 Jetson Orin Nano Super 开发板的机器人组件环境配置测试、学习资料。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetson ROS2 组件调试">
+<meta property="og:url" content="http://yoursite.com/2025/04/22/AI/robot/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="记录在 Jetson Orin Nano Super 开发板的机器人组件环境配置测试、学习资料。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/ai/robot/index.png">
+<meta property="article:published_time" content="2025-04-22T16:20:00.000Z">
+<meta property="article:modified_time" content="2025-07-31T02:42:23.389Z">
+<meta property="article:author" content="Yanjing">
+<meta property="article:tag" content="Robot">
+<meta property="article:tag" content="Moveit2">
+<meta property="article:tag" content="ROS2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/ai/robot/index.png">
+  
+  
+  
+  <title>Jetson ROS2 组件调试 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><script src="/assets/js/DPlayer.min.js"></script></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_2.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jetson ROS2 组件调试"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-22 16:20" pubdate>
+          2025年4月22日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Jetson ROS2 组件调试</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>记录在 Jetson Orin Nano Super 开发板的机器人组件环境配置测试、学习资料。</p>
+<span id="more"></span>
+<h2 id="开源项目资料"><a href="#开源项目资料" class="headerlink" title="开源项目资料"></a>开源项目资料</h2><ul>
+<li><a href="https://github.com/mgonzs13/yolo_ros">Ultralytics YOLOv8, YOLOv9, YOLOv10, YOLOv11, YOLOv12 for ROS 2</a></li>
+<li><a href="https://docs.ultralytics.com/guides/ros-quickstart/">ROS (Robot Operating System) quickstart guide</a></li>
+<li><a href="https://blog.csdn.net/weixin_47640199/article/details/139041042">ROS2深度相机的识别物体并得到三维坐标（二）</a></li>
+<li><a href="https://fishros.org.cn/forum/topic/2705/%E7%94%A8%E6%A0%91%E8%8E%93%E6%B4%BE4b-%E9%B1%BC%E9%A6%99%E5%B0%8F%E8%BD%A6%E4%B8%BB%E6%8E%A7-%E9%9B%B7%E8%BE%BE-%E5%A5%A5%E6%AF%94%E4%B8%AD%E5%85%89%E6%B7%B1%E5%BA%A6%E6%91%84%E5%83%8F%E5%A4%B4-ubuntu22%E6%A1%8C%E9%9D%A2%E7%89%88%E6%90%AD%E5%BB%BA%E7%A7%BB%E5%8A%A8%E5%B0%8F%E8%BD%A6">用树莓派4b+鱼香小车主控+雷达+奥比中光深度摄像头+ubuntu22桌面版搭建移动小车</a></li>
+</ul>
+<h2 id="刷机"><a href="#刷机" class="headerlink" title="刷机"></a>刷机</h2><p>官方板使用的是 SD card。</p>
+<ul>
+<li>bios 固件，这里借用亚博智能的方案刷 6.x 的firmware：<a href="https://www.yahboom.com/build.html?id=12375&cid=694">07.烧录SUPER引导（官方套件必看）</a></li>
+<li>制作 SD card 系统，这里参考官方的方案：<a href="https://developer.nvidia.com/embedded/learn/get-started-jetson-orin-nano-devkit#write">Write Image to the microSD Card</a></li>
+</ul>
+<p>命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 解压下载的镜像</span><br><span class="hljs-built_in">cd</span> jp62-orin-nano-sd-card-image/<br>dmesg | <span class="hljs-built_in">tail</span> | awk <span class="hljs-string">&#x27;$3 == &quot;sd&quot; &#123;print&#125;&#x27;</span><br><span class="hljs-built_in">sudo</span> /bin/dd <span class="hljs-keyword">if</span>=sd-blob.img of=/dev/sdc bs=1M status=progress<br></code></pre></td></tr></table></figure>
+
+<h3 id="安装-jtop"><a href="#安装-jtop" class="headerlink" title="安装 jtop"></a>安装 jtop</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install python3-pip -y<br><span class="hljs-built_in">sudo</span> pip3 install -U jetson-stats<br><span class="hljs-built_in">sudo</span> systemctl restart jtop.service<br>jtop<br></code></pre></td></tr></table></figure>
+
+<h2 id="目标识别组件"><a href="#目标识别组件" class="headerlink" title="目标识别组件"></a>目标识别组件</h2><p>参考: <a href="https://www.yahboom.com/build.html?id=12419&cid=694">YOLO环境搭建</a></p>
+<blockquote>
+<ul>
+<li>遇到网络问题就在主机上下载好传到设备上手动下载。Github无法链接就下载zip包。</li>
+<li>注意 torch 一定要支持 cuda</li>
+<li>注意安装 GStreamer 和重新安装 OpenCV 需要的时间较久，可以提前下载好 opencv 4.10 的包</li>
+</ul>
+</blockquote>
+<h3 id="测试-yolo11"><a href="#测试-yolo11" class="headerlink" title="测试 yolo11"></a>测试 yolo11</h3><p>参考：<a href="https://www.yahboom.com/build.html?id=12420&cid=694">Yolo CLI使用</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~/software/ultralytics/ultralytics/<br>yolo predict model=yolo11n <span class="hljs-built_in">source</span>=<span class="hljs-string">&#x27;/home/sjl/software/ultralytics/ultralytics/assets&#x27;</span><br><br><span class="hljs-comment"># 重启一下机器加载 USB Camera 驱动</span><br>yolo predict model=yolo11n.pt <span class="hljs-built_in">source</span>=0 save=False show<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用-tensorRT-加速"><a href="#使用-tensorRT-加速" class="headerlink" title="使用 tensorRT 加速"></a>使用 tensorRT 加速</h3><p>安装 onnxslim：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> pip3 install onnxslim -i https://mirrors.aliyun.com/pypi/simple/<br></code></pre></td></tr></table></figure>
+
+<p>代码：</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-984c6452" role="button" aria-expanded="false" aria-controls="collapse-984c6452">
+        <div class="fold-arrow">▶</div>test_usb_camera_opt.py
+      </div>
+      <div class="fold-collapse collapse" id="collapse-984c6452">
+        <div class="fold-content">
+          <ul><li>可以保存 tensorrt 模型，使用 int8 量化<ul><li>第一运行会下载coco数据集并进行校准，时间较长</li></ul></li><li>修改了相机输入的格式，以满足 30 fps</li><li>画面可以缩放</li><li>左上角显示帧数</li></ul><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> cv2<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> ultralytics <span class="hljs-keyword">import</span> YOLO<br><br><span class="hljs-comment"># Paths</span><br>onnx_model_path = <span class="hljs-string">&quot;/home/sjl/software/ultralytics/ultralytics/yolo11n.pt&quot;</span><br>engine_model_path = <span class="hljs-string">&quot;yolo11n.engine&quot;</span><br>output_path = <span class="hljs-string">&quot;/home/sjl/software/ultralytics/ultralytics/output/01.detection_camera_usb.mp4&quot;</span><br><br><span class="hljs-comment"># Load or export TensorRT engine</span><br><span class="hljs-keyword">if</span> os.path.exists(engine_model_path):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Loading existing TensorRT engine...&quot;</span>)<br>    model = YOLO(engine_model_path)<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Exporting TensorRT engine from ONNX...&quot;</span>)<br>    initial_model = YOLO(onnx_model_path)<br>    initial_model.export(<span class="hljs-built_in">format</span>=<span class="hljs-string">&quot;engine&quot;</span>, int8=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># optimize=True可以加速推理</span><br>    model = YOLO(engine_model_path)<br><br><span class="hljs-comment"># Open the camera</span><br>cap = cv2.VideoCapture(<span class="hljs-number">0</span>)<br><br><span class="hljs-comment"># 设置采集格式为MJPG压缩格式，才能拿到30fps</span><br>cap.<span class="hljs-built_in">set</span>(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*<span class="hljs-string">&quot;MJPG&quot;</span>))<br><br><span class="hljs-comment"># Set initial camera resolution (optional)</span><br>cap.<span class="hljs-built_in">set</span>(cv2.CAP_PROP_FRAME_WIDTH, <span class="hljs-number">640</span>)<br>cap.<span class="hljs-built_in">set</span>(cv2.CAP_PROP_FRAME_HEIGHT, <span class="hljs-number">480</span>)<br><br><span class="hljs-comment"># （可选）设置帧率30</span><br>cap.<span class="hljs-built_in">set</span>(cv2.CAP_PROP_FPS, <span class="hljs-number">30</span>)<br><br><span class="hljs-comment"># Get frame size and fps</span><br>frame_width = <span class="hljs-built_in">int</span>(cap.get(cv2.CAP_PROP_FRAME_WIDTH))<br>frame_height = <span class="hljs-built_in">int</span>(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))<br>fps = cap.get(cv2.CAP_PROP_FPS)<br><span class="hljs-keyword">if</span> fps == <span class="hljs-number">0</span>:  <span class="hljs-comment"># 有些摄像头返回fps=0，这时手动设一个默认值</span><br>    fps = <span class="hljs-number">30</span><br><br><span class="hljs-comment"># Create output video writer</span><br>fourcc = cv2.VideoWriter_fourcc(*<span class="hljs-string">&#x27;mp4v&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;frame_width = &#123;&#125;, frame_height = &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(frame_width, frame_height))<br>out = cv2.VideoWriter(output_path, fourcc, fps, (<span class="hljs-number">640</span>, <span class="hljs-number">480</span>))<br><br><span class="hljs-comment"># Create named window that is resizable</span><br>cv2.namedWindow(<span class="hljs-string">&quot;YOLO Inference&quot;</span>, cv2.WINDOW_NORMAL)<br><br><span class="hljs-comment"># Variables for FPS calculation</span><br>prev_time = time.time()<br><br><span class="hljs-comment"># Loop through frames</span><br><span class="hljs-keyword">while</span> cap.isOpened():<br>    success, frame = cap.read()<br>    <span class="hljs-comment"># frame = cv2.resize(frame, (160, 96))</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> success:<br>        <span class="hljs-keyword">break</span><br><br>    results = model(frame)<br><br>    <span class="hljs-comment"># Draw detections</span><br>    annotated_frame = results[<span class="hljs-number">0</span>].plot()<br><br>    <span class="hljs-comment"># Calculate FPS</span><br>    current_time = time.time()<br>    fps_display = <span class="hljs-number">1</span> / (current_time - prev_time)<br>    prev_time = current_time<br><br>    <span class="hljs-comment"># Draw FPS on the frame</span><br>    fps_text = <span class="hljs-string">f&quot;FPS: <span class="hljs-subst">&#123;fps_display:<span class="hljs-number">.2</span>f&#125;</span>&quot;</span><br>    cv2.putText(annotated_frame, fps_text, (<span class="hljs-number">10</span>, <span class="hljs-number">30</span>), <br>                cv2.FONT_HERSHEY_SIMPLEX, <span class="hljs-number">1</span>, (<span class="hljs-number">0</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0</span>), <span class="hljs-number">2</span>)<br><br>    <span class="hljs-comment"># Write and show</span><br>    out.write(annotated_frame)<br>    cv2.imshow(<span class="hljs-string">&quot;YOLO Inference&quot;</span>, annotated_frame)<br><br>    <span class="hljs-comment"># Press &#x27;q&#x27; to exit</span><br>    <span class="hljs-keyword">if</span> cv2.waitKey(<span class="hljs-number">1</span>) &amp; <span class="hljs-number">0xFF</span> == <span class="hljs-built_in">ord</span>(<span class="hljs-string">&quot;q&quot;</span>):<br>        <span class="hljs-keyword">break</span><br><br><span class="hljs-comment"># Cleanup</span><br>cap.release()<br>out.release()<br>cv2.destroyAllWindows()<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-7060f2ac" role="button" aria-expanded="false" aria-controls="collapse-7060f2ac">
+        <div class="fold-arrow">▶</div>查看格式和测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-7060f2ac">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看格式</span><br>sjl@sjl-desktop:~$ v4l2-ctl --list-formats-ext -d /dev/video0<br>ioctl: VIDIOC_ENUM_FMT<br>        Type: Video Capture<br><br>        [0]: <span class="hljs-string">&#x27;MJPG&#x27;</span> (Motion-JPEG, compressed)<br>                Size: Discrete 1920x1080<br>                        Interval: Discrete 0.033s (30.000 fps)<br>                Size: Discrete 1280x720<br>                        Interval: Discrete 0.033s (30.000 fps)<br>                Size: Discrete 640x480<br>                        Interval: Discrete 0.033s (30.000 fps)<br>        [1]: <span class="hljs-string">&#x27;YUYV&#x27;</span> (YUYV 4:2:2)<br>                Size: Discrete 1920x1080<br>                        Interval: Discrete 0.200s (5.000 fps)<br>                Size: Discrete 1280x720<br>                        Interval: Discrete 0.100s (10.000 fps)<br>                Size: Discrete 640x480<br>                        Interval: Discrete 0.033s (30.000 fps)<br><br><span class="hljs-built_in">sudo</span> python3 test_usb_camera_opt.py<br></code></pre></td></tr></table></figure><p><img src="/img/ai/robot/yolo_cam.png" srcset="/img/loading.gif" lazyload></p>
+        </div>
+      </div>
+    </div>
+
+<h2 id="ROS2"><a href="#ROS2" class="headerlink" title="ROS2"></a>ROS2</h2>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-a1546a8d" role="button" aria-expanded="false" aria-controls="collapse-a1546a8d">
+        <div class="fold-arrow">▶</div>官方 ROS2 安装指南（不推荐）
+      </div>
+      <div class="fold-collapse collapse" id="collapse-a1546a8d">
+        <div class="fold-content">
+          <p>参考：<a href="https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html">ROS 2 安装指南</a></p><p>注意这一步：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o \<br>     /usr/share/keyrings/ros-archive-keyring.gpg<br></code></pre></td></tr></table></figure><p>如果网络不好，就下载 ros.key 传进设备。然后</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mv</span> ros.key /usr/share/keyrings/ros-archive-keyring.gpg<br></code></pre></td></tr></table></figure><blockquote><p>上面<strong>安装 GStreamer 和重新安装 OpenCV</strong>会卸载ros2的一些组件，因此后安装ros2</p></blockquote>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-6c57cf93" role="button" aria-expanded="false" aria-controls="collapse-6c57cf93">
+        <div class="fold-arrow">▶</div>Fishros ROS2 安装指南（👍推荐）
+      </div>
+      <div class="fold-collapse collapse" id="collapse-6c57cf93">
+        <div class="fold-content">
+          <p>参考：<a href="https://fishros.org.cn/forum/topic/20/%E5%B0%8F%E9%B1%BC%E7%9A%84%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E7%B3%BB%E5%88%97">小鱼的一键安装系列</a></p><p>注意是在 bash 下运行：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget http://fishros.com/install -O fishros &amp;&amp; . fishros<br></code></pre></td></tr></table></figure><p><img src="/img/ai/robot/fishros.png" srcset="/img/loading.gif" lazyload></p><p>可以在安装 ROS2 的时候让它自动帮我们选择速度最快的源。然后安装 Humble(Ubuntu 22.04)。安装完成后：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> /opt/ros/humble/setup.bash<br><br><span class="hljs-built_in">which</span> ros2<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p>ros2 bookcode:</p>
+<ul>
+<li><a href="https://gitee.com/ohhuo/ros2bookcode">源码Gitee</a></li>
+<li><a href="https://github.com/fishros/ros2bookcode">源码GitHub</a></li>
+</ul>
+<p>拓展资料：</p>
+<ul>
+<li><a href="http://fishros.org/doc/ros2/humble/">ROS2中文文档</a></li>
+<li><a href="http://fishros.org/doc/nav2">Nav2中文文档</a></li>
+</ul>
+<h3 id="Gazebo"><a href="#Gazebo" class="headerlink" title="Gazebo"></a>Gazebo</h3><p>Gazebo是一个机器人仿真环境。因为 gazebo 官方源没有包含 arm64 版本，所以需要手动添加源并安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> add-apt-repository ppa:openrobotics/gazebo11-non-amd64<br><span class="hljs-built_in">sudo</span> apt install gazebo<br><span class="hljs-built_in">sudo</span> apt install ros-humble-gazebo-*<br><br>gazebo<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/robot/gazebo.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Moveit2"><a href="#Moveit2" class="headerlink" title="Moveit2"></a>Moveit2</h3><p>MoveIt2 是基于 ROS2 的机器人操作平台，其集成了运动规划，操作，3D感知，运动学，控制和导航方面的最新技术与一体。</p>
+<ul>
+<li>MoveIT 教程：<a href="https://moveit.picknik.ai/main/index.html">MoveIt 2 Documentation</a></li>
+<li>其他参考教程：<ul>
+<li><a href="https://blog.csdn.net/joyopirate/article/details/129424607">在ROS2中，通过MoveIt2控制Gazebo中的自定义机械手</a></li>
+</ul>
+</li>
+</ul>
+<p>环境配置参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/qq_27865227/article/details/125812072">动手学moveit2|介绍和安装</a></li>
+<li><a href="https://fishros.org.cn/forum/topic/395/%E5%8A%A8%E6%89%8B%E5%AD%A6moveit2-3-%E5%AE%89%E8%A3%85moveit2%E6%B5%8B%E8%AF%95">《动手学Moveit2》3.安装Moveit2测试</a></li>
+</ul>
+<p>源教程有一些适配的错误，以下是在 Jetson Orin Nano Super 上验证步骤。</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d02d7b34" role="button" aria-expanded="false" aria-controls="collapse-d02d7b34">
+        <div class="fold-arrow">▶</div>编译 moveit ros2 工程
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d02d7b34">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 需要下载 humble 分支，不然不兼容</span><br>git <span class="hljs-built_in">clone</span> -b humble git@github.com:moveit/moveit2.git ~/moveit2_ws/src/moveit2<br><br><span class="hljs-comment"># 安装依赖</span><br><span class="hljs-built_in">cd</span> ~/moveit2_ws<br>rosdepc update<br>rosdepc install --from-path src --ignore-src -r -y<br><br><br><span class="hljs-comment"># 直接编译会炸，需要增大 swap</span><br><span class="hljs-built_in">sudo</span> fallocate -l 16G /swapfile                                                                  <br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> 600 /swapfile                                                                         <br><span class="hljs-built_in">sudo</span> mkswap /swapfile                                                                            <br><span class="hljs-built_in">sudo</span> swapon /swapfile                                                                            <br>free -h<br><br><span class="hljs-comment"># 编译</span><br>colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release<br><br><span class="hljs-comment"># 查看资源</span><br>jtop<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p>测试demo</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> moveit2_ws/<br><span class="hljs-built_in">source</span> install/setup.zsh<br>ros2 launch moveit_resources_panda_moveit_config demo.launch.py<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/robot/moveit.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="测试-dummy2"><a href="#测试-dummy2" class="headerlink" title="测试 dummy2"></a>测试 dummy2</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://gitee.com/switchpi/dummy2.git<br><span class="hljs-built_in">cd</span> dummy2/ros2/dummy2_ws<br><br><span class="hljs-comment"># 不要装依赖，会和已经编译的 moveit2 的包冲突</span><br><span class="hljs-comment"># rosdep install --from-path src --ignore-src -r -y -i --rosdistro $&#123;ROS_DISTRO&#125;</span><br><span class="hljs-built_in">sudo</span> apt-get install ros-humble-ros2-controllers ros-humble-warehouse-ros ros-humble-moveit-ros-warehouse<br></code></pre></td></tr></table></figure>
+
+<p>这里有个包安装不了，参考：</p>
+<ul>
+<li><a href="https://blog.csdn.net/qq_45762996/article/details/142630601">【ROS2】遇到 “无法定位软件包” 的错误时，通常是因为缺少正确的ROS源或包未包含在当前的源列表中</a></li>
+<li><a href="https://github.com/moveit/warehouse_ros_mongo/issues/75">ROS2 Humble and Rolling incompatibility</a></li>
+</ul>
+<p>主要的问题是，ros-humble-warehouse-ros-mongo 未在 jammy ubuntu 22.04 humble 上发行。为了编译通过，先将相关的库安装上。注意实测运行时，mongoDB 仍然不可用，因为缺少依赖。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release<br></code></pre></td></tr></table></figure>
+
+<p>这里有个库 <code>dummy2_hw</code> 依赖其他库，为了编译顺利通过，可以把 <code>src/dummy2_hw</code> 先移动到其他目录，将其余的 package 编译并安装，然后再复原 <code>dummy2_hw</code>，重新编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mv</span> src/dummy2_hw ..<br>colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release<br>. install/setup.zsh<br><br><span class="hljs-built_in">mv</span> ../dummy2_hw src/<br>colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release<br></code></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 显示模型</span><br>ros2 launch dummy2-gripperv2_description display.launch.py<br><br><span class="hljs-comment"># 规划</span><br>ros2 launch dummy2-gripperv2_moveit_config demo.launch.py<br></code></pre></td></tr></table></figure>
+
+<div id="dplayer6" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer6"),"theme":"#FADFA3","loop":true,"lang":"zh-cn","screenshot":true,"hotkey":true,"preload":"auto","volume":0.9,"mutex":true,"video":{"url":"/img/ai/robot/dummy.webm"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+<h3 id="深度相机"><a href="#深度相机" class="headerlink" title="深度相机"></a>深度相机</h3><ul>
+<li>下载 <a href="https://github.com/orbbec/OrbbecSDK/releases">OrbbecSDK</a></li>
+<li>在 jetson 上下载：<a href="https://github.com/orbbec/OrbbecSDK/releases/download/v1.10.22/OrbbecViewer_v1.10.22_202504111013_arm64_release.zip">OrbbecViewer</a></li>
+<li>ROS2 配置和使用参考文档：<a href="https://github.com/orbbec/OrbbecSDK_ROS2/blob/main/README_CN.MD">OrbbecSDK ROS2 Wrapper v2</a></li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-2a25062f" role="button" aria-expanded="false" aria-controls="collapse-2a25062f">
+        <div class="fold-arrow">▶</div>安装驱动
+      </div>
+      <div class="fold-collapse collapse" id="collapse-2a25062f">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> script<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> +x install_udev_rules.sh<br><span class="hljs-built_in">sudo</span> ./install_udev_rules.sh<br><span class="hljs-built_in">sudo</span> udevadm control --reload-rules &amp;&amp; <span class="hljs-built_in">sudo</span> udevadm trigger<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 打开窗口，如果初始化失败，重启一下系统</span><br>./OrbbecViewer<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/robot/viewer.png" srcset="/img/loading.gif" lazyload></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-d8ad4583" role="button" aria-expanded="false" aria-controls="collapse-d8ad4583">
+        <div class="fold-arrow">▶</div>深度相机 ros2 测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d8ad4583">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">ros2 launch orbbec_camera gemini_330_series.launch.py<br><br>rviz2<br></code></pre></td></tr></table></figure><p>添加 topic：</p><p><img src="/img/ai/robot/topic.png" srcset="/img/loading.gif" lazyload></p><p>显示深度：</p><p><img src="/img/ai/robot/ros2_deep.png" srcset="/img/loading.gif" lazyload></p>
+        </div>
+      </div>
+    </div>
+
+<h2 id="附-mac-安装-ros2-jazzy"><a href="#附-mac-安装-ros2-jazzy" class="headerlink" title="附 mac 安装 ros2 jazzy"></a>附 mac 安装 ros2 jazzy</h2><h3 id="安装虚拟机"><a href="#安装虚拟机" class="headerlink" title="安装虚拟机"></a>安装虚拟机</h3><p>购买 UTM 软件，参考 <a href="https://blog.csdn.net/CSDNDengzhiwen/article/details/137333683">MAC M2安装ubuntu虚拟机</a>.</p>
+<p>注意：</p>
+<ul>
+<li>安装完系统后，在 UTM 虚拟机 CD&#x2F;DVD 中弹出 iso。</li>
+<li>安装 desktop 会设置 snapd，一个非常垃圾的软件包，如果hang住多重启几次。</li>
+<li>虚拟机扩容参考：<a href="https://blog.csdn.net/tap880507/article/details/105919249">MAC-VM虚拟机Ubuntu硬盘容量扩充</a></li>
+<li>如果df查看没有成功扩容，参考如下方法</li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-dca764d8" role="button" aria-expanded="false" aria-controls="collapse-dca764d8">
+        <div class="fold-arrow">▶</div>扩展卷
+      </div>
+      <div class="fold-collapse collapse" id="collapse-dca764d8">
+        <div class="fold-content">
+          <p>从你提供的信息来看，<code>/dev/mapper/ubuntu--vg-ubuntu--lv</code> 是一个逻辑卷（LV），而你提到的分区 <code>/dev/vda3</code> 有 54.9GB 的 Linux 文件系统，应该有足够的空间来扩展 <code>ubuntu--vg-ubuntu--lv</code>。</p><p>然而，虽然物理磁盘有空间，但逻辑卷没有自动扩展，可能是因为你还没有在逻辑卷上执行扩展操作。具体来说，需要完成以下几个步骤：</p><ol><li>扩展物理卷（PV）：<br>首先，确保物理卷已经扩展到 <code>/dev/vda3</code> 中的新空间。如果没有扩展，可以使用以下命令来扩展物理卷：</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> pvresize /dev/vda3<br></code></pre></td></tr></table></figure><ol start="2"><li>扩展卷组（VG）：<br>确保卷组 <code>ubuntu-vg</code> 已经包含了新的空间。你可以通过以下命令检查卷组的大小：</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vgdisplay ubuntu-vg<br></code></pre></td></tr></table></figure><p>如果卷组已经包含新的空间，你就可以直接扩展逻辑卷了。</p><ol start="3"><li>扩展逻辑卷（LV）：<br>接下来，使用 <code>lvextend</code> 扩展逻辑卷 <code>ubuntu--lv</code>：</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv<br></code></pre></td></tr></table></figure><p>这将把所有可用的空间分配给该逻辑卷。如果你只想使用部分空间，可以调整 <code>+100%FREE</code> 为适当的大小。</p><ol start="4"><li>扩展文件系统：<br>扩展逻辑卷之后，需要扩展文件系统才能使用新的空间。对于 <code>ext4</code> 文件系统，你可以使用：</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> resize2fs /dev/ubuntu-vg/ubuntu-lv<br></code></pre></td></tr></table></figure><p>对于 <code>xfs</code> 文件系统，使用：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> xfs_growfs /dev/ubuntu-vg/ubuntu-lv<br></code></pre></td></tr></table></figure><p>总结：</p><ul><li>扩展物理卷（<code>pvresize</code>）。</li><li>扩展卷组（<code>vgextend</code>）。</li><li>扩展逻辑卷（<code>lvextend</code>）。</li><li>扩展文件系统（<code>resize2fs</code> 或 <code>xfs_growfs</code>）。</li></ul><p>完成这些步骤后，应该就能看到你在 <code>df -h</code> 命令输出中获得的更多可用空间了。</p>
+        </div>
+      </div>
+    </div>
+
+<h3 id="安装-ros2"><a href="#安装-ros2" class="headerlink" title="安装 ros2"></a>安装 ros2</h3><p>参考 fishros</p>
+<h3 id="安装-gazebo"><a href="#安装-gazebo" class="headerlink" title="安装 gazebo"></a>安装 gazebo</h3><p>这里我们从源码编译安装，因为 arm64 的二进制安装只支持到 ubuntu 22.04。参考</p>
+<ul>
+<li><a href="https://blog.csdn.net/louths/article/details/136499425?spm=1001.2014.3001.5506">Ubunt20.04的Gazebo源码安装</a></li>
+<li><a href="https://gazebosim.org/docs/latest/install_ubuntu_src/">Source Installation on Ubuntu</a></li>
+</ul>
+<p>安装完成后，运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">gz sim<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/robot/mac_gazebo.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="安装-moveit2"><a href="#安装-moveit2" class="headerlink" title="安装 moveit2"></a>安装 moveit2</h3><p>参考官方最新版本：<a href="https://moveit.picknik.ai/main/doc/tutorials/getting_started/getting_started.html#create-a-colcon-workspace-and-download-tutorials">Create A Colcon Workspace and Download Tutorials</a></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-8aba9712" role="button" aria-expanded="false" aria-controls="collapse-8aba9712">
+        <div class="fold-arrow">▶</div>深度相机 ros2 测试
+      </div>
+      <div class="fold-collapse collapse" id="collapse-8aba9712">
+        <div class="fold-content">
+          <p>注意，编译时会报错这样的问题：<a href="https://github.com/Kinovarobotics/ros2_kortex/issues/169">aarch64 is not supported</a>解决办法如下，因为它官方不支持x86-64，我们进入这个仓库下，将 cmake 的检查注释掉，并且导入arch64版本的库：<a href="https://artifactory.kinovaapps.com/artifactory/generic-public/kortex/API/2.6.0/linux_aarch64_gcc_7.4.zip%E3%80%82">https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.6.0/linux_aarch64_gcc_7.4.zip。</a></p><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><code class="hljs diff"><span class="hljs-comment">diff --git a/kortex_api/CMakeLists.txt b/kortex_api/CMakeLists.txt</span><br><span class="hljs-comment">index ddf42b7..a99a25f 100644</span><br><span class="hljs-comment">--- a/kortex_api/CMakeLists.txt</span><br><span class="hljs-comment">+++ b/kortex_api/CMakeLists.txt</span><br><span class="hljs-meta">@@ -1,13 +1,15 @@</span><br> cmake_minimum_required(VERSION 3.14)<br> include(FetchContent)<br> #include(ExternalProject)<br><span class="hljs-deletion">-FetchContent_Declare(</span><br><span class="hljs-deletion">-  kinova_binary_api</span><br><span class="hljs-deletion">-  URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip</span><br><span class="hljs-deletion">-  URL_HASH MD5=64bd86e7ab8bda90ef1fc7d6a356e080</span><br><span class="hljs-deletion">-)</span><br><span class="hljs-addition">+# FetchContent_Declare(</span><br><span class="hljs-addition">+#   kinova_binary_api</span><br><span class="hljs-addition">+#   URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip</span><br><span class="hljs-addition">+#   URL_HASH MD5=64bd86e7ab8bda90ef1fc7d6a356e080</span><br><span class="hljs-addition">+# )</span><br> <br><span class="hljs-deletion">-FetchContent_MakeAvailable(kinova_binary_api)</span><br><span class="hljs-addition">+# FetchContent_MakeAvailable(kinova_binary_api)</span><br><span class="hljs-addition">+</span><br><span class="hljs-addition">+set(KINOVA_BINARY_API_DIR &quot;/home/sjl/workspace/src/ros2_kortex/linux_aarch64&quot;)</span><br> <br> project(kortex_api)<br> <br><span class="hljs-meta">@@ -19,12 +21,12 @@</span> project(kortex_api)<br> # string(TOLOWER $&#123;CMAKE_SYSTEM_NAME&#125; URL_OS) # Linux -&gt; linux<br> <br> #Current: only support Linux x86_64<br><span class="hljs-deletion">-if(CMAKE_SYSTEM_NAME STREQUAL &quot;Linux&quot; AND CMAKE_SYSTEM_PROCESSOR STREQUAL &quot;x86_64&quot;)</span><br><span class="hljs-deletion">-  set(API_URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip)</span><br><span class="hljs-deletion">-else()</span><br><span class="hljs-deletion">-  set(API_URL &quot;&quot;)</span><br><span class="hljs-deletion">-  message(FATAL_ERROR &quot;Unsupported System: currently support is for Linux x68_64. Detected $&#123;CMAKE_SYSTEM_NAME&#125; and $&#123;CMAKE_SYSTEM_PROCESSOR&#125;&quot;)</span><br><span class="hljs-deletion">-endif()</span><br><span class="hljs-addition">+# if(CMAKE_SYSTEM_NAME STREQUAL &quot;Linux&quot; AND CMAKE_SYSTEM_PROCESSOR STREQUAL &quot;x86_64&quot;)</span><br><span class="hljs-addition">+#   set(API_URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip)</span><br><span class="hljs-addition">+# else()</span><br><span class="hljs-addition">+#   set(API_URL &quot;&quot;)</span><br><span class="hljs-addition">+#   message(FATAL_ERROR &quot;Unsupported System: currently support is for Linux x68_64. Detected $&#123;CMAKE_SYSTEM_NAME&#125; and $&#123;CMAKE_SYSTEM_PROCESSOR&#125;&quot;)</span><br><span class="hljs-addition">+# endif()</span><br> <br> #ExternalProject_Add(kinova_binary_api<br> #  URL $&#123;API_URL&#125;<br><span class="hljs-meta">@@ -37,10 +39,10 @@</span> find_package(ament_cmake REQUIRED)<br> <br> ament_export_include_directories(include/kortex_api)<br> <br><span class="hljs-deletion">-install(DIRECTORY $&#123;kinova_binary_api_SOURCE_DIR&#125;/include/client/ DESTINATION include/kortex_api)</span><br><span class="hljs-deletion">-install(DIRECTORY $&#123;kinova_binary_api_SOURCE_DIR&#125;/include/common/ DESTINATION include/kortex_api)</span><br><span class="hljs-deletion">-install(DIRECTORY $&#123;kinova_binary_api_SOURCE_DIR&#125;/include/messages/ DESTINATION include/kortex_api)</span><br><span class="hljs-deletion">-install(DIRECTORY $&#123;kinova_binary_api_SOURCE_DIR&#125;/include/client_stubs/ DESTINATION include/kortex_api)</span><br><span class="hljs-deletion">-install(DIRECTORY $&#123;kinova_binary_api_SOURCE_DIR&#125;/include/google/protobuf DESTINATION include/kortex_api/google)</span><br><span class="hljs-addition">+install(DIRECTORY $&#123;KINOVA_BINARY_API_DIR&#125;/include/client/ DESTINATION include/kortex_api)</span><br><span class="hljs-addition">+install(DIRECTORY $&#123;KINOVA_BINARY_API_DIR&#125;/include/common/ DESTINATION include/kortex_api)</span><br><span class="hljs-addition">+install(DIRECTORY $&#123;KINOVA_BINARY_API_DIR&#125;/include/messages/ DESTINATION include/kortex_api)</span><br><span class="hljs-addition">+install(DIRECTORY $&#123;KINOVA_BINARY_API_DIR&#125;/include/client_stubs/ DESTINATION include/kortex_api)</span><br><span class="hljs-addition">+install(DIRECTORY $&#123;KINOVA_BINARY_API_DIR&#125;/include/google/protobuf DESTINATION include/kortex_api/google)</span><br> <br> ament_package()<br><span class="hljs-comment">diff --git a/kortex_driver/CMakeLists.txt b/kortex_driver/CMakeLists.txt</span><br><span class="hljs-comment">index 6e47d72..3b88281 100644</span><br><span class="hljs-comment">--- a/kortex_driver/CMakeLists.txt</span><br><span class="hljs-comment">+++ b/kortex_driver/CMakeLists.txt</span><br><span class="hljs-meta">@@ -1,11 +1,13 @@</span><br> cmake_minimum_required(VERSION 3.14)<br> include(FetchContent)<br><span class="hljs-deletion">-FetchContent_Declare(</span><br><span class="hljs-deletion">-  kinova_binary_api</span><br><span class="hljs-deletion">-  URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip</span><br><span class="hljs-deletion">-  URL_HASH MD5=64bd86e7ab8bda90ef1fc7d6a356e080</span><br><span class="hljs-deletion">-)</span><br><span class="hljs-deletion">-FetchContent_MakeAvailable(kinova_binary_api)</span><br><span class="hljs-addition">+# FetchContent_Declare(</span><br><span class="hljs-addition">+#   kinova_binary_api</span><br><span class="hljs-addition">+#   URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip</span><br><span class="hljs-addition">+#   URL_HASH MD5=64bd86e7ab8bda90ef1fc7d6a356e080</span><br><span class="hljs-addition">+# )</span><br><span class="hljs-addition">+# FetchContent_MakeAvailable(kinova_binary_api)</span><br><span class="hljs-addition">+</span><br><span class="hljs-addition">+set(KINOVA_BINARY_API_DIR &quot;/home/sjl/workspace/src/ros2_kortex/linux_aarch64&quot;)</span><br> <br> project(kortex_driver)<br> <br><span class="hljs-meta">@@ -29,20 +31,20 @@</span> find_package(rclcpp REQUIRED)<br> find_package(kortex_api REQUIRED)<br> <br> #Current: only support Linux x86_64<br><span class="hljs-deletion">-if(CMAKE_SYSTEM_NAME STREQUAL &quot;Linux&quot; AND CMAKE_SYSTEM_PROCESSOR STREQUAL &quot;x86_64&quot;)</span><br><span class="hljs-deletion">-  set(API_URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip)</span><br><span class="hljs-deletion">-else()</span><br><span class="hljs-deletion">-  # TODO(future) to support ARM or other builds logic could go here to fetch the precompiled libKortexApiCpp.a</span><br><span class="hljs-deletion">-  # see notes in kortex_api CMakeList.txt</span><br><span class="hljs-deletion">-  message(WARNING &quot;Detected $&#123;CMAKE_SYSTEM_NAME&#125; and $&#123;CMAKE_SYSTEM_PROCESSOR&#125;&quot;)</span><br><span class="hljs-deletion">-  message(FATAL_ERROR &quot;Unsupported System: currently support is for Linux x68_64.&quot;)</span><br><span class="hljs-deletion">-endif()</span><br><span class="hljs-addition">+# if(CMAKE_SYSTEM_NAME STREQUAL &quot;Linux&quot; AND CMAKE_SYSTEM_PROCESSOR STREQUAL &quot;x86_64&quot;)</span><br><span class="hljs-addition">+#   set(API_URL https://artifactory.kinovaapps.com:443/artifactory/generic-public/kortex/API/2.5.0/linux_x86-64_x86_gcc.zip)</span><br><span class="hljs-addition">+# else()</span><br><span class="hljs-addition">+#   # TODO(future) to support ARM or other builds logic could go here to fetch the precompiled libKortexApiCpp.a</span><br><span class="hljs-addition">+#   # see notes in kortex_api CMakeList.txt</span><br><span class="hljs-addition">+#   message(WARNING &quot;Detected $&#123;CMAKE_SYSTEM_NAME&#125; and $&#123;CMAKE_SYSTEM_PROCESSOR&#125;&quot;)</span><br><span class="hljs-addition">+#   message(FATAL_ERROR &quot;Unsupported System: currently support is for Linux x68_64.&quot;)</span><br><span class="hljs-addition">+# endif()</span><br> <br> # CMake does not allow IMPORTED libraries to be installed<br> # The package kortex_api will download and setup the include directories<br> add_library(KortexApiCpp STATIC IMPORTED)<br> set_target_properties(KortexApiCpp PROPERTIES<br><span class="hljs-deletion">-  IMPORTED_LOCATION $&#123;kinova_binary_api_SOURCE_DIR&#125;/lib/release/libKortexApiCpp.a</span><br><span class="hljs-addition">+  IMPORTED_LOCATION $&#123;KINOVA_BINARY_API_DIR&#125;/lib/release/libKortexApiCpp.a</span><br>   INTERFACE_LINK_LIBRARIES KortexApiCpp<br> )<br> target_link_libraries(KortexApiCpp INTERFACE pthread)<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<p>编译成功后，运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ros2 launch moveit2_tutorials demo.launch.py<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/ai/robot/mac_moveit.png" srcset="/img/loading.gif" lazyload></p>
+<p>Mac 虚拟机运行 moveit 超级卡，需要更多的核心，更大的内存。</p>
+<h2 id="WSL-ubuntu24-04-安装-ros2-jazzy"><a href="#WSL-ubuntu24-04-安装-ros2-jazzy" class="headerlink" title="WSL ubuntu24.04 安装 ros2 jazzy"></a>WSL ubuntu24.04 安装 ros2 jazzy</h2><p>大体流程和上述 mac 安装相同，在使用升读相机时，需要注意在 powershell 中将相机 bind 到 wsl2 上。</p>
+<h2 id="WSL-ubuntu22-04-安装-ros2-humble"><a href="#WSL-ubuntu22-04-安装-ros2-humble" class="headerlink" title="WSL ubuntu22.04 安装 ros2 humble"></a>WSL ubuntu22.04 安装 ros2 humble</h2><p>测试 dummy2:</p>
+<p>不要直接 rosdep 安装依赖，主要缺以下依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install ros-humble-ros2-controllers ros-humble-warehouse-ros ros-humble-moveit-ros-warehouse<br><span class="hljs-comment"># ...</span><br>ros2 launch dummy2-gripperv2_moveit_config demo.launch.py<br></code></pre></td></tr></table></figure>
+
+<div id="dplayer7" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer7"),"theme":"#FADFA3","loop":true,"lang":"zh-cn","screenshot":true,"hotkey":true,"preload":"auto","volume":0.9,"mutex":true,"video":{"url":"/img/ai/robot/dummy.mp4"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Robot/" class="category-chain-item">Robot</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Robot/" class="print-no-link">#Robot</a>
+      
+        <a href="/tags/Moveit2/" class="print-no-link">#Moveit2</a>
+      
+        <a href="/tags/ROS2/" class="print-no-link">#ROS2</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/15/AI/lerobot/" title="Lerobot SO101 robot arm">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Lerobot SO101 robot arm</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/01/AI/Dummy/" title="Dummy-Robot">
+                        <span class="hidden-mobile">Dummy-Robot</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2019 - 2024 🇨🇳</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>
